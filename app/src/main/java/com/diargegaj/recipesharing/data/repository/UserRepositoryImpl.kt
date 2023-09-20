@@ -10,6 +10,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -47,4 +50,13 @@ class UserRepositoryImpl @Inject constructor(
                 Resource.Error(e)
             }
         }
+
+    override fun isUserLoggedIn(): Flow<Boolean> {
+        val currentUser = auth.currentUser
+        return if (currentUser != null) {
+            userDao.getUser(currentUser.uid).map { it != null }
+        } else {
+            flowOf(false)
+        }
+    }
 }
