@@ -40,7 +40,6 @@ fun SplashScreen(
         else -> { }
     }
 
-    // Your splash UI goes here
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Text(text = "Recipe Sharing", style = MaterialTheme.typography.bodyMedium)
     }
