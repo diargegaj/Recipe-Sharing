@@ -1,4 +1,4 @@
-package com.diargegaj.recipesharing.presentation.viewModel
+package com.diargegaj.recipesharing.presentation.viewModel.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

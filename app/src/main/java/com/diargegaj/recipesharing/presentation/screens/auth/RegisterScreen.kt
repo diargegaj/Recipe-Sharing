@@ -28,8 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.presentation.navigation.RecipeNavigationActions
-import com.diargegaj.recipesharing.presentation.viewModel.AuthViewModel
-import com.diargegaj.recipesharing.presentation.viewModel.NavigationTarget
+import com.diargegaj.recipesharing.presentation.viewModel.auth.AuthViewModel
+import com.diargegaj.recipesharing.presentation.viewModel.auth.NavigationTarget
 
 @Composable
 fun RegisterScreen(

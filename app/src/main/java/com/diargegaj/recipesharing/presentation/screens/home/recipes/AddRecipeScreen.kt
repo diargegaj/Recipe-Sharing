@@ -16,28 +16,27 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.diargegaj.recipesharing.R
 import com.diargegaj.recipesharing.presentation.utils.ImagePicker
+import com.diargegaj.recipesharing.presentation.viewModel.recipes.AddRecipeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddRecipeScreen() {
-    var recipeImage by remember { mutableStateOf<ImageBitmap?>(null) }
+fun AddRecipeScreen(
+    viewModel: AddRecipeViewModel = hiltViewModel()
+) {
+    val state by viewModel.recipeState.collectAsState()
 
-    var ingredients by remember {
-        mutableStateOf(listOf(""))
-    }
+    val recipeImage by viewModel.recipeImage.collectAsState()
 
     LazyColumn(
         modifier = Modifier
@@ -55,7 +54,9 @@ fun AddRecipeScreen() {
                     Text(text = stringResource(id = R.string.tap_to_upload_an_image))
                 },
                 onImagePicked = { pickedImage ->
-                    recipeImage = pickedImage
+                    viewModel.updatePickedImage(
+                        pickedImage = pickedImage
+                    )
                 }
             )
 
@@ -64,8 +65,10 @@ fun AddRecipeScreen() {
 
         item {
             TextField(
-                value = "",
-                onValueChange = { },
+                value = state.title,
+                onValueChange = { newValue ->
+                    viewModel.updateTitle(newValue)
+                },
                 label = { Text(text = stringResource(id = R.string.recipe_title)) }
             )
 
@@ -74,8 +77,10 @@ fun AddRecipeScreen() {
 
         item {
             TextField(
-                value = "",
-                onValueChange = { },
+                value = state.description,
+                onValueChange = { newValue ->
+                    viewModel.updateDescription(newValue)
+                },
                 label = { Text(text = stringResource(id = R.string.recipe_description)) })
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -85,21 +90,18 @@ fun AddRecipeScreen() {
             Text(text = stringResource(id = R.string.ingredients), fontWeight = FontWeight.Bold)
         }
 
-        items(ingredients.size) { index ->
-            IngredientTextField(currentValue = ingredients[index]) { newValue ->
-
-                ingredients = ingredients.toMutableList().also {
-                    it[index] = newValue
-                }
-
+        items(state.ingredients.size) { index ->
+            IngredientTextField(currentValue = state.ingredients[index]) { newValue ->
+                viewModel.updateIngredient(
+                    index = index,
+                    newValue = newValue
+                )
             }
         }
 
         item {
             IconButton(onClick = {
-                if (ingredients.last().isNotEmpty()) {
-                    ingredients = ingredients + ""
-                }
+                viewModel.addIngredient()
             }) {
                 Icon(Icons.Default.Add, contentDescription = "Add ingredient")
             }
