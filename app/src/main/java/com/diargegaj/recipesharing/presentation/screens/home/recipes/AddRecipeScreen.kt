@@ -1,5 +1,6 @@
 package com.diargegaj.recipesharing.presentation.screens.home.recipes
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -35,8 +37,13 @@ fun AddRecipeScreen(
     viewModel: AddRecipeViewModel = hiltViewModel()
 ) {
     val state by viewModel.recipeState.collectAsState()
-
     val recipeImage by viewModel.recipeImage.collectAsState()
+
+    val errorMessages by viewModel.errorMessages.collectAsState(initial = "")
+
+    if (errorMessages.isNotEmpty()) {
+        Toast.makeText(LocalContext.current, errorMessages, Toast.LENGTH_SHORT).show()
+    }
 
     LazyColumn(
         modifier = Modifier
@@ -109,7 +116,7 @@ fun AddRecipeScreen(
 
         item {
             Button(onClick = {
-                TODO(" Handle storing recipe.")
+                viewModel.storeRecipe()
             }) {
                 Text(text = stringResource(id = R.string.add_recipe))
             }

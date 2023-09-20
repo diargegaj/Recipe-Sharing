@@ -1,14 +1,13 @@
 package com.diargegaj.recipesharing.data.repository
 
 import android.content.res.Resources.NotFoundException
-import android.util.Log
 import com.diargegaj.recipesharing.data.db.dao.UserDao
 import com.diargegaj.recipesharing.data.mappers.mapToDomain
 import com.diargegaj.recipesharing.data.mappers.mapToDto
 import com.diargegaj.recipesharing.data.mappers.mapToEntity
 import com.diargegaj.recipesharing.data.models.UserDto
 import com.diargegaj.recipesharing.data.utils.Constants.INSERTION_FAILED
-import com.diargegaj.recipesharing.data.utils.DBCollectionUtils.User
+import com.diargegaj.recipesharing.data.utils.DBCollectionUtils.COLLECTIONS.User
 import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.domain.repository.UserRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
@@ -106,5 +105,15 @@ class UserRepositoryImpl @Inject constructor(
                 Resource.Error(Exception("Failed to insert user info into cache."))
             }
         }
+
+    override fun getUserId(): Resource<String> {
+        val userId = auth.currentUser?.uid
+
+        return if (userId != null) {
+            Resource.Success(userId)
+        } else {
+            Resource.Error(NotFoundException("User Not Found"))
+        }
+    }
 
 }

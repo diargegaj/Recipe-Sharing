@@ -33,3 +33,13 @@ fun UserDto.mapToDomain(): UserModel {
         profilePhotoUrl = profilePhotoUrl
     )
 }
+
+fun UserEntity.mapToUserModel(): UserModel {
+    return UserModel(
+        userUUID = this.id,
+        name = this.name,
+        lastName = this.lastName,
+        email = this.email,
+        profilePhotoUrl = this.profilePhotoUrl
+    )
+}
