@@ -22,9 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.diargegaj.recipesharing.presentation.navigation.RecipeNavigationActions
 
 @Composable
-fun RegisterScreen() {
+fun RegisterScreen(recipeNavigationActions: RecipeNavigationActions) {
 
     var name by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
@@ -90,9 +91,7 @@ fun RegisterScreen() {
         Spacer(modifier = Modifier.height(8.dp))
 
         TextButton(
-            onClick = {
-                // TODO:: navigate back to login.
-            },
+            onClick = { recipeNavigationActions.navController.popBackStack() },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "Already have an account? Login here", color = Color.Gray)

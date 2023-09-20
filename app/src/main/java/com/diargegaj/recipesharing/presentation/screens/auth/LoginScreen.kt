@@ -22,10 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.diargegaj.recipesharing.presentation.navigation.RecipeNavigationActions
 
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(recipeNavigationActions: RecipeNavigationActions) {
 
     var email: String by remember { mutableStateOf("") }
     var password: String by remember { mutableStateOf("") }
@@ -61,7 +62,7 @@ fun LoginScreen() {
 
         Button(
             onClick = {
-                      // TODO Handle login logic..
+                // TODO Handle login logic..
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -71,9 +72,7 @@ fun LoginScreen() {
         Spacer(modifier = Modifier.height(8.dp))
 
         TextButton(
-            onClick = {
-                      // TODO Setup navigation and navigate to register screen.
-            },
+            onClick = { recipeNavigationActions.navigateToRegister() },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "Don't have an account? Register here", color = Color.Gray)
