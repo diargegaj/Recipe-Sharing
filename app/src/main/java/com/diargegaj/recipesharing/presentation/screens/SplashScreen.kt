@@ -12,8 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.diargegaj.recipesharing.presentation.navigation.RecipeNavigationActions
-import com.diargegaj.recipesharing.presentation.viewModel.AuthViewModel
-import com.diargegaj.recipesharing.presentation.viewModel.NavigationTarget
+import com.diargegaj.recipesharing.presentation.viewModel.auth.AuthViewModel
+import com.diargegaj.recipesharing.presentation.viewModel.auth.NavigationTarget
 
 @Composable
 fun SplashScreen(
@@ -40,7 +40,6 @@ fun SplashScreen(
         else -> { }
     }
 
-    // Your splash UI goes here
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Text(text = "Recipe Sharing", style = MaterialTheme.typography.bodyMedium)
     }

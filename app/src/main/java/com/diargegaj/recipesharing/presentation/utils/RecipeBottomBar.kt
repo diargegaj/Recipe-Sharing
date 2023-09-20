@@ -70,7 +70,7 @@ fun bottomBarItems(): List<BottomBarItem> = listOf(
         selectedScreenCategory = SelectedScreenCategory.ADD_RECIPE
     ),
     BottomBarItem(
-        titleResId = R.string.profle,
+        titleResId = R.string.profile,
         selectedIcon = Icons.Filled.AccountCircle,
         unSelectedIcon = Icons.Outlined.AccountCircle,
         selectedScreenCategory = SelectedScreenCategory.PROFILE

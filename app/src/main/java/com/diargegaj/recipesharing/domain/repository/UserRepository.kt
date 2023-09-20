@@ -19,4 +19,6 @@ interface UserRepository {
 
     suspend fun saveUserInfoOnCache(userModel: UserModel): Resource<Any>
 
+    fun getUserId(): Resource<String>
+
 }

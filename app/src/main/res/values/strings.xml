@@ -2,5 +2,9 @@
     <string name="app_name">Recipe Sharing</string>
     <string name="home">Home</string>
     <string name="add_recipe">Add recipe</string>
-    <string name="profle">Profile</string>
+    <string name="profile">Profile</string>
+    <string name="tap_to_upload_an_image">Tap to upload an image</string>
+    <string name="recipe_title">Recipe Title</string>
+    <string name="recipe_description">Recipe Description</string>
+    <string name="ingredients">Ingredients:</string>
 </resources>
