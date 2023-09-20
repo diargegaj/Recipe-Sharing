@@ -22,10 +22,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.presentation.navigation.RecipeNavigationActions
+import com.diargegaj.recipesharing.presentation.viewModel.AuthViewModel
 
 @Composable
-fun RegisterScreen(recipeNavigationActions: RecipeNavigationActions) {
+fun RegisterScreen(
+    recipeNavigationActions: RecipeNavigationActions,
+    viewModel: AuthViewModel = hiltViewModel()
+) {
 
     var name by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
@@ -81,7 +87,14 @@ fun RegisterScreen(recipeNavigationActions: RecipeNavigationActions) {
 
         Button(
             onClick = {
-                //TODO: Handle register logic
+                viewModel.onRegister(
+                    userInfo = UserModel(
+                        name = name,
+                        lastName = lastName,
+                        email = email,
+                    ),
+                    password = password
+                )
             },
             modifier = Modifier.fillMaxWidth()
         ) {
