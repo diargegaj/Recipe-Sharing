@@ -23,3 +23,13 @@ fun UserDto.mapToEntity(): UserEntity {
         profilePhotoUrl = this.profilePhotoUrl
     )
 }
+
+fun UserDto.mapToDomain(): UserModel {
+    return UserModel(
+        userUUID = userUUID,
+        name = name,
+        lastName = lastName,
+        email = email,
+        profilePhotoUrl = profilePhotoUrl
+    )
+}

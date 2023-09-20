@@ -20,6 +20,9 @@ class AuthViewModel @Inject constructor(
     private val _navigationEvent = MutableSharedFlow<NavigationTarget>()
     val navigationEvent: SharedFlow<NavigationTarget> get() = _navigationEvent
 
+    private val _errorMessages = MutableSharedFlow<String>()
+    val errorMessages: SharedFlow<String> get() = _errorMessages
+
     fun checkUserLoggedIn() {
         viewModelScope.launch {
             val isLoggedIn = userRepository.isUserLoggedIn().first()
@@ -43,7 +46,9 @@ class AuthViewModel @Inject constructor(
                 }
 
                 is Resource.Error -> {
-
+                    _errorMessages.emit(
+                        registrationResult.exception.message ?: "AN ERROR"
+                    )
                 }
 
                 is Resource.Loading -> {
@@ -55,13 +60,15 @@ class AuthViewModel @Inject constructor(
 
     private fun addUserInformationToServer(userInfo: UserModel) {
         viewModelScope.launch {
-            when (userRepository.addUserAdditionalInformation(userInfo)) {
+            when (val result = userRepository.addUserAdditionalInformation(userInfo)) {
                 is Resource.Success -> {
-
+                    redirectToHomePage()
                 }
 
                 is Resource.Error -> {
-
+                    _errorMessages.emit(
+                        result.exception.message ?: "AN ERROR"
+                    )
                 }
 
                 is Resource.Loading -> {
@@ -69,6 +76,66 @@ class AuthViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun onLogin(email: String, password: String) {
+        viewModelScope.launch {
+            when (val result = userRepository.logIn(email, password)) {
+                is Resource.Success -> {
+                    updateUserInfo(result.data.uid)
+                }
+
+                is Resource.Error -> {
+                    _errorMessages.emit(
+                        result.exception.message ?: "AN ERROR"
+                    )
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    private suspend fun updateUserInfo(userId: String) {
+        when (val result = userRepository.getUserInfo(userId)) {
+            is Resource.Success -> {
+                saveUserDataOnCache(result.data)
+            }
+
+            is Resource.Error -> {
+                _errorMessages.emit(
+                    result.exception.message ?: "AN ERROR"
+                )
+            }
+
+            else -> {
+
+            }
+        }
+    }
+
+    private suspend fun saveUserDataOnCache(userModel: UserModel) {
+        when (val result = userRepository.saveUserInfoOnCache(userModel)) {
+            is Resource.Success -> {
+                redirectToHomePage()
+            }
+
+            is Resource.Error -> {
+                _errorMessages.emit(
+                    result.exception.message ?: "AN ERROR"
+                )
+            }
+
+            else -> {
+
+            }
+        }
+    }
+
+    private suspend fun redirectToHomePage() {
+        _navigationEvent.emit(
+            NavigationTarget.Home
+        )
     }
 
 }

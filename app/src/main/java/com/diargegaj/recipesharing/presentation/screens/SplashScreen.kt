@@ -26,7 +26,6 @@ fun SplashScreen(
         authViewModel.checkUserLoggedIn()
     }
 
-    // Respond to the navigation event
     when (navigationEvent) {
         NavigationTarget.Home -> {
             recipeNavigationActions.navigateToHome()
@@ -38,9 +37,7 @@ fun SplashScreen(
 
         }
 
-        else -> {
-            // nothing to do gere
-        }
+        else -> { }
     }
 
     // Your splash UI goes here

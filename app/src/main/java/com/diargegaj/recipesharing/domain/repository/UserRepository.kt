@@ -11,6 +11,12 @@ interface UserRepository {
 
     suspend fun addUserAdditionalInformation(userModel: UserModel): Resource<Unit>
 
+    suspend fun logIn(email: String, password: String): Resource<FirebaseUser>
+
     fun isUserLoggedIn(): Flow<Boolean>
+
+    suspend fun getUserInfo(userId: String): Resource<UserModel>
+
+    suspend fun saveUserInfoOnCache(userModel: UserModel): Resource<Any>
 
 }
