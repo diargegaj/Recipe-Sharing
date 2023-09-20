@@ -1,4 +1,4 @@
-package com.diargegaj.recipesharing.presentation.screens
+package com.diargegaj.recipesharing.presentation.screens.auth
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
