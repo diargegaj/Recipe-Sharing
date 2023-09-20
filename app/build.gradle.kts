@@ -21,6 +21,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        multiDexEnabled = true
     }
 
     buildTypes {
@@ -59,6 +61,8 @@ dependencies {
     val roomVersion = "2.5.2"
     val navigationVersion = "2.7.2"
 
+    implementation("androidx.multidex:multidex:2.0.1")
+
     // Kotlin & AndroidX Core
     implementation("androidx.core:core-ktx:1.12.0")
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
@@ -93,9 +97,9 @@ dependencies {
     implementation("com.google.android.material:material:1.9.0")
 
     // Dagger-Hilt
-    implementation("com.google.dagger:hilt-android:2.44")
+    implementation("com.google.dagger:hilt-android:2.48")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0-alpha01")
-    ksp("com.google.dagger:hilt-compiler:2.44")
+    ksp("com.google.dagger:hilt-compiler:2.48")
 
     // Room
     implementation("androidx.room:room-runtime:$roomVersion")

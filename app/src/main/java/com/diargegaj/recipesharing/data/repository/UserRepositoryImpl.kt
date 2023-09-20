@@ -1,6 +1,8 @@
 package com.diargegaj.recipesharing.data.repository
 
+import com.diargegaj.recipesharing.data.db.dao.UserDao
 import com.diargegaj.recipesharing.data.mappers.mapToDto
+import com.diargegaj.recipesharing.data.mappers.mapToEntity
 import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.domain.repository.UserRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
@@ -15,6 +17,7 @@ import javax.inject.Inject
 class UserRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
     private val fireStore: FirebaseFirestore,
+    private val userDao: UserDao
 ) : UserRepository {
 
     override suspend fun registerUser(email: String, password: String): Resource<FirebaseUser> =
@@ -31,10 +34,13 @@ class UserRepositoryImpl @Inject constructor(
         withContext(Dispatchers.IO) {
             try {
                 val userDto = userModel.mapToDto()
-                fireStore.collection("")
+                fireStore.collection("users")
                     .document(userDto.userUUID)
                     .set(userDto)
                     .await()
+
+                val userEntity = userDto.mapToEntity()
+                userDao.insert(userEntity)
 
                 Resource.Success(Unit)
             } catch (e: Exception) {
