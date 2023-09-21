@@ -1,6 +1,5 @@
 package com.diargegaj.recipesharing.presentation.screens.home.recipes
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,25 +13,27 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.diargegaj.recipesharing.R
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.diargegaj.recipesharing.domain.models.RecipeModel
 import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.domain.models.emptyRecipeModel
+import com.diargegaj.recipesharing.presentation.viewModel.RecipeViewModel
 
 @Composable
-fun RecipesScreen() {
+fun RecipesScreen(
+    recipeViewModel: RecipeViewModel = hiltViewModel()
+) {
 
-    val recipes by remember { mutableStateOf(listOf(emptyRecipeModel())) }
+    val recipes by recipeViewModel.state.collectAsState()
 
     LazyColumn(
         modifier = Modifier
@@ -60,7 +61,10 @@ fun RecipePost(
         modifier = Modifier
             .clickable(onClick = { navigateToRecipe(recipeModel) })
     ) {
-        PostImage(Modifier.padding(16.dp))
+        PostImage(
+            imageUrl = recipeModel.imageUrl,
+            modifier = Modifier.padding(16.dp)
+        )
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -79,9 +83,9 @@ fun RecipePost(
 }
 
 @Composable
-fun PostImage(modifier: Modifier = Modifier) {
-    Image(
-        painter = painterResource(R.drawable.ic_launcher_background), // TODO: change
+fun PostImage(imageUrl: String, modifier: Modifier = Modifier) {
+    AsyncImage(
+        model = imageUrl,
         contentDescription = null,
         modifier = modifier
             .size(40.dp, 40.dp)
@@ -91,8 +95,8 @@ fun PostImage(modifier: Modifier = Modifier) {
 
 @Composable
 fun Author(
-    author: UserModel? = null,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    author: UserModel? = null
 ) {
     Row(modifier) {
         Text(

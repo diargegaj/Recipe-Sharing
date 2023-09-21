@@ -1,5 +1,6 @@
 package com.diargegaj.recipesharing.data.repository
 
+import DBCollection
 import android.content.res.Resources.NotFoundException
 import com.diargegaj.recipesharing.data.db.dao.UserDao
 import com.diargegaj.recipesharing.data.mappers.mapToDomain
@@ -7,7 +8,6 @@ import com.diargegaj.recipesharing.data.mappers.mapToDto
 import com.diargegaj.recipesharing.data.mappers.mapToEntity
 import com.diargegaj.recipesharing.data.models.UserDto
 import com.diargegaj.recipesharing.data.utils.Constants.INSERTION_FAILED
-import com.diargegaj.recipesharing.data.utils.DBCollectionUtils.COLLECTIONS.User
 import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.domain.repository.UserRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
@@ -42,7 +42,7 @@ class UserRepositoryImpl @Inject constructor(
         withContext(Dispatchers.IO) {
             try {
                 val userDto = userModel.mapToDto()
-                fireStore.collection(User.COLLECTION_NAME)
+                fireStore.collection(DBCollection.User.collectionName)
                     .document(userDto.userUUID)
                     .set(userDto)
                     .await()
@@ -78,7 +78,7 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun getUserInfo(userId: String): Resource<UserModel> =
         withContext(Dispatchers.IO) {
             try {
-                val document = fireStore.collection(User.COLLECTION_NAME)
+                val document = fireStore.collection(DBCollection.User.collectionName)
                     .document(userId)
                     .get()
                     .await()
