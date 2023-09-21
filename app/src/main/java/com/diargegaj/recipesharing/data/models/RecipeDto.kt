@@ -1,9 +1,10 @@
 package com.diargegaj.recipesharing.data.models
 
 data class RecipeDto(
-    val title: String,
-    val description: String,
-    val ingredients: List<String>,
-    val imageUrl: String,
-    val userId: String
+    var recipeId: String = "",
+    val title: String = "",
+    val description: String = "",
+    val ingredients: List<String> = listOf(""),
+    val imageUrl: String = "",
+    val userId: String = ""
 )
