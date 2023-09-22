@@ -2,9 +2,7 @@ package com.diargegaj.recipesharing.presentation.viewModel.home.recipes
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.diargegaj.recipesharing.data.mappers.toUiModel
 import com.diargegaj.recipesharing.domain.models.RecipeModel
-import com.diargegaj.recipesharing.domain.models.RecipeUIModel
 import com.diargegaj.recipesharing.domain.repository.RecipeRepository
 import com.diargegaj.recipesharing.domain.repository.UserRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
@@ -14,7 +12,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,8 +21,8 @@ class RecipeViewModel @Inject constructor(
     private val userRepository: UserRepository
 ) : ViewModel() {
 
-    private val _state: MutableStateFlow<List<RecipeUIModel>> = MutableStateFlow(listOf())
-    val state: StateFlow<List<RecipeUIModel>> = _state.asStateFlow()
+    private val _state: MutableStateFlow<List<RecipeModel>> = MutableStateFlow(listOf())
+    val state: StateFlow<List<RecipeModel>> = _state.asStateFlow()
 
     private val _messages = MutableSharedFlow<String>()
     val messages: SharedFlow<String> get() = _messages
@@ -41,7 +38,13 @@ class RecipeViewModel @Inject constructor(
                 when (result) {
                     is Resource.Success -> {
                         result.data.forEach {
-                            fetchUserInfo(it)
+                            if (it.userModel != null) {
+                                val currentRecipes = _state.value.toMutableSet()
+                                currentRecipes.add(it)
+                                _state.value = currentRecipes.toList()
+                            } else {
+                                fetchUserInfo(it)
+                            }
                         }
                     }
 
@@ -57,31 +60,12 @@ class RecipeViewModel @Inject constructor(
     }
 
     private suspend fun fetchUserInfo(recipeModel: RecipeModel) {
-        when (val result = userRepository.getUserInfoFromCache(recipeModel.userId).first()) {
-            is Resource.Success -> {
-                val recipeUIModel = recipeModel.toUiModel(userInfo = result.data)
-                val currentRecipes = _state.value.toMutableSet()
-                currentRecipes.add(recipeUIModel)
-                _state.value = currentRecipes.toList()
-            }
-
-            else -> {
-                fetchUserInfoFromFirestore(recipeModel)
-            }
-        }
-    }
-
-    private suspend fun fetchUserInfoFromFirestore(recipeModel: RecipeModel) {
         when (val result = userRepository.getUserInfoFromFirestore(recipeModel.userId)) {
             is Resource.Success -> {
                 userRepository.saveUserInfoOnCache(result.data)
-                val recipeUIModel = recipeModel.toUiModel(userInfo = result.data)
-                _state.value = _state.value + recipeUIModel
             }
 
-            else -> {
-
-            }
+            else -> Unit
         }
     }
 
@@ -100,9 +84,7 @@ class RecipeViewModel @Inject constructor(
                     )
                 }
 
-                else -> {
-
-                }
+                else -> Unit
             }
         }
     }

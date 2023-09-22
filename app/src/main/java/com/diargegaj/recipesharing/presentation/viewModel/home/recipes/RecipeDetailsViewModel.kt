@@ -3,7 +3,8 @@ package com.diargegaj.recipesharing.presentation.viewModel.home.recipes
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.diargegaj.recipesharing.domain.models.RecipeForViewModel
+import com.diargegaj.recipesharing.domain.models.RecipeModel
+import com.diargegaj.recipesharing.domain.models.emptyRecipeModel
 import com.diargegaj.recipesharing.domain.repository.RecipeRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,8 +20,8 @@ class RecipeDetailsViewModel @Inject constructor(
     private val recipeRepository: RecipeRepository
 ) : ViewModel() {
 
-    private val _state: MutableStateFlow<RecipeForViewModel> = MutableStateFlow(RecipeForViewModel())
-    val state: StateFlow<RecipeForViewModel> = _state.asStateFlow()
+    private val _state: MutableStateFlow<RecipeModel> = MutableStateFlow(emptyRecipeModel())
+    val state: StateFlow<RecipeModel> = _state.asStateFlow()
 
     init {
         val recipeId: String =

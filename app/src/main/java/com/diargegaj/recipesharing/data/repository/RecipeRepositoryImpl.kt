@@ -4,11 +4,9 @@ import DBCollection
 import android.content.res.Resources.NotFoundException
 import com.diargegaj.recipesharing.data.db.dao.RecipeDao
 import com.diargegaj.recipesharing.data.mappers.mapToDto
-import com.diargegaj.recipesharing.data.mappers.mapToRecipeForViewModel
 import com.diargegaj.recipesharing.data.mappers.mapToRecipeModel
 import com.diargegaj.recipesharing.data.mappers.toRecipeEntities
 import com.diargegaj.recipesharing.data.models.RecipeDto
-import com.diargegaj.recipesharing.domain.models.RecipeForViewModel
 import com.diargegaj.recipesharing.domain.models.RecipeModel
 import com.diargegaj.recipesharing.domain.repository.RecipeRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
@@ -80,13 +78,13 @@ class RecipeRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun getRecipeDetailsWithId(recipeId: String): Flow<Resource<RecipeForViewModel>> {
+    override fun getRecipeDetailsWithId(recipeId: String): Flow<Resource<RecipeModel>> {
         return recipeDao.getRecipeWithDetails(recipeId)
             .map { recipe ->
                 if (recipe == null) {
                     Resource.Error(NotFoundException("No recipes found"))
                 } else {
-                    Resource.Success(recipe.mapToRecipeForViewModel())
+                    Resource.Success(recipe.mapToRecipeModel())
                 }
             }
             .catch { e ->
