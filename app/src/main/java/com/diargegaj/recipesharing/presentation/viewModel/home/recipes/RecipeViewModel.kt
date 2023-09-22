@@ -28,13 +28,18 @@ class RecipeViewModel @Inject constructor(
     val messages: SharedFlow<String> get() = _messages
 
     init {
-        getRecipesFromCache()
+        loadRecipesFromCache()
         updateRecipesFromFirestore()
     }
 
-    private fun getRecipesFromCache() {
+    fun onQuerySearchQueryChange(query: String) {
+        loadRecipesFromCache(query)
+    }
+
+    private fun loadRecipesFromCache(query: String = "%%") {
         viewModelScope.launch {
-            recipeRepository.observeAllRecipes().collect { result ->
+            _state.value = emptyList()
+            recipeRepository.observeAllRecipes(query).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         result.data.forEach {
@@ -49,11 +54,10 @@ class RecipeViewModel @Inject constructor(
                     }
 
                     is Resource.Error -> {
-                    }
-
-                    else -> {
 
                     }
+
+                    else -> Unit
                 }
             }
         }

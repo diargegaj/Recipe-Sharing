@@ -13,28 +13,34 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import com.diargegaj.recipesharing.R
 import java.io.InputStream
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopAppBar(
     scrollBehavior: TopAppBarScrollBehavior,
-    titleText: String,
+    title: @Composable () -> Unit,
     navigationIcon: ImageVector,
-    navigationIconCLick: () -> Unit
+    navigationIconCLick: () -> Unit,
+    actions: @Composable () -> Unit = {}
 ) {
     CenterAlignedTopAppBar(
         title = {
-            Text(text = titleText)
+            title()
         },
         navigationIcon = {
             IconButton(onClick = { navigationIconCLick() }) {
@@ -43,6 +49,9 @@ fun TopAppBar(
                     contentDescription = "Navigation icon"
                 )
             }
+        },
+        actions = {
+            actions()
         },
         scrollBehavior = scrollBehavior
     )
@@ -81,4 +90,28 @@ fun ImagePicker(
             Image(bitmap = it, contentDescription = "Image")
         } ?: editView()
     }
+}
+
+@Composable
+fun LoadImage(
+    imageUrl: String,
+    modifier: Modifier = Modifier,
+    shape: Shape = RectangleShape, // Default to Rectangle shape
+    contentDescription: String? = null,
+    placeholder: Int = R.drawable.ic_downloading,
+    errorImage: Int = R.drawable.ic_downloading
+) {
+    val painter = rememberAsyncImagePainter(
+        ImageRequest.Builder(LocalContext.current)
+            .data(imageUrl)
+            .placeholder(placeholder)
+            .error(errorImage)
+            .build()
+    )
+
+    Image(
+        painter = painter,
+        contentDescription = contentDescription,
+        modifier = modifier.clip(shape)
+    )
 }

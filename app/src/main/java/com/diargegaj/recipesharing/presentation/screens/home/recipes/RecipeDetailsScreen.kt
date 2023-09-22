@@ -28,18 +28,17 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
-import coil.compose.AsyncImage
 import com.diargegaj.recipesharing.R
 import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.domain.models.emptyUserModel
 import com.diargegaj.recipesharing.presentation.navigation.RecipeNavigationActions
+import com.diargegaj.recipesharing.presentation.utils.LoadImage
 import com.diargegaj.recipesharing.presentation.utils.TopAppBar
 import com.diargegaj.recipesharing.presentation.viewModel.home.recipes.RecipeDetailsViewModel
 
@@ -71,7 +70,9 @@ fun RecipeDetailsScreen(
             topBar = {
                 TopAppBar(
                     scrollBehavior = scrollBehavior,
-                    titleText = stringResource(id = R.string.recipe_details),
+                    title = {
+                        Text(text = stringResource(id = R.string.recipe_details))
+                    },
                     navigationIcon = Icons.Default.ArrowBack,
                     navigationIconCLick = {
                         recipeNavigationActions.goBack()
@@ -136,13 +137,13 @@ fun RecipeImage(
     modifier: Modifier = Modifier,
     imageUrl: String
 ) {
-    AsyncImage(
-        model = imageUrl,
-        contentDescription = "Recipe Image",
+    LoadImage(
+        imageUrl = imageUrl,
         modifier = modifier
             .height(200.dp)
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.secondary)
+            .background(MaterialTheme.colorScheme.secondary),
+        shape = CircleShape,
+        contentDescription = "Recipe Image"
     )
 }
 
@@ -154,15 +155,14 @@ fun UserInfo(user: UserModel) {
             .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.08f))
             .padding(8.dp)
     ) {
-        AsyncImage(
-            model = user.profilePhotoUrl,
+        LoadImage(
+            imageUrl = user.profilePhotoUrl,
             contentDescription = "User Image",
             modifier = Modifier
                 .clip(CircleShape)
                 .size(40.dp)
                 .background(MaterialTheme.colorScheme.primary)
-                .padding(8.dp),
-            contentScale = ContentScale.Crop
+                .padding(8.dp)
         )
 
         Column(
