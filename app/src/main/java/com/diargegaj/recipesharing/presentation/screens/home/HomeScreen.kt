@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import com.diargegaj.recipesharing.R
+import com.diargegaj.recipesharing.presentation.navigation.RecipeNavigationActions
 import com.diargegaj.recipesharing.presentation.screens.home.profile.ProfileScreen
 import com.diargegaj.recipesharing.presentation.screens.home.recipes.AddRecipeScreen
 import com.diargegaj.recipesharing.presentation.screens.home.recipes.RecipesScreen
@@ -28,7 +29,7 @@ import com.diargegaj.recipesharing.presentation.utils.TopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(recipeNavigationActions: RecipeNavigationActions) {
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -60,7 +61,7 @@ fun HomeScreen() {
                 ) {
                     when(selectedScreenCategory) {
                         SelectedScreenCategory.RECIPE_SCREEN -> {
-                            RecipesScreen()
+                            RecipesScreen(recipeNavigationActions = recipeNavigationActions)
                         }
                         SelectedScreenCategory.ADD_RECIPE -> {
                             AddRecipeScreen()

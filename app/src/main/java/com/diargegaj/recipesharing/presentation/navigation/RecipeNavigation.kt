@@ -16,6 +16,6 @@ fun Navigation(navigationActions: RecipeNavigationActions) {
             SplashScreen(recipeNavigationActions = navigationActions)
         }
         authRoute(recipeNavigationActions = navigationActions)
-        homeRoute()
+        homeRoute(recipeNavigationActions = navigationActions)
     }
 }

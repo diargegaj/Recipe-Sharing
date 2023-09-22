@@ -12,4 +12,6 @@ interface RecipeRepository {
 
     suspend fun updateRecipesFromFirestore(): Resource<Unit>
 
+    fun getRecipeDetailsWithId(recipeId: String): Flow<Resource<RecipeModel>>
+
 }

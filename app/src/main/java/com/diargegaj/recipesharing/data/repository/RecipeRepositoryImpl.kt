@@ -77,4 +77,18 @@ class RecipeRepositoryImpl @Inject constructor(
                 Resource.Error(e)
             }
         }
+
+    override fun getRecipeDetailsWithId(recipeId: String): Flow<Resource<RecipeModel>> {
+        return recipeDao.getRecipeWithDetails(recipeId)
+            .map { recipe ->
+                if (recipe == null) {
+                    Resource.Error(NotFoundException("No recipes found"))
+                } else {
+                    Resource.Success(recipe.mapToRecipeModel())
+                }
+            }
+            .catch { e ->
+                emit(Resource.Error(Exception(e.message)))
+            }
+    }
 }

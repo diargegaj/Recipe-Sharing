@@ -2,11 +2,9 @@ package com.diargegaj.recipesharing.data.mappers
 
 import com.diargegaj.recipesharing.data.db.entities.recipes.IngredientEntity
 import com.diargegaj.recipesharing.data.db.entities.recipes.RecipeEntity
-import com.diargegaj.recipesharing.data.db.entities.recipes.RecipeWithIngredients
+import com.diargegaj.recipesharing.data.db.entities.recipes.RecipeWithDetails
 import com.diargegaj.recipesharing.data.models.RecipeDto
 import com.diargegaj.recipesharing.domain.models.RecipeModel
-import com.diargegaj.recipesharing.domain.models.RecipeUIModel
-import com.diargegaj.recipesharing.domain.models.UserModel
 
 fun RecipeModel.mapToDto(): RecipeDto {
     return RecipeDto(
@@ -18,14 +16,15 @@ fun RecipeModel.mapToDto(): RecipeDto {
     )
 }
 
-fun RecipeWithIngredients.mapToRecipeModel(): RecipeModel {
+fun RecipeWithDetails.mapToRecipeModel(): RecipeModel {
     return RecipeModel(
         recipeId = this.recipe.id,
         title = this.recipe.title,
         description = this.recipe.description,
         ingredients = this.ingredients.map { it.mapToIngredient() },
         imageUrl = this.recipe.imageUrl,
-        userId = this.recipe.userId
+        userId = this.recipe.userId,
+        userModel = this.user?.mapToUserModel()
     )
 }
 
@@ -46,14 +45,4 @@ fun RecipeDto.toRecipeEntities(): Pair<RecipeEntity, List<IngredientEntity>> {
         )
     }
     return recipeEntity to ingredientEntities
-}
-
-fun RecipeModel.toUiModel(userInfo: UserModel): RecipeUIModel {
-    return RecipeUIModel(
-        recipeId = this.recipeId,
-        title = this.title,
-        description = this.description,
-        imageUrl = this.imageUrl,
-        userModel = userInfo
-    )
 }

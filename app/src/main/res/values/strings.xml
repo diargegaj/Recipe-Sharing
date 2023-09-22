@@ -7,4 +7,5 @@
     <string name="recipe_title">Recipe Title</string>
     <string name="recipe_description">Recipe Description</string>
     <string name="ingredients">Ingredients:</string>
+    <string name="recipe_details">Recipe Details</string>
 </resources>

@@ -6,7 +6,8 @@ data class RecipeModel(
     var description: String,
     var ingredients: List<String> = listOf(""),
     var imageUrl: String = "",
-    var userId: String = ""
+    var userId: String = "",
+    val userModel: UserModel? = null
 )
 
 fun emptyRecipeModel() = RecipeModel(
@@ -15,5 +16,6 @@ fun emptyRecipeModel() = RecipeModel(
     description = "",
     ingredients = listOf(""),
     imageUrl = "",
-    userId = ""
+    userId = "",
+    userModel = emptyUserModel()
 )
