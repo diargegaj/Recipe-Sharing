@@ -27,10 +27,6 @@ fun NavGraphBuilder.homeRoute(recipeNavigationActions: RecipeNavigationActions) 
         Screen.RecipeDetails.route + "/{recipeId}",
         arguments = listOf(navArgument("recipeId") { type = NavType.StringType })
     ) { backStackEntry ->
-        val recipeId = backStackEntry.arguments?.getString("recipeId")
-        if (recipeId != null) {
-            // You need to find a way to fetch the recipe using this ID
-            RecipeDetailsScreen(recipeId = recipeId)
-        }
+        RecipeDetailsScreen(backStackEntry = backStackEntry)
     }
 }

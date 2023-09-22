@@ -23,6 +23,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -31,10 +33,12 @@ import com.diargegaj.recipesharing.domain.models.RecipeModel
 import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.domain.models.emptyRecipeModel
 import com.diargegaj.recipesharing.domain.models.emptyUserModel
+import com.diargegaj.recipesharing.presentation.viewModel.home.recipes.RecipeDetailsViewModel
 
 @Composable
 fun RecipeDetailsScreen(
-    recipeId: String,
+    backStackEntry: NavBackStackEntry,
+    viewModel: RecipeDetailsViewModel = hiltViewModel(backStackEntry)
 ) {
     val recipe: RecipeModel = emptyRecipeModel()
 
