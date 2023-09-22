@@ -1,6 +1,6 @@
 package com.diargegaj.recipesharing.presentation.screens.home.recipes
 
-import androidx.compose.foundation.Image
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -22,15 +21,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
-import com.diargegaj.recipesharing.R
 import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.domain.models.emptyUserModel
 import com.diargegaj.recipesharing.presentation.viewModel.home.recipes.RecipeDetailsViewModel
@@ -42,6 +39,12 @@ fun RecipeDetailsScreen(
 ) {
     val recipe by viewModel.state.collectAsState()
 
+    val messages by viewModel.messages.collectAsState(initial = "")
+
+    if (messages.isNotEmpty()) {
+        Toast.makeText(LocalContext.current, messages, Toast.LENGTH_SHORT).show()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -50,7 +53,8 @@ fun RecipeDetailsScreen(
         RecipeImage(
             modifier = Modifier
                 .width(250.dp)
-                .align(CenterHorizontally)
+                .align(CenterHorizontally),
+            imageUrl = recipe.imageUrl
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -61,7 +65,7 @@ fun RecipeDetailsScreen(
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        UserInfo(recipe.userModel?: emptyUserModel())
+        UserInfo(recipe.userModel ?: emptyUserModel())
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
@@ -78,9 +82,9 @@ fun RecipeDetailsScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         LazyColumn {
-            items(recipe.ingredients) { ingredient ->
+            items(recipe.ingredients.size) { index ->
                 Text(
-                    text = ingredient,
+                    text = "${index + 1}. ${recipe.ingredients[index]}",
                     style = MaterialTheme.typography.labelMedium,
                     modifier = Modifier.padding(vertical = 4.dp)
                 )
@@ -91,10 +95,11 @@ fun RecipeDetailsScreen(
 
 @Composable
 fun RecipeImage(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    imageUrl: String
 ) {
     AsyncImage(
-        model = "",
+        model = imageUrl,
         contentDescription = "Recipe Image",
         modifier = modifier
             .height(200.dp)
@@ -111,33 +116,22 @@ fun UserInfo(user: UserModel) {
             .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.08f))
             .padding(8.dp)
     ) {
-
-        val imageLoader = // You can add placeholders, errors, etc. here if needed
-            rememberAsyncImagePainter(
-                ImageRequest.Builder(LocalContext.current)
-                    .data(data = user?.profilePhotoUrl)
-                    .apply(
-                        block = fun ImageRequest.Builder.() {
-                            placeholder(R.drawable.ic_launcher_background)  // Placeholder while the image is being fetched
-                            error(R.drawable.ic_launcher_background)        // Image to show in case of an error
-                        }
-                    ).build()
-            )
-        Image(
-            painter = imageLoader,  // Placeholder image
+        AsyncImage(
+            model = user.profilePhotoUrl,
             contentDescription = "User Image",
             modifier = Modifier
-                .size(40.dp)
                 .clip(CircleShape)
+                .size(40.dp)
                 .background(MaterialTheme.colorScheme.primary)
-                .padding(8.dp)
+                .padding(8.dp),
+            contentScale = ContentScale.Crop
         )
 
         Column(
             Modifier.padding(start = 10.dp)
         ) {
-            Text(text = "${user?.name} ${user?.lastName}", fontWeight = FontWeight.Bold)
-            Text(text = user?.email.toString(), style = MaterialTheme.typography.labelMedium)
+            Text(text = "${user.name} ${user.lastName}", fontWeight = FontWeight.Bold)
+            Text(text = user.email.toString(), style = MaterialTheme.typography.labelMedium)
         }
     }
 }
