@@ -28,7 +28,7 @@ import coil.compose.AsyncImage
 import com.diargegaj.recipesharing.domain.models.RecipeUIModel
 import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.presentation.navigation.RecipeNavigationActions
-import com.diargegaj.recipesharing.presentation.viewModel.RecipeViewModel
+import com.diargegaj.recipesharing.presentation.viewModel.home.recipes.RecipeViewModel
 
 @Composable
 fun RecipesScreen(

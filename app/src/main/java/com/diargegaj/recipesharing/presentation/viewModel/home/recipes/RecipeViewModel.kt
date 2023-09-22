@@ -1,4 +1,4 @@
-package com.diargegaj.recipesharing.presentation.viewModel
+package com.diargegaj.recipesharing.presentation.viewModel.home.recipes
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
