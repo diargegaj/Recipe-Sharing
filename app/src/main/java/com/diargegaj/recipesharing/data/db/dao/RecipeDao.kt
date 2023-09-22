@@ -7,7 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.diargegaj.recipesharing.data.db.entities.recipes.IngredientEntity
 import com.diargegaj.recipesharing.data.db.entities.recipes.RecipeEntity
-import com.diargegaj.recipesharing.data.db.entities.recipes.RecipeWithIngredients
+import com.diargegaj.recipesharing.data.db.entities.recipes.RecipeWithDetails
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -24,7 +24,7 @@ interface RecipeDao {
     fun getRecipeWithIngredients(recipeId: String): Flow<RecipeWithIngredients>
 
     @Query("SELECT * FROM recipes")
-    fun getAllRecipes(): Flow<List<RecipeWithIngredients>>
+    fun getAllRecipes(): Flow<List<RecipeWithDetails>>
 
     @Transaction
     suspend fun insertRecipeWithIngredients(

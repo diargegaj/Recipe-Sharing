@@ -17,6 +17,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,9 +31,7 @@ import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.diargegaj.recipesharing.R
-import com.diargegaj.recipesharing.domain.models.RecipeModel
 import com.diargegaj.recipesharing.domain.models.UserModel
-import com.diargegaj.recipesharing.domain.models.emptyRecipeModel
 import com.diargegaj.recipesharing.domain.models.emptyUserModel
 import com.diargegaj.recipesharing.presentation.viewModel.home.recipes.RecipeDetailsViewModel
 
@@ -40,7 +40,7 @@ fun RecipeDetailsScreen(
     backStackEntry: NavBackStackEntry,
     viewModel: RecipeDetailsViewModel = hiltViewModel(backStackEntry)
 ) {
-    val recipe: RecipeModel = emptyRecipeModel()
+    val recipe by viewModel.state.collectAsState()
 
     Column(
         modifier = Modifier
@@ -61,7 +61,7 @@ fun RecipeDetailsScreen(
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        UserInfo(emptyUserModel())
+        UserInfo(recipe.userModel?: emptyUserModel())
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
