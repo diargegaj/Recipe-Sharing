@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -56,7 +57,7 @@ class RecipeViewModel @Inject constructor(
     }
 
     private suspend fun fetchUserInfo(recipeModel: RecipeModel) {
-        when (val result = userRepository.getUserInfoFromCache(recipeModel.userId)) {
+        when (val result = userRepository.getUserInfoFromCache(recipeModel.userId).first()) {
             is Resource.Success -> {
                 val recipeUIModel = recipeModel.toUiModel(userInfo = result.data)
                 _state.value = _state.value + recipeUIModel
@@ -69,7 +70,7 @@ class RecipeViewModel @Inject constructor(
     }
 
     private suspend fun fetchUserInfoFromFirestore(recipeModel: RecipeModel) {
-        when (val result = userRepository.getUserInfo(recipeModel.userId)) {
+        when (val result = userRepository.getUserInfoFromFirestore(recipeModel.userId)) {
             is Resource.Success -> {
                 userRepository.saveUserInfoOnCache(result.data)
                 val recipeUIModel = recipeModel.toUiModel(userInfo = result.data)
