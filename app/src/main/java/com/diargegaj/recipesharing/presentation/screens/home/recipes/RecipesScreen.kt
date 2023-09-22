@@ -1,5 +1,6 @@
 package com.diargegaj.recipesharing.presentation.screens.home.recipes
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -33,6 +35,11 @@ fun RecipesScreen(
 ) {
 
     val recipes by recipeViewModel.state.collectAsState()
+    val errorMessages by recipeViewModel.messages.collectAsState(initial = "")
+
+    if (errorMessages.isNotEmpty()) {
+        Toast.makeText(LocalContext.current, errorMessages, Toast.LENGTH_SHORT).show()
+    }
 
     LazyColumn(
         modifier = Modifier

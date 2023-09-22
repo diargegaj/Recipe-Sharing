@@ -9,7 +9,9 @@ import com.diargegaj.recipesharing.domain.repository.RecipeRepository
 import com.diargegaj.recipesharing.domain.repository.UserRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -23,6 +25,9 @@ class RecipeViewModel @Inject constructor(
 
     private val _state: MutableStateFlow<List<RecipeUIModel>> = MutableStateFlow(listOf())
     val state: StateFlow<List<RecipeUIModel>> = _state.asStateFlow()
+
+    private val _messages = MutableSharedFlow<String>()
+    val messages: SharedFlow<String> get() = _messages
 
     init {
         getRecipesFromCache()
@@ -69,11 +74,6 @@ class RecipeViewModel @Inject constructor(
                 userRepository.saveUserInfoOnCache(result.data)
                 val recipeUIModel = recipeModel.toUiModel(userInfo = result.data)
                 _state.value = _state.value + recipeUIModel
-
-            }
-
-            is Resource.Error -> {
-
             }
 
             else -> {
@@ -86,21 +86,22 @@ class RecipeViewModel @Inject constructor(
         viewModelScope.launch {
             when (recipeRepository.updateRecipesFromFirestore()) {
                 is Resource.Success -> {
-
+                    _messages.emit(
+                        "Recipes updated successfully from server"
+                    )
                 }
 
                 is Resource.Error -> {
-
+                    _messages.emit(
+                        "Failed to get latest recipes"
+                    )
                 }
 
                 else -> {
 
                 }
             }
-
         }
     }
-
-
 }
 
