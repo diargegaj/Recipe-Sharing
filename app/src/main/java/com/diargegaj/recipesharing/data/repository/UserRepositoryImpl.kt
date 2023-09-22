@@ -17,7 +17,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
@@ -98,19 +98,21 @@ class UserRepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun getUserInfoFromCache(userId: String): Resource<UserModel> =
-        withContext(Dispatchers.IO) {
-            try {
-                val userEntity = userDao.getUser(userId).first()
+    override fun getUserInfoFromCache(userId: String): Flow<Resource<UserModel>> {
+        return userDao.getUser(userId)
+            .map { userEntity ->
+
                 if (userEntity != null) {
                     Resource.Success(userEntity.mapToUserModel())
                 } else {
-                    Resource.Error(NotFoundException("User not found in cache"))
+                    Resource.Error(NotFoundException("User not found"))
                 }
-            } catch (e: Exception) {
-                Resource.Error(e)
+
             }
-        }
+            .catch {
+                emit(Resource.Error(Exception(it.message)))
+            }
+    }
 
     override suspend fun saveUserInfoOnCache(userModel: UserModel): Resource<Any> =
         withContext(Dispatchers.IO) {
@@ -129,6 +131,20 @@ class UserRepositoryImpl @Inject constructor(
             Resource.Success(userId)
         } else {
             Resource.Error(NotFoundException("User Not Found"))
+        }
+    }
+
+    override suspend fun updateUserProfilePhotoUrl(
+        userId: String,
+        imageUrl: String
+    ): Resource<Unit> {
+        return try {
+            val userDocument =
+                fireStore.collection(DBCollection.User.collectionName).document(userId)
+            userDocument.update("profilePhotoUrl", imageUrl).await()
+            Resource.Success(Unit)
+        } catch (e: Exception) {
+            Resource.Error(e)
         }
     }
 

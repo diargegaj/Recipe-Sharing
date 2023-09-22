@@ -17,10 +17,12 @@ interface UserRepository {
 
     suspend fun getUserInfoFromFirestore(userId: String): Resource<UserModel>
 
-    suspend fun getUserInfoFromCache(userId: String): Resource<UserModel>
+    fun getUserInfoFromCache(userId: String): Flow<Resource<UserModel>>
 
     suspend fun saveUserInfoOnCache(userModel: UserModel): Resource<Any>
 
     fun getUserId(): Resource<String>
+
+    suspend fun updateUserProfilePhotoUrl(userId: String, imageUrl: String): Resource<Unit>
 
 }
