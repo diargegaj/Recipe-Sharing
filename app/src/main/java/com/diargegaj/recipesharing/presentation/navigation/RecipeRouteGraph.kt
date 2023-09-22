@@ -27,6 +27,9 @@ fun NavGraphBuilder.homeRoute(recipeNavigationActions: RecipeNavigationActions) 
         Screen.RecipeDetails.route + "/{recipeId}",
         arguments = listOf(navArgument("recipeId") { type = NavType.StringType })
     ) { backStackEntry ->
-        RecipeDetailsScreen(backStackEntry = backStackEntry)
+        RecipeDetailsScreen(
+            backStackEntry = backStackEntry,
+            recipeNavigationActions = recipeNavigationActions
+        )
     }
 }

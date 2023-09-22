@@ -33,4 +33,8 @@ class RecipeNavigationActions(val navController: NavHostController) {
         navController.navigate(Screen.RecipeDetails.route + "/$recipeId")
     }
 
+    fun goBack() {
+        navController.popBackStack()
+    }
+
 }

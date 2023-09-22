@@ -13,28 +13,41 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import coil.compose.AsyncImage
+import com.diargegaj.recipesharing.R
 import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.domain.models.emptyUserModel
+import com.diargegaj.recipesharing.presentation.navigation.RecipeNavigationActions
+import com.diargegaj.recipesharing.presentation.utils.TopAppBar
 import com.diargegaj.recipesharing.presentation.viewModel.home.recipes.RecipeDetailsViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipeDetailsScreen(
     backStackEntry: NavBackStackEntry,
+    recipeNavigationActions: RecipeNavigationActions,
     viewModel: RecipeDetailsViewModel = hiltViewModel(backStackEntry)
 ) {
     val recipe by viewModel.state.collectAsState()
@@ -45,51 +58,76 @@ fun RecipeDetailsScreen(
         Toast.makeText(LocalContext.current, messages, Toast.LENGTH_SHORT).show()
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp)
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
     ) {
-        RecipeImage(
+        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
+        Scaffold(
             modifier = Modifier
-                .width(250.dp)
-                .align(CenterHorizontally),
-            imageUrl = recipe.imageUrl
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = recipe.title,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        UserInfo(recipe.userModel ?: emptyUserModel())
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = recipe.description,
-            style = MaterialTheme.typography.labelSmall
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "Ingredients",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        LazyColumn {
-            items(recipe.ingredients.size) { index ->
-                Text(
-                    text = "${index + 1}. ${recipe.ingredients[index]}",
-                    style = MaterialTheme.typography.labelMedium,
-                    modifier = Modifier.padding(vertical = 4.dp)
+                .fillMaxSize()
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
+            topBar = {
+                TopAppBar(
+                    scrollBehavior = scrollBehavior,
+                    titleText = stringResource(id = R.string.recipe_details),
+                    navigationIcon = Icons.Default.ArrowBack,
+                    navigationIconCLick = {
+                        recipeNavigationActions.goBack()
+                    }
                 )
+            },
+            content = { paddingValues ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .padding(horizontal = 16.dp)
+                ) {
+                    RecipeImage(
+                        modifier = Modifier
+                            .width(250.dp)
+                            .align(CenterHorizontally),
+                        imageUrl = recipe.imageUrl
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        text = recipe.title,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    UserInfo(recipe.userModel ?: emptyUserModel())
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        text = recipe.description,
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        text = "Ingredients",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    LazyColumn {
+                        items(recipe.ingredients.size) { index ->
+                            Text(
+                                text = "${index + 1}. ${recipe.ingredients[index]}",
+                                style = MaterialTheme.typography.labelMedium,
+                                modifier = Modifier.padding(vertical = 4.dp)
+                            )
+                        }
+                    }
+                }
             }
-        }
+        )
     }
 }
 
