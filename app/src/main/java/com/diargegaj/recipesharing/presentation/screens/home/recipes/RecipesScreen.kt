@@ -23,9 +23,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.diargegaj.recipesharing.domain.models.RecipeModel
+import com.diargegaj.recipesharing.domain.models.RecipeUIModel
 import com.diargegaj.recipesharing.domain.models.UserModel
-import com.diargegaj.recipesharing.domain.models.emptyRecipeModel
 import com.diargegaj.recipesharing.presentation.viewModel.RecipeViewModel
 
 @Composable
@@ -54,12 +53,12 @@ fun RecipesScreen(
 
 @Composable
 fun RecipePost(
-    recipeModel: RecipeModel = emptyRecipeModel(),
-    navigateToRecipe: (RecipeModel) -> Unit,
+    recipeModel: RecipeUIModel,
+    navigateToRecipe: (recipeId: String) -> Unit,
 ) {
     Row(
         modifier = Modifier
-            .clickable(onClick = { navigateToRecipe(recipeModel) })
+            .clickable(onClick = { navigateToRecipe(recipeModel.recipeId) })
     ) {
         PostImage(
             imageUrl = recipeModel.imageUrl,
@@ -71,7 +70,7 @@ fun RecipePost(
                 .padding(vertical = 10.dp)
         ) {
             PostTitle(recipeModel)
-            Author()
+            Author(recipeModel.userModel)
         }
         RightButton(
             modifier = Modifier
@@ -95,12 +94,12 @@ fun PostImage(imageUrl: String, modifier: Modifier = Modifier) {
 
 @Composable
 fun Author(
-    modifier: Modifier = Modifier,
-    author: UserModel? = null
+    author: UserModel,
+    modifier: Modifier = Modifier
 ) {
     Row(modifier) {
         Text(
-            text = "${author?.name} ${author?.lastName}",
+            text = "${author.name} ${author.lastName}",
             style = MaterialTheme.typography.bodyMedium
         )
     }
@@ -108,7 +107,7 @@ fun Author(
 
 
 @Composable
-fun PostTitle(recipeModel: RecipeModel = emptyRecipeModel()) {
+fun PostTitle(recipeModel: RecipeUIModel) {
     Text(
         text = recipeModel.title,
         style = MaterialTheme.typography.titleMedium,

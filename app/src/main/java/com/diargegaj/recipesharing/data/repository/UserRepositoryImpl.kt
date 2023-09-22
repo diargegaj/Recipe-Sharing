@@ -6,6 +6,7 @@ import com.diargegaj.recipesharing.data.db.dao.UserDao
 import com.diargegaj.recipesharing.data.mappers.mapToDomain
 import com.diargegaj.recipesharing.data.mappers.mapToDto
 import com.diargegaj.recipesharing.data.mappers.mapToEntity
+import com.diargegaj.recipesharing.data.mappers.mapToUserModel
 import com.diargegaj.recipesharing.data.models.UserDto
 import com.diargegaj.recipesharing.data.utils.Constants.INSERTION_FAILED
 import com.diargegaj.recipesharing.domain.models.UserModel
@@ -16,6 +17,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
@@ -90,6 +92,20 @@ class UserRepositoryImpl @Inject constructor(
                     Resource.Success(userDto.mapToDomain())
                 } else {
                     Resource.Error(NotFoundException("User not found!"))
+                }
+            } catch (e: Exception) {
+                Resource.Error(e)
+            }
+        }
+
+    override suspend fun getUserInfoFromCache(userId: String): Resource<UserModel> =
+        withContext(Dispatchers.IO) {
+            try {
+                val userEntity = userDao.getUser(userId).first()
+                if (userEntity != null) {
+                    Resource.Success(userEntity.mapToUserModel())
+                } else {
+                    Resource.Error(NotFoundException("User not found in cache"))
                 }
             } catch (e: Exception) {
                 Resource.Error(e)

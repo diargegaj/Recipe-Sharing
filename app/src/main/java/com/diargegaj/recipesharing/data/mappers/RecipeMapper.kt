@@ -5,6 +5,8 @@ import com.diargegaj.recipesharing.data.db.entities.recipes.RecipeEntity
 import com.diargegaj.recipesharing.data.db.entities.recipes.RecipeWithIngredients
 import com.diargegaj.recipesharing.data.models.RecipeDto
 import com.diargegaj.recipesharing.domain.models.RecipeModel
+import com.diargegaj.recipesharing.domain.models.RecipeUIModel
+import com.diargegaj.recipesharing.domain.models.UserModel
 
 fun RecipeModel.mapToDto(): RecipeDto {
     return RecipeDto(
@@ -44,4 +46,14 @@ fun RecipeDto.toRecipeEntities(): Pair<RecipeEntity, List<IngredientEntity>> {
         )
     }
     return recipeEntity to ingredientEntities
+}
+
+fun RecipeModel.toUiModel(userInfo: UserModel): RecipeUIModel {
+    return RecipeUIModel(
+        recipeId = this.recipeId,
+        title = this.title,
+        description = this.description,
+        imageUrl = this.imageUrl,
+        userModel = userInfo
+    )
 }
