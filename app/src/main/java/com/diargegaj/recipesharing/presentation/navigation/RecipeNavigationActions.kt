@@ -29,4 +29,8 @@ class RecipeNavigationActions(val navController: NavHostController) {
         }
     }
 
+    fun navigateToRecipeDetails(recipeId: String) {
+        navController.navigate(Screen.RecipeDetails.route + "/$recipeId")
+    }
+
 }

@@ -27,10 +27,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.diargegaj.recipesharing.domain.models.RecipeUIModel
 import com.diargegaj.recipesharing.domain.models.UserModel
+import com.diargegaj.recipesharing.presentation.navigation.RecipeNavigationActions
 import com.diargegaj.recipesharing.presentation.viewModel.RecipeViewModel
 
 @Composable
 fun RecipesScreen(
+    recipeNavigationActions: RecipeNavigationActions,
     recipeViewModel: RecipeViewModel = hiltViewModel()
 ) {
 
@@ -49,8 +51,8 @@ fun RecipesScreen(
         items(recipes.size) {
             RecipePost(
                 recipeModel = recipes[it],
-                navigateToRecipe = {
-
+                navigateToRecipe = {recipeId ->
+                    recipeNavigationActions.navigateToRecipeDetails(recipeId)
                 }
             )
         }
