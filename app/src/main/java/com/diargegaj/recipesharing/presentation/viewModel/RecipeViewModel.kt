@@ -60,7 +60,9 @@ class RecipeViewModel @Inject constructor(
         when (val result = userRepository.getUserInfoFromCache(recipeModel.userId).first()) {
             is Resource.Success -> {
                 val recipeUIModel = recipeModel.toUiModel(userInfo = result.data)
-                _state.value = _state.value + recipeUIModel
+                val currentRecipes = _state.value.toMutableSet()
+                currentRecipes.add(recipeUIModel)
+                _state.value = currentRecipes.toList()
             }
 
             else -> {
