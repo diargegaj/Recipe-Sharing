@@ -69,7 +69,7 @@ class RecipeViewModel @Inject constructor(
     }
 
     private suspend fun fetchUserInfoFromFirestore(recipeModel: RecipeModel) {
-        when (val result = userRepository.getUserInfo(recipeModel.userId)) {
+        when (val result = userRepository.getUserInfoFromFirestore(recipeModel.userId)) {
             is Resource.Success -> {
                 userRepository.saveUserInfoOnCache(result.data)
                 val recipeUIModel = recipeModel.toUiModel(userInfo = result.data)

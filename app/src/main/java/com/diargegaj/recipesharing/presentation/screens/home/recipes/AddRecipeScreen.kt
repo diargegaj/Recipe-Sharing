@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.diargegaj.recipesharing.R
 import com.diargegaj.recipesharing.presentation.utils.ImagePicker
-import com.diargegaj.recipesharing.presentation.viewModel.recipes.AddRecipeViewModel
+import com.diargegaj.recipesharing.presentation.viewModel.home.recipes.AddRecipeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

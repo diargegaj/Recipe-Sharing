@@ -77,7 +77,7 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getUserInfo(userId: String): Resource<UserModel> =
+    override suspend fun getUserInfoFromFirestore(userId: String): Resource<UserModel> =
         withContext(Dispatchers.IO) {
             try {
                 val document = fireStore.collection(DBCollection.User.collectionName)

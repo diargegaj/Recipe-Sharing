@@ -1,4 +1,4 @@
-package com.diargegaj.recipesharing.presentation.viewModel.recipes
+package com.diargegaj.recipesharing.presentation.viewModel.home.recipes
 
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel

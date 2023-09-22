@@ -97,7 +97,7 @@ class AuthViewModel @Inject constructor(
     }
 
     private suspend fun updateUserInfo(userId: String) {
-        when (val result = userRepository.getUserInfo(userId)) {
+        when (val result = userRepository.getUserInfoFromFirestore(userId)) {
             is Resource.Success -> {
                 saveUserDataOnCache(result.data)
             }

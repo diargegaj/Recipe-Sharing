@@ -15,7 +15,7 @@ interface UserRepository {
 
     fun isUserLoggedIn(): Flow<Boolean>
 
-    suspend fun getUserInfo(userId: String): Resource<UserModel>
+    suspend fun getUserInfoFromFirestore(userId: String): Resource<UserModel>
 
     suspend fun getUserInfoFromCache(userId: String): Resource<UserModel>
 

@@ -7,3 +7,13 @@ data class UserModel(
     val email: String,
     val profilePhotoUrl: String = ""
 )
+
+fun emptyUserModel(): UserModel {
+    return UserModel(
+        userUUID = "",
+        name = "",
+        lastName = "",
+        email = "",
+        profilePhotoUrl = ""
+    )
+}
