@@ -34,7 +34,7 @@ This app is built using the MVVM architecture and incorporates the following lib
 1. **Clone the Repository**
 
 ```bash
-git clone https://github.com/YourGitHubUsername/RecipeSharingApp.git
+git clone https://github.com/diargegaj/RecipeSharingApp.git
 ```
 
 2. **Open in Android Studio**: 
