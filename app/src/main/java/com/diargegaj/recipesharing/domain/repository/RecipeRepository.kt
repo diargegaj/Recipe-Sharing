@@ -8,7 +8,7 @@ interface RecipeRepository {
 
     suspend fun storeRecipe(recipeModel: RecipeModel): Resource<Unit>
 
-    fun observeAllRecipes(query: String): Flow<Resource<List<RecipeModel>>>
+    fun observeAllRecipes(query: String, userId: String): Flow<Resource<List<RecipeModel>>>
 
     suspend fun updateRecipesFromFirestore(): Resource<Unit>
 
