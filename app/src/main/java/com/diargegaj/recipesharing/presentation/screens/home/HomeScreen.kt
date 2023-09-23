@@ -119,7 +119,7 @@ fun HomeScreen(
 
                         SelectedScreenCategory.PROFILE -> {
                             homeViewModel.updateSearchIconVisibility(value = false)
-                            ProfileScreen()
+                            ProfileScreen(recipeNavigationActions = recipeNavigationActions)
                         }
                     }
                 }
