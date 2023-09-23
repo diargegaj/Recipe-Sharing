@@ -38,8 +38,8 @@ import com.diargegaj.recipesharing.R
 import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.domain.models.emptyUserModel
 import com.diargegaj.recipesharing.presentation.navigation.RecipeNavigationActions
+import com.diargegaj.recipesharing.presentation.utils.DefaultAppBar
 import com.diargegaj.recipesharing.presentation.utils.LoadImage
-import com.diargegaj.recipesharing.presentation.utils.TopAppBar
 import com.diargegaj.recipesharing.presentation.viewModel.home.recipes.RecipeDetailsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,15 +68,11 @@ fun RecipeDetailsScreen(
                 .fillMaxSize()
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
-                TopAppBar(
-                    scrollBehavior = scrollBehavior,
-                    title = {
-                        Text(text = stringResource(id = R.string.recipe_details))
-                    },
+                DefaultAppBar(
+                    title = stringResource(id = R.string.recipe_details),
                     navigationIcon = Icons.Default.ArrowBack,
-                    navigationIconCLick = {
-                        recipeNavigationActions.goBack()
-                    }
+                    onNavigationClick = { recipeNavigationActions.goBack() },
+                    scrollBehavior = scrollBehavior
                 )
             },
             content = { paddingValues ->
@@ -164,14 +160,13 @@ fun UserInfo(user: UserModel) {
                 .background(MaterialTheme.colorScheme.primary, CircleShape)
                 .size(40.dp)
                 .clip(CircleShape)
-//                .padding(8.dp)
         )
 
         Column(
             Modifier.padding(start = 10.dp)
         ) {
             Text(text = "${user.name} ${user.lastName}", fontWeight = FontWeight.Bold)
-            Text(text = user.email.toString(), style = MaterialTheme.typography.labelMedium)
+            Text(text = user.email, style = MaterialTheme.typography.labelMedium)
         }
     }
 }

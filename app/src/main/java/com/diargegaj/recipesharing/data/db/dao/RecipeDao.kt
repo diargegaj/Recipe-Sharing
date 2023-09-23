@@ -23,8 +23,8 @@ interface RecipeDao {
     @Query("SELECT * FROM recipes WHERE id = :recipeId")
     fun getRecipeWithDetails(recipeId: String): Flow<RecipeWithDetails?>
 
-    @Query("SELECT * FROM recipes WHERE title LIKE :query OR description LIKE :query")
-    fun getAllRecipes(query: String = "%%"): Flow<List<RecipeWithDetails>>
+    @Query("SELECT * FROM recipes WHERE (title LIKE :query OR description LIKE :query) AND userId LIKE :userId")
+    fun getAllRecipes(query: String = "%%", userId: String = "%%"): Flow<List<RecipeWithDetails>>
 
     @Transaction
     suspend fun insertRecipeWithIngredients(

@@ -36,18 +36,18 @@ class RecipeViewModel @Inject constructor(
         updateRecipesFromFirestore()
     }
 
-    fun onQuerySearchQueryChange(query: String) {
+    fun onQuerySearchQueryChange(query: String, userId: String) {
         searchRecipesJob?.cancel()
         searchRecipesJob = viewModelScope.launch {
             delay(300)
-            loadRecipesFromCache(query)
+            loadRecipesFromCache(query, userId)
         }
     }
 
-    private fun loadRecipesFromCache(query: String = "%%") {
+    private fun loadRecipesFromCache(query: String = "%%", userId: String = "%%") {
         viewModelScope.launch {
             _state.value = emptyList()
-            recipeRepository.observeAllRecipes(query).collect { result ->
+            recipeRepository.observeAllRecipes(query, userId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         result.data.forEach {
