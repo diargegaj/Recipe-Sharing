@@ -7,6 +7,8 @@ import com.diargegaj.recipesharing.domain.repository.RecipeRepository
 import com.diargegaj.recipesharing.domain.repository.UserRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -27,14 +29,25 @@ class RecipeViewModel @Inject constructor(
     private val _messages = MutableSharedFlow<String>()
     val messages: SharedFlow<String> get() = _messages
 
+    private var searchRecipesJob: Job? = null
+
     init {
-        getRecipesFromCache()
+        loadRecipesFromCache()
         updateRecipesFromFirestore()
     }
 
-    private fun getRecipesFromCache() {
+    fun onQuerySearchQueryChange(query: String) {
+        searchRecipesJob?.cancel()
+        searchRecipesJob = viewModelScope.launch {
+            delay(300)
+            loadRecipesFromCache(query)
+        }
+    }
+
+    private fun loadRecipesFromCache(query: String = "%%") {
         viewModelScope.launch {
-            recipeRepository.observeAllRecipes().collect { result ->
+            _state.value = emptyList()
+            recipeRepository.observeAllRecipes(query).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         result.data.forEach {
@@ -49,11 +62,10 @@ class RecipeViewModel @Inject constructor(
                     }
 
                     is Resource.Error -> {
-                    }
-
-                    else -> {
 
                     }
+
+                    else -> Unit
                 }
             }
         }

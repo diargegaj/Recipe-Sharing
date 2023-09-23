@@ -14,6 +14,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -24,19 +25,27 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
 import com.diargegaj.recipesharing.domain.models.RecipeModel
 import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.presentation.navigation.RecipeNavigationActions
+import com.diargegaj.recipesharing.presentation.utils.LoadImage
 import com.diargegaj.recipesharing.presentation.viewModel.home.recipes.RecipeViewModel
+import com.diargegaj.recipesharing.presentation.viewModel.search.SearchViewModel
 
 @Composable
 fun RecipesScreen(
     recipeNavigationActions: RecipeNavigationActions,
-    recipeViewModel: RecipeViewModel = hiltViewModel()
+    recipeViewModel: RecipeViewModel = hiltViewModel(),
+    searchViewModel: SearchViewModel = hiltViewModel()
 ) {
 
     val recipes by recipeViewModel.state.collectAsState()
+    val searchQuery by searchViewModel.searchQuery.collectAsState()
+
+    LaunchedEffect(searchQuery) {
+        recipeViewModel.onQuerySearchQueryChange(searchQuery)
+    }
+
     val errorMessages by recipeViewModel.messages.collectAsState(initial = "")
 
     if (errorMessages.isNotEmpty()) {
@@ -51,7 +60,7 @@ fun RecipesScreen(
         items(recipes.size) {
             RecipePost(
                 recipeModel = recipes[it],
-                navigateToRecipe = {recipeId ->
+                navigateToRecipe = { recipeId ->
                     recipeNavigationActions.navigateToRecipeDetails(recipeId)
                 }
             )
@@ -92,12 +101,12 @@ fun RecipePost(
 
 @Composable
 fun PostImage(imageUrl: String, modifier: Modifier = Modifier) {
-    AsyncImage(
-        model = imageUrl,
-        contentDescription = null,
+    LoadImage(
+        imageUrl = imageUrl,
         modifier = modifier
-            .size(40.dp, 40.dp)
-            .clip(MaterialTheme.shapes.small)
+            .size(40.dp)
+            .clip(MaterialTheme.shapes.small),
+        contentDescription = null
     )
 }
 

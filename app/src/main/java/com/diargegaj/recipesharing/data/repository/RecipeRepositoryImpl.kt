@@ -37,8 +37,8 @@ class RecipeRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun observeAllRecipes(): Flow<Resource<List<RecipeModel>>> {
-        return recipeDao.getAllRecipes()
+    override fun observeAllRecipes(query: String): Flow<Resource<List<RecipeModel>>> {
+        return recipeDao.getAllRecipes("%$query%")
             .map { recipes ->
                 if (recipes.isEmpty()) {
                     Resource.Error(NotFoundException("No recipes found"))
