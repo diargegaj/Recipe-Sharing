@@ -93,7 +93,7 @@ fun HomeScreen(
                             }) {
                                 Icon(
                                     imageVector = Icons.Default.Search,
-                                    contentDescription = "Search"
+                                    contentDescription = stringResource(id = R.string.search)
                                 )
                             }
                         }

@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -96,7 +97,7 @@ fun ImagePicker(
 fun LoadImage(
     imageUrl: String,
     modifier: Modifier = Modifier,
-    shape: Shape = RectangleShape, // Default to Rectangle shape
+    shape: Shape = RectangleShape,
     contentDescription: String? = null,
     placeholder: Int = R.drawable.ic_downloading,
     errorImage: Int = R.drawable.ic_downloading
@@ -112,6 +113,7 @@ fun LoadImage(
     Image(
         painter = painter,
         contentDescription = contentDescription,
-        modifier = modifier.clip(shape)
+        modifier = modifier.clip(shape),
+        contentScale = ContentScale.Crop // Ensures the image fills the space
     )
 }

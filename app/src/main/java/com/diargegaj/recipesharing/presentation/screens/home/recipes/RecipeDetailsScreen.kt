@@ -141,6 +141,7 @@ fun RecipeImage(
         imageUrl = imageUrl,
         modifier = modifier
             .height(200.dp)
+            .clip(CircleShape)
             .background(MaterialTheme.colorScheme.secondary),
         shape = CircleShape,
         contentDescription = "Recipe Image"
@@ -158,11 +159,12 @@ fun UserInfo(user: UserModel) {
         LoadImage(
             imageUrl = user.profilePhotoUrl,
             contentDescription = "User Image",
+            shape = CircleShape,
             modifier = Modifier
-                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.primary, CircleShape)
                 .size(40.dp)
-                .background(MaterialTheme.colorScheme.primary)
-                .padding(8.dp)
+                .clip(CircleShape)
+//                .padding(8.dp)
         )
 
         Column(

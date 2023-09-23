@@ -28,9 +28,12 @@ class HomeViewModel @Inject constructor() : ViewModel() {
     }
 
     fun updateSearchIconVisibility(value: Boolean) {
-        _homeState.value = _homeState.value.copy(
-            shouldShowSearchIcon = value
-        )
+        _homeState.value = _homeState.value.run {
+            copy(
+                shouldShowSearchIcon = value,
+                isSearchBarVisible = isSearchBarVisible && value
+            )
+        }
     }
 
 }
