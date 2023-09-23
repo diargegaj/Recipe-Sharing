@@ -9,7 +9,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,7 +16,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import com.diargegaj.recipesharing.R
 import com.diargegaj.recipesharing.presentation.navigation.RecipeNavigationActions
-import com.diargegaj.recipesharing.presentation.utils.TopAppBar
+import com.diargegaj.recipesharing.presentation.utils.DefaultAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,14 +34,10 @@ fun RecipesWithHeader(
             modifier = Modifier.fillMaxSize()
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
-                TopAppBar(
-                    title = {
-                        Text(text = stringResource(id = R.string.my_recipes))
-                    },
+                DefaultAppBar(
+                    title = stringResource(id = R.string.my_recipes),
                     navigationIcon = Icons.Default.ArrowBack,
-                    navigationIconCLick = {
-                        recipeNavigationActions.goBack()
-                    },
+                    onNavigationClick = { recipeNavigationActions.goBack() },
                     scrollBehavior = scrollBehavior
                 )
             },
