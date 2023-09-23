@@ -8,7 +8,7 @@ import com.diargegaj.recipesharing.presentation.screens.auth.LoginScreen
 import com.diargegaj.recipesharing.presentation.screens.auth.RegisterScreen
 import com.diargegaj.recipesharing.presentation.screens.home.HomeScreen
 import com.diargegaj.recipesharing.presentation.screens.home.recipes.RecipeDetailsScreen
-import com.diargegaj.recipesharing.presentation.screens.home.recipes.RecipesScreen
+import com.diargegaj.recipesharing.presentation.screens.home.recipes.RecipesWithHeader
 
 fun NavGraphBuilder.authRoute(recipeNavigationActions: RecipeNavigationActions) {
     composable(Screen.LoginScreen.route) {
@@ -29,7 +29,7 @@ fun NavGraphBuilder.homeRoute(recipeNavigationActions: RecipeNavigationActions) 
         arguments = listOf(navArgument("userId") { type = NavType.StringType })
     ) { backStackEntry ->
         val userId = backStackEntry.arguments?.getString("userId")
-        RecipesScreen(
+        RecipesWithHeader(
             recipeNavigationActions = recipeNavigationActions,
             userId = userId ?: ""
         )

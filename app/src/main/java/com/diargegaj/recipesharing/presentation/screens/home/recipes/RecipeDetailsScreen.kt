@@ -164,14 +164,13 @@ fun UserInfo(user: UserModel) {
                 .background(MaterialTheme.colorScheme.primary, CircleShape)
                 .size(40.dp)
                 .clip(CircleShape)
-//                .padding(8.dp)
         )
 
         Column(
             Modifier.padding(start = 10.dp)
         ) {
             Text(text = "${user.name} ${user.lastName}", fontWeight = FontWeight.Bold)
-            Text(text = user.email.toString(), style = MaterialTheme.typography.labelMedium)
+            Text(text = user.email, style = MaterialTheme.typography.labelMedium)
         }
     }
 }

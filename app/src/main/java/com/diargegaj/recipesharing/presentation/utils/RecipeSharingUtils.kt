@@ -114,6 +114,6 @@ fun LoadImage(
         painter = painter,
         contentDescription = contentDescription,
         modifier = modifier.clip(shape),
-        contentScale = ContentScale.Crop // Ensures the image fills the space
+        contentScale = ContentScale.Crop
     )
 }
