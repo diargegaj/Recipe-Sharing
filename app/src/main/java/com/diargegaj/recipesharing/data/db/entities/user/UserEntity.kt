@@ -1,4 +1,4 @@
-package com.diargegaj.recipesharing.data.db.entities
+package com.diargegaj.recipesharing.data.db.entities.user
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

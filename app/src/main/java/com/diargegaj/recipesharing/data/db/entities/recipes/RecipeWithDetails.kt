@@ -2,7 +2,7 @@ package com.diargegaj.recipesharing.data.db.entities.recipes
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.diargegaj.recipesharing.data.db.entities.UserEntity
+import com.diargegaj.recipesharing.data.db.entities.user.UserEntity
 
 data class RecipeWithDetails(
     @Embedded val recipe: RecipeEntity,

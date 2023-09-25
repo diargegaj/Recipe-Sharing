@@ -99,7 +99,7 @@ class UserRepositoryImpl @Inject constructor(
         }
 
     override fun getUserInfoFromCache(userId: String): Flow<Resource<UserModel>> {
-        return userDao.getUser(userId)
+        return userDao.getUserWithRecipes(userId)
             .map { userEntity ->
 
                 if (userEntity != null) {

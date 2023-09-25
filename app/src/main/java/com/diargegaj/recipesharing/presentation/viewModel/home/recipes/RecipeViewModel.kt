@@ -29,6 +29,8 @@ class RecipeViewModel @Inject constructor(
     private val _messages = MutableSharedFlow<String>()
     val messages: SharedFlow<String> get() = _messages
 
+    private var lastQuery: String? = null
+
     private var searchRecipesJob: Job? = null
 
     init {
@@ -46,7 +48,10 @@ class RecipeViewModel @Inject constructor(
 
     private fun loadRecipesFromCache(query: String = "%%", userId: String = "%%") {
         viewModelScope.launch {
-            _state.value = emptyList()
+            if (query != lastQuery) {
+                _state.value = emptyList()
+            }
+            lastQuery = query
             recipeRepository.observeAllRecipes(query, userId).collect { result ->
                 when (result) {
                     is Resource.Success -> {

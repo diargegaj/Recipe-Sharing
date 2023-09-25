@@ -59,3 +59,14 @@ fun RecipeWithDetails.mapToRecipeDetailsModel(): RecipeDetailsModel {
         feedbacks = listOf()
     )
 }
+
+fun RecipeEntity.mapToRecipeModel(): RecipeModel {
+    return RecipeModel(
+        recipeId = this.id,
+        title = this.title,
+        description = this.description,
+        ingredients = listOf(),
+        imageUrl = this.imageUrl,
+        userId = this.userId
+    )
+}
