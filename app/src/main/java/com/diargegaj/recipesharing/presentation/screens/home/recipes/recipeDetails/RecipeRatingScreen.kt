@@ -15,10 +15,12 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.twotone.Star
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.diargegaj.recipesharing.R
+import com.diargegaj.recipesharing.domain.models.emptyUserModel
 import com.diargegaj.recipesharing.domain.models.recipe.recipeDetails.FeedbackModel
 
 @Composable
@@ -37,14 +40,15 @@ fun RecipeFeedbackSection(
     onNewFeedbackValue: (feedbackValue: String) -> Unit,
     onFeedbackSubmit: () -> Unit,
     usersFeedbacks: List<FeedbackModel>,
-    currentUserFeedbackModel: FeedbackModel? = null
+    currentUserFeedbackModel: FeedbackModel? = null,
+    onFeedbackClicked: (feedbackModel: FeedbackModel) -> Unit
 ) {
 
     Column {
         if (currentUserFeedbackModel != null) {
             Text(text = stringResource(id = R.string.your_feedback))
             Spacer(modifier = Modifier.height(16.dp))
-            FeedbackCard(currentUserFeedbackModel)
+            FeedbackCard(currentUserFeedbackModel, onFeedbackClicked)
         } else {
             Text(text = stringResource(id = R.string.rate_recipe))
             Spacer(modifier = Modifier.height(16.dp))
@@ -66,7 +70,7 @@ fun RecipeFeedbackSection(
         style = MaterialTheme.typography.titleMedium
     )
 
-    FeedbackList(feedbacks = usersFeedbacks)
+    FeedbackList(feedbacks = usersFeedbacks, onFeedbackClicked)
 
 }
 
@@ -96,14 +100,23 @@ fun AddFeedback(
 }
 
 @Composable
-fun FeedbackList(feedbacks: List<FeedbackModel>) {
+fun FeedbackList(
+    feedbacks: List<FeedbackModel>,
+    onFeedbackClicked: (feedbackModel: FeedbackModel) -> Unit
+) {
     feedbacks.forEach { feedback ->
-        FeedbackCard(feedback)
+        FeedbackCard(
+            feedback = feedback,
+            onFeedbackClicked = onFeedbackClicked
+        )
     }
 }
 
 @Composable
-fun FeedbackCard(feedback: FeedbackModel) {
+fun FeedbackCard(
+    feedback: FeedbackModel,
+    onFeedbackClicked: (feedbackModel: FeedbackModel) -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -112,6 +125,9 @@ fun FeedbackCard(feedback: FeedbackModel) {
                 color = Color.Gray, shape = MaterialTheme.shapes.medium
             )
             .padding(16.dp)
+            .clickable {
+                onFeedbackClicked(feedback)
+            }
     ) {
         Column {
             Row(
@@ -198,4 +214,51 @@ fun FeedbackInput(
             Text("Post")
         }
     }
+}
+
+@Composable
+fun FeedbackInfo(
+    feedbackModel: FeedbackModel,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = { onDismiss() },
+        title = {
+            Text(text = "Feedback Details")
+        },
+        text = {
+            Column {
+                UserInfo(feedbackModel.userModel ?: emptyUserModel())
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(top = 8.dp)
+                ) {
+                    Repeat(times = feedbackModel.rating) {
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = null,
+                            tint = Color.Yellow,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = feedbackModel.feedback,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = { onDismiss() }) {
+                Text("Close")
+            }
+        }
+    )
 }
