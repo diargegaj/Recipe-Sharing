@@ -1,11 +1,14 @@
 package com.diargegaj.recipesharing.domain.models
 
+import com.diargegaj.recipesharing.domain.models.recipe.RecipeModel
+
 data class UserModel(
     var userUUID: String = "",
     val name: String,
     val lastName: String,
     val email: String,
-    val profilePhotoUrl: String = ""
+    val profilePhotoUrl: String = "",
+    val userRecipes: List<RecipeModel> = listOf()
 ) {
     fun getUserFullName() = "$name $lastName"
 }

@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.diargegaj.recipesharing.data.db.dao.FeedbackDao
 import com.diargegaj.recipesharing.data.db.dao.RecipeDao
 import com.diargegaj.recipesharing.data.db.dao.UserDao
-import com.diargegaj.recipesharing.data.db.entities.UserEntity
+import com.diargegaj.recipesharing.data.db.entities.user.UserEntity
 import com.diargegaj.recipesharing.data.db.entities.feedback.FeedbackEntity
 import com.diargegaj.recipesharing.data.db.entities.recipes.IngredientEntity
 import com.diargegaj.recipesharing.data.db.entities.recipes.RecipeEntity
