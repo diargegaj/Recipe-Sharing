@@ -6,7 +6,9 @@ data class UserModel(
     val lastName: String,
     val email: String,
     val profilePhotoUrl: String = ""
-)
+) {
+    fun getUserFullName() = "$name $lastName"
+}
 
 fun emptyUserModel(): UserModel {
     return UserModel(
