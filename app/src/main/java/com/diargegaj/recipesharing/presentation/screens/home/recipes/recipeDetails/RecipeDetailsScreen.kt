@@ -1,4 +1,4 @@
-package com.diargegaj.recipesharing.presentation.screens.home.recipes
+package com.diargegaj.recipesharing.presentation.screens.home.recipes.recipeDetails
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -50,6 +50,8 @@ fun RecipeDetailsScreen(
     viewModel: RecipeDetailsViewModel = hiltViewModel(backStackEntry)
 ) {
     val recipe by viewModel.state.collectAsState()
+    val currentRating by viewModel.currentRating.collectAsState()
+    val feedbackText by viewModel.feedbackText.collectAsState()
 
     val messages by viewModel.messages.collectAsState(initial = "")
 
@@ -76,51 +78,87 @@ fun RecipeDetailsScreen(
                 )
             },
             content = { paddingValues ->
-                Column(
+                LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(paddingValues)
                         .padding(horizontal = 16.dp)
                 ) {
-                    RecipeImage(
-                        modifier = Modifier
-                            .width(250.dp)
-                            .align(CenterHorizontally),
-                        imageUrl = recipe.imageUrl
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Text(
-                        text = recipe.title,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    UserInfo(recipe.userModel ?: emptyUserModel())
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Text(
-                        text = recipe.description,
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Text(
-                        text = "Ingredients",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    LazyColumn {
-                        items(recipe.ingredients.size) { index ->
-                            Text(
-                                text = "${index + 1}. ${recipe.ingredients[index]}",
-                                style = MaterialTheme.typography.labelMedium,
-                                modifier = Modifier.padding(vertical = 4.dp)
+                    item {
+                        Column(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            RecipeImage(
+                                modifier = Modifier
+                                    .width(250.dp)
+                                    .align(CenterHorizontally),
+                                imageUrl = recipe.imageUrl
                             )
                         }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+
+                    item {
+                        Text(
+                            text = recipe.title,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+
+                    item {
+                        UserInfo(recipe.userModel ?: emptyUserModel())
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+
+                    item {
+                        Text(
+                            text = recipe.description,
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+
+                    item {
+                        Text(
+                            text = "Ingredients",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                    items(recipe.ingredients.size) { index ->
+                        Text(
+                            text = "${index + 1}. ${recipe.ingredients[index]}",
+                            style = MaterialTheme.typography.labelMedium,
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        )
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(text = stringResource(id = R.string.rate_recipe))
+                        Spacer(modifier = Modifier.height(16.dp))
+
+
+                        RecipeFeedbackSection(
+                            currentRating = currentRating,
+                            onNewRating = {
+                                viewModel.onNewRating(newRating = it)
+                            },
+                            feedbackText = feedbackText,
+                            onNewFeedbackValue = {
+                                viewModel.onNewFeedbackValue(feedbackValue = it)
+                            },
+                            onFeedbackSubmit = {
+                                viewModel.onFeedbackSubmit()
+                            },
+                            usersFeedbacks = recipe.feedbacks
+                        )
                     }
                 }
             }

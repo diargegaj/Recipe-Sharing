@@ -8,6 +8,7 @@
     <string name="recipe_description">Recipe Description</string>
     <string name="ingredients">Ingredients:</string>
     <string name="recipe_details">Recipe Details</string>
-    <string name="search">Search...</string>
+    <string name="search">Search…</string>
     <string name="my_recipes">My recipes</string>
+    <string name="rate_recipe">Rate this recipe</string>
 </resources>
