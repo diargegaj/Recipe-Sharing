@@ -7,7 +7,7 @@ import androidx.navigation.navArgument
 import com.diargegaj.recipesharing.presentation.screens.auth.LoginScreen
 import com.diargegaj.recipesharing.presentation.screens.auth.RegisterScreen
 import com.diargegaj.recipesharing.presentation.screens.home.HomeScreen
-import com.diargegaj.recipesharing.presentation.screens.home.recipes.RecipeDetailsScreen
+import com.diargegaj.recipesharing.presentation.screens.home.recipes.recipeDetails.RecipeDetailsScreen
 import com.diargegaj.recipesharing.presentation.screens.home.recipes.RecipesWithHeader
 
 fun NavGraphBuilder.authRoute(recipeNavigationActions: RecipeNavigationActions) {

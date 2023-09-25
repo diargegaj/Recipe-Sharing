@@ -4,8 +4,8 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.diargegaj.recipesharing.domain.enums.ImagePath
-import com.diargegaj.recipesharing.domain.models.RecipeModel
-import com.diargegaj.recipesharing.domain.models.emptyRecipeModel
+import com.diargegaj.recipesharing.domain.models.recipe.RecipeModel
+import com.diargegaj.recipesharing.domain.models.recipe.emptyRecipeModel
 import com.diargegaj.recipesharing.domain.repository.ImageUploadRepository
 import com.diargegaj.recipesharing.domain.repository.RecipeRepository
 import com.diargegaj.recipesharing.domain.repository.UserRepository
