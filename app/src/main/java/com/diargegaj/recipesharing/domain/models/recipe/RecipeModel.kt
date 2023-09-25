@@ -1,4 +1,7 @@
-package com.diargegaj.recipesharing.domain.models
+package com.diargegaj.recipesharing.domain.models.recipe
+
+import com.diargegaj.recipesharing.domain.models.UserModel
+import com.diargegaj.recipesharing.domain.models.emptyUserModel
 
 data class RecipeModel(
     var recipeId: String = "",

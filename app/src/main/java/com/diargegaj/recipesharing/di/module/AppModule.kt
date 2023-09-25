@@ -3,6 +3,7 @@ package com.diargegaj.recipesharing.di.module
 import android.content.Context
 import androidx.room.Room
 import com.diargegaj.recipesharing.data.db.RecipeDatabase
+import com.diargegaj.recipesharing.data.db.dao.FeedbackDao
 import com.diargegaj.recipesharing.data.db.dao.RecipeDao
 import com.diargegaj.recipesharing.data.db.dao.UserDao
 import com.google.firebase.auth.FirebaseAuth
@@ -40,6 +41,12 @@ object AppModule {
     @Singleton
     fun provideRecipeDao(recipeDatabase: RecipeDatabase): RecipeDao {
         return recipeDatabase.recipeDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideFeedbackDao(recipeDatabase: RecipeDatabase): FeedbackDao {
+        return recipeDatabase.feedbackDao()
     }
 
     @Provides
