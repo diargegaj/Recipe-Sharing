@@ -157,7 +157,8 @@ fun RecipeDetailsScreen(
                             onFeedbackSubmit = {
                                 viewModel.onFeedbackSubmit()
                             },
-                            usersFeedbacks = recipe.feedbacks
+                            usersFeedbacks = recipe.feedbacks,
+                            currentUserFeedbackModel = recipe.myFeedbackModel
                         )
                     }
                 }

@@ -9,5 +9,6 @@ data class RecipeDetailsModel(
     var ingredients: List<String> = listOf(""),
     var imageUrl: String = "",
     val userModel: UserModel? = null,
+    val myFeedbackModel: FeedbackModel? = null,
     val feedbacks: List<FeedbackModel> = listOf(),
 )

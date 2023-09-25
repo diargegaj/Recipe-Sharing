@@ -23,8 +23,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.diargegaj.recipesharing.R
 import com.diargegaj.recipesharing.domain.models.recipe.recipeDetails.FeedbackModel
 
 @Composable
@@ -35,24 +37,25 @@ fun RecipeFeedbackSection(
     onNewFeedbackValue: (feedbackValue: String) -> Unit,
     onFeedbackSubmit: () -> Unit,
     usersFeedbacks: List<FeedbackModel>,
+    currentUserFeedbackModel: FeedbackModel? = null
 ) {
 
     Column {
-        RatingInput(
-            currentRating = currentRating
-        ) { newRating ->
-            onNewRating(newRating)
+        if (currentUserFeedbackModel != null) {
+            Text(text = stringResource(id = R.string.your_feedback))
+            Spacer(modifier = Modifier.height(16.dp))
+            FeedbackCard(currentUserFeedbackModel)
+        } else {
+            Text(text = stringResource(id = R.string.rate_recipe))
+            Spacer(modifier = Modifier.height(16.dp))
+            AddFeedback(
+                currentRating = currentRating,
+                onNewRating = onNewRating,
+                feedbackText = feedbackText,
+                onNewFeedbackValue = onNewFeedbackValue,
+                onFeedbackSubmit = onFeedbackSubmit
+            )
         }
-
-        FeedbackInput(
-            feedbackText = feedbackText,
-            onNewValue = { newValue ->
-                onNewFeedbackValue(newValue)
-            },
-            onFeedbackSubmit = {
-                onFeedbackSubmit()
-            }
-        )
     }
 
     Spacer(modifier = Modifier.height(16.dp))
@@ -65,6 +68,31 @@ fun RecipeFeedbackSection(
 
     FeedbackList(feedbacks = usersFeedbacks)
 
+}
+
+@Composable
+fun AddFeedback(
+    currentRating: Int,
+    onNewRating: (rating: Int) -> Unit,
+    feedbackText: String,
+    onNewFeedbackValue: (feedbackValue: String) -> Unit,
+    onFeedbackSubmit: () -> Unit
+) {
+    RatingInput(
+        currentRating = currentRating
+    ) { newRating ->
+        onNewRating(newRating)
+    }
+
+    FeedbackInput(
+        feedbackText = feedbackText,
+        onNewValue = { newValue ->
+            onNewFeedbackValue(newValue)
+        },
+        onFeedbackSubmit = {
+            onFeedbackSubmit()
+        }
+    )
 }
 
 @Composable
@@ -81,7 +109,7 @@ fun FeedbackCard(feedback: FeedbackModel) {
             .fillMaxWidth()
             .padding(8.dp)
             .background(
-                color = MaterialTheme.colorScheme.surface, shape = MaterialTheme.shapes.medium
+                color = Color.Gray, shape = MaterialTheme.shapes.medium
             )
             .padding(16.dp)
     ) {
@@ -91,7 +119,7 @@ fun FeedbackCard(feedback: FeedbackModel) {
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
-                    text = feedback.userModel?.getUserFullName()?: "",
+                    text = feedback.userModel?.getUserFullName() ?: "",
                     style = MaterialTheme.typography.titleMedium
                 )
 

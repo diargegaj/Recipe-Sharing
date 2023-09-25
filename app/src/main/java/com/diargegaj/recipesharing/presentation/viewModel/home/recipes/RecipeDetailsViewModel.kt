@@ -53,24 +53,33 @@ class RecipeDetailsViewModel @Inject constructor(
                     }
 
                     is Resource.Success -> {
-                        val feedbacks = result.data
-
-                        feedbacks.forEach { feedback ->
-                            if (feedback.userModel != null) {
-                                val currentFeedbacks = _state.value.feedbacks.toMutableSet()
-                                currentFeedbacks.add(feedback)
-                                _state.value = _state.value.copy(
-                                    feedbacks = currentFeedbacks.toList()
-                                )
-                            } else {
-                                fetchUserInfo(feedback.userId)
-                            }
-                        }
+                        handleSuccessfulFeedbackLoad(result.data)
                     }
 
                     else -> Unit
                 }
             }
+        }
+    }
+
+    private suspend fun handleSuccessfulFeedbackLoad(feedbacks: List<FeedbackModel>) {
+        feedbacks.forEach { feedback ->
+            processFeedback(feedback)
+        }
+    }
+
+    private suspend fun processFeedback(feedback: FeedbackModel) {
+        if (feedback.userModel == null) {
+            fetchUserInfo(feedback.userId)
+            return
+        }
+
+        if (feedback.userModel.userUUID == userId) {
+            _state.value = _state.value.copy(myFeedbackModel = feedback)
+        } else {
+            val currentFeedbacks = _state.value.feedbacks.toMutableSet()
+            currentFeedbacks.add(feedback)
+            _state.value = _state.value.copy(feedbacks = currentFeedbacks.toList())
         }
     }
 
