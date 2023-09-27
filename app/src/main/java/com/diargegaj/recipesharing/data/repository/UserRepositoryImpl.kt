@@ -9,6 +9,7 @@ import com.diargegaj.recipesharing.data.mappers.mapToEntity
 import com.diargegaj.recipesharing.data.mappers.mapToUserModel
 import com.diargegaj.recipesharing.data.models.UserDto
 import com.diargegaj.recipesharing.data.utils.Constants.INSERTION_FAILED
+import com.diargegaj.recipesharing.data.utils.safeCall
 import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.domain.repository.UserRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
@@ -32,17 +33,15 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun registerUser(email: String, password: String): Resource<FirebaseUser> =
         withContext(Dispatchers.IO) {
-            try {
+            safeCall {
                 val result = auth.createUserWithEmailAndPassword(email, password).await()
                 Resource.Success(result.user!!)
-            } catch (e: Exception) {
-                Resource.Error(e)
             }
         }
 
     override suspend fun addUserAdditionalInformation(userModel: UserModel): Resource<Unit> =
         withContext(Dispatchers.IO) {
-            try {
+            safeCall {
                 val userDto = userModel.mapToDto()
                 fireStore.collection(DBCollection.User.collectionName)
                     .document(userDto.userUUID)
@@ -53,18 +52,14 @@ class UserRepositoryImpl @Inject constructor(
                 userDao.insert(userEntity)
 
                 Resource.Success(Unit)
-            } catch (e: Exception) {
-                Resource.Error(e)
             }
         }
 
     override suspend fun logIn(email: String, password: String): Resource<FirebaseUser> =
         withContext(Dispatchers.IO) {
-            try {
+            safeCall {
                 val result = auth.signInWithEmailAndPassword(email, password).await()
                 Resource.Success(result.user!!)
-            } catch (e: Exception) {
-                Resource.Error(e)
             }
         }
 
@@ -79,7 +74,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun getUserInfoFromFirestore(userId: String): Resource<UserModel> =
         withContext(Dispatchers.IO) {
-            try {
+            safeCall {
                 val document = fireStore.collection(DBCollection.User.collectionName)
                     .document(userId)
                     .get()
@@ -93,21 +88,17 @@ class UserRepositoryImpl @Inject constructor(
                 } else {
                     Resource.Error(NotFoundException("User not found!"))
                 }
-            } catch (e: Exception) {
-                Resource.Error(e)
             }
         }
 
     override fun getUserInfoFromCache(userId: String): Flow<Resource<UserModel>> {
         return userDao.getUserWithRecipes(userId)
             .map { userEntity ->
-
                 if (userEntity != null) {
                     Resource.Success(userEntity.mapToUserModel())
                 } else {
                     Resource.Error(NotFoundException("User not found"))
                 }
-
             }
             .catch {
                 emit(Resource.Error(Exception(it.message)))
@@ -138,14 +129,11 @@ class UserRepositoryImpl @Inject constructor(
         userId: String,
         imageUrl: String
     ): Resource<Unit> {
-        return try {
+        return safeCall {
             val userDocument =
                 fireStore.collection(DBCollection.User.collectionName).document(userId)
             userDocument.update("profilePhotoUrl", imageUrl).await()
             Resource.Success(Unit)
-        } catch (e: Exception) {
-            Resource.Error(e)
         }
     }
-
 }

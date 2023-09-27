@@ -1,9 +1,11 @@
 package com.diargegaj.recipesharing.data.repository.recipe
 
+import android.content.res.Resources.NotFoundException
 import com.diargegaj.recipesharing.data.datasource.database.DatabaseRecipeDataSource
 import com.diargegaj.recipesharing.data.datasource.firestore.FirestoreRecipeDataSource
 import com.diargegaj.recipesharing.data.mappers.mapToDto
 import com.diargegaj.recipesharing.data.models.recipe.FeedbackDto
+import com.diargegaj.recipesharing.data.utils.safeCall
 import com.diargegaj.recipesharing.domain.models.recipe.RecipeModel
 import com.diargegaj.recipesharing.domain.models.recipe.recipeDetails.FeedbackModel
 import com.diargegaj.recipesharing.domain.models.recipe.recipeDetails.RecipeDetailsModel
@@ -23,12 +25,10 @@ class RecipeRepositoryImpl @Inject constructor(
 
     override suspend fun storeRecipe(recipeModel: RecipeModel): Resource<Unit> =
         withContext(Dispatchers.IO) {
-            try {
+            safeCall {
                 val recipeDto = recipeModel.mapToDto()
                 firestoreDataSource.storeRecipeToFirestore(recipeDto)
                 Resource.Success(Unit)
-            } catch (e: Exception) {
-                Resource.Error(e)
             }
         }
 
@@ -51,15 +51,14 @@ class RecipeRepositoryImpl @Inject constructor(
 
     override suspend fun updateRecipesFromFirestore(): Resource<Unit> =
         withContext(Dispatchers.IO) {
-            try {
+            safeCall {
                 val recipeDtos = firestoreDataSource.fetchAllRecipesFromFirestore()
-                if (recipeDtos.isEmpty()) Resource.Error(Exception("Data Not Found"))
-                else {
+                if (recipeDtos.isEmpty()) {
+                    Resource.Error(Exception("Data Not Found"))
+                } else {
                     databaseDataSource.insertRecipesWithIngredientsFromDtos(recipeDtos)
                     Resource.Success(Unit)
                 }
-            } catch (e: Exception) {
-                Resource.Error(e)
             }
         }
 
@@ -77,28 +76,24 @@ class RecipeRepositoryImpl @Inject constructor(
 
     override suspend fun addFeedback(feedbackModel: FeedbackModel): Resource<Unit> =
         withContext(Dispatchers.IO) {
-            try {
+            safeCall {
                 val feedbackDto = feedbackModel.mapToDto()
                 firestoreDataSource.storeFeedbackToFirestore(feedbackDto)
                 Resource.Success(Unit)
-            } catch (e: Exception) {
-                Resource.Error(e)
             }
         }
 
     override suspend fun updateFeedbacksPerRecipe(recipeId: String): Resource<Unit> =
         withContext(Dispatchers.IO) {
-            try {
+            safeCall {
                 val feedbacksDto = fetchFeedbacks(recipeId)
-                if (feedbacksDto.isEmpty()) return@withContext Resource.Error(Exception("No feedback found for the given recipe"))
+                if (feedbacksDto.isEmpty()) return@safeCall Resource.Error(NotFoundException("No feedback found for the given recipe"))
 
                 val averageRating = calculateAverageRating(feedbacksDto)
                 storeFeedbacks(feedbacksDto)
                 updateRecipeWithRating(recipeId, averageRating)
 
                 Resource.Success(Unit)
-            } catch (e: Exception) {
-                Resource.Error(e)
             }
         }
 
@@ -123,7 +118,7 @@ class RecipeRepositoryImpl @Inject constructor(
         return databaseDataSource.observeFeedbacksForRecipe(recipeId)
             .map { feedbacks ->
                 if (feedbacks.isEmpty()) {
-                    Resource.Error(Exception("No feedback found"))
+                    Resource.Error(NotFoundException("No feedback found"))
                 } else {
                     Resource.Success(feedbacks)
                 }
