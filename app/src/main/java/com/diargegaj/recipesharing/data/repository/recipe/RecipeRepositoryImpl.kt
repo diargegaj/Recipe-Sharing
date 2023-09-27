@@ -3,6 +3,7 @@ package com.diargegaj.recipesharing.data.repository.recipe
 import com.diargegaj.recipesharing.data.datasource.database.DatabaseRecipeDataSource
 import com.diargegaj.recipesharing.data.datasource.firestore.FirestoreRecipeDataSource
 import com.diargegaj.recipesharing.data.mappers.mapToDto
+import com.diargegaj.recipesharing.data.models.recipe.FeedbackDto
 import com.diargegaj.recipesharing.domain.models.recipe.RecipeModel
 import com.diargegaj.recipesharing.domain.models.recipe.recipeDetails.FeedbackModel
 import com.diargegaj.recipesharing.domain.models.recipe.recipeDetails.RecipeDetailsModel
@@ -88,20 +89,35 @@ class RecipeRepositoryImpl @Inject constructor(
     override suspend fun updateFeedbacksPerRecipe(recipeId: String): Resource<Unit> =
         withContext(Dispatchers.IO) {
             try {
-                val feedbacksDto =
-                    firestoreDataSource.fetchFeedbacksForRecipeFromFirestore(recipeId)
-                if (feedbacksDto.isEmpty()) Resource.Error(Exception("Data Not Found"))
-                else {
-                    val ratings = feedbacksDto.map { it.rating }
-                    val averageRating = ratings.average().toInt()
-                    databaseDataSource.insertFeedbacksFromDtos(feedbacksDto)
-                    databaseDataSource.updateRecipeRating(recipeId, averageRating)
-                    Resource.Success(Unit)
-                }
+                val feedbacksDto = fetchFeedbacks(recipeId)
+                if (feedbacksDto.isEmpty()) return@withContext Resource.Error(Exception("No feedback found for the given recipe"))
+
+                val averageRating = calculateAverageRating(feedbacksDto)
+                storeFeedbacks(feedbacksDto)
+                updateRecipeWithRating(recipeId, averageRating)
+
+                Resource.Success(Unit)
             } catch (e: Exception) {
                 Resource.Error(e)
             }
         }
+
+    private suspend fun fetchFeedbacks(recipeId: String): List<FeedbackDto> {
+        return firestoreDataSource.fetchFeedbacksForRecipeFromFirestore(recipeId)
+    }
+
+    private fun calculateAverageRating(feedbacksDto: List<FeedbackDto>): Int {
+        val ratings = feedbacksDto.map { it.rating }
+        return ratings.average().toInt()
+    }
+
+    private suspend fun storeFeedbacks(feedbacksDto: List<FeedbackDto>) {
+        databaseDataSource.insertFeedbacksFromDtos(feedbacksDto)
+    }
+
+    private suspend fun updateRecipeWithRating(recipeId: String, averageRating: Int) {
+        databaseDataSource.updateRecipeRating(recipeId, averageRating)
+    }
 
     override fun getFeedbacksPerRecipe(recipeId: String): Flow<Resource<List<FeedbackModel>>> {
         return databaseDataSource.observeFeedbacksForRecipe(recipeId)
