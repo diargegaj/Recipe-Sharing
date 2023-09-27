@@ -1,5 +1,6 @@
 package com.diargegaj.recipesharing.presentation.viewModel.home.recipes
 
+import android.content.res.Resources.NotFoundException
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -47,9 +48,11 @@ class RecipeDetailsViewModel @Inject constructor(
             recipeRepository.getFeedbacksPerRecipe(recipeId).collect { result ->
                 when (result) {
                     is Resource.Error -> {
-                        _messages.emit(
-                            "Failed loading recipe reviews"
-                        )
+                        if (result.exception !is NotFoundException) {
+                            _messages.emit(
+                                "Failed loading recipe reviews"
+                            )
+                        }
                     }
 
                     is Resource.Success -> {
@@ -95,11 +98,13 @@ class RecipeDetailsViewModel @Inject constructor(
 
     private fun updateFeedbacks() {
         viewModelScope.launch {
-            when (recipeRepository.updateFeedbacksPerRecipe(recipeId)) {
+            when (val result = recipeRepository.updateFeedbacksPerRecipe(recipeId)) {
                 is Resource.Error -> {
-                    _messages.emit(
-                        "Failed to get latest recipe reviews"
-                    )
+                    if (result.exception !is NotFoundException) {
+                        _messages.emit(
+                            "Failed to get latest recipe reviews"
+                        )
+                    }
                 }
 
                 else -> Unit
