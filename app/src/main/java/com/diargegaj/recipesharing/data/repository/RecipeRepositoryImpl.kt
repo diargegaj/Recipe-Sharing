@@ -21,10 +21,12 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 class RecipeRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
@@ -131,9 +133,12 @@ class RecipeRepositoryImpl @Inject constructor(
 
                 val response = query.get().await()
 
+                val ratings: MutableList<Int> = mutableListOf()
+
                 val feedbacksDto: List<FeedbackDto> = response.documents.mapNotNull { document ->
                     val feedbackDto = document.toObject(FeedbackDto::class.java)
                     feedbackDto?.feedbackId = document.id
+                    if (feedbackDto?.rating != null) ratings.add(feedbackDto.rating)
                     feedbackDto
                 }
 
@@ -142,6 +147,15 @@ class RecipeRepositoryImpl @Inject constructor(
                 feedbacksDto.forEach { dto ->
                     val feedbackEntity = dto.mapToEntity()
                     feedbackDao.insertFeedback(feedbackEntity)
+                }
+
+                val recipeWithDetails = recipeDao.getRecipeWithDetails(recipeId).first()
+                val recipe = recipeWithDetails?.recipe
+                val ingredients = recipeWithDetails?.ingredients
+                recipe?.averageRating = ratings.average().roundToInt()
+
+                if (recipe != null && ingredients != null) {
+                    recipeDao.insertRecipeWithIngredients(recipe, ingredients)
                 }
 
                 Resource.Success(Unit)
