@@ -262,3 +262,27 @@ fun FeedbackInfo(
         }
     )
 }
+
+@Composable
+fun AverageRecipeRating(
+    averageRating: Int,
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Repeat(times = averageRating) {
+            Icon(
+                imageVector = Icons.Default.Star,
+                contentDescription = null,
+                tint = Color.Yellow,
+                modifier = Modifier.size(18.dp)
+            )
+        }
+
+        Text(
+            text = "$averageRating",
+            style = MaterialTheme.typography.labelMedium
+        )
+    }
+}

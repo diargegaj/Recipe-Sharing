@@ -37,7 +37,8 @@ fun RecipeDto.toRecipeEntities(): Pair<RecipeEntity, List<IngredientEntity>> {
         title = this.title,
         description = this.description,
         imageUrl = this.imageUrl,
-        userId = this.userId
+        userId = this.userId,
+        averageRating = 0
     )
     val ingredientEntities = this.ingredients.map {
         IngredientEntity(
@@ -56,7 +57,8 @@ fun RecipeWithDetails.mapToRecipeDetailsModel(): RecipeDetailsModel {
         ingredients = this.ingredients.map { it.mapToIngredient() },
         imageUrl = this.recipe.imageUrl,
         userModel = this.user?.mapToUserModel(),
-        feedbacks = listOf()
+        feedbacks = listOf(),
+        averageRating = this.recipe.averageRating
     )
 }
 
