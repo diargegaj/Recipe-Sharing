@@ -40,5 +40,16 @@ enum class SettingItem(
     PASSWORD(
         settingIcon = R.drawable.ic_password,
         settingStringRes = R.string.change_password
+    ),
+
+
+    PROFILE_PICTURE(
+        settingIcon = R.drawable.ic_edit_profile_picture,
+        settingStringRes = R.string.change_profile_picture
+    ),
+
+    NAME(
+        settingIcon = R.drawable.ic_change_name,
+        settingStringRes = R.string.change_name
     )
 }
