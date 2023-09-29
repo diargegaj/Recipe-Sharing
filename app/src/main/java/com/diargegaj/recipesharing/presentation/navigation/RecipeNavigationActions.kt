@@ -41,6 +41,10 @@ class RecipeNavigationActions(val navController: NavHostController) {
         navController.navigate(Screen.Settings.route)
     }
 
+    fun navigateTo(route: String) {
+        navController.navigate(route)
+    }
+
     fun goBack() {
         navController.popBackStack()
     }

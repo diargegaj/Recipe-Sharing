@@ -10,6 +10,8 @@ import com.diargegaj.recipesharing.presentation.screens.home.HomeScreen
 import com.diargegaj.recipesharing.presentation.screens.home.recipes.RecipesWithHeader
 import com.diargegaj.recipesharing.presentation.screens.home.recipes.recipeDetails.RecipeDetailsScreen
 import com.diargegaj.recipesharing.presentation.screens.settings.SettingsScreen
+import com.diargegaj.recipesharing.presentation.screens.settings.editAccount.EditAccountScreen
+import com.diargegaj.recipesharing.presentation.screens.settings.editProfile.EditProfileScreen
 
 fun NavGraphBuilder.authRoute(recipeNavigationActions: RecipeNavigationActions) {
     composable(Screen.LoginScreen.route) {
@@ -48,5 +50,11 @@ fun NavGraphBuilder.homeRoute(recipeNavigationActions: RecipeNavigationActions) 
 fun NavGraphBuilder.settingsRoute(recipeNavigationActions: RecipeNavigationActions) {
     composable(Screen.Settings.route) {
         SettingsScreen(recipeNavigationActions = recipeNavigationActions)
+    }
+    composable(Screen.AccountInfo.route) {
+        EditAccountScreen()
+    }
+    composable(Screen.ProfileInfo.route) {
+        EditProfileScreen()
     }
 }

@@ -55,10 +55,10 @@ fun SettingsScreen(
                     .padding(paddingValues = paddingValues)
             ) {
                 SettingsItem(item = SettingItem.ACCOUNT) {
-
+                    recipeNavigationActions.navigateTo(it.route)
                 }
                 SettingsItem(item = SettingItem.PROFILE) {
-
+                    recipeNavigationActions.navigateTo(it.route)
                 }
 
                 Spacer(modifier = Modifier.weight(0.5f))
