@@ -12,4 +12,6 @@
     <string name="my_recipes">My recipes</string>
     <string name="rate_recipe">Rate this recipe</string>
     <string name="your_feedback">Your feedback.</string>
+    <string name="account">Account</string>
+    <string name="log_out">Log out</string>
 </resources>
