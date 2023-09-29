@@ -36,14 +36,13 @@ import com.diargegaj.recipesharing.presentation.utils.DefaultAppBar
 fun SettingsScreen(
     recipeNavigationActions: RecipeNavigationActions
 ) {
-
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
         Scaffold(
             topBar = {
                 DefaultAppBar(
-                    title = stringResource(id = R.string.app_name),
+                    title = stringResource(id = R.string.settings),
                     navigationIcon = Icons.Default.ArrowBack,
                     onNavigationClick = { recipeNavigationActions.goBack() }
                 )

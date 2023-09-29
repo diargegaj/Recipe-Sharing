@@ -3,6 +3,7 @@ package com.diargegaj.recipesharing.domain.enums.settings
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
 import com.diargegaj.recipesharing.R
 import com.diargegaj.recipesharing.presentation.navigation.Screen
@@ -28,5 +29,16 @@ enum class SettingItem(
     LOG_OUT(
         settingIcon = R.drawable.ic_logout,
         settingStringRes = R.string.log_out
-    );
+    ),
+
+
+    EMAIL(
+        settingIcon = Icons.Default.Email,
+        settingStringRes = R.string.change_email
+    ),
+
+    PASSWORD(
+        settingIcon = R.drawable.ic_password,
+        settingStringRes = R.string.change_password
+    )
 }

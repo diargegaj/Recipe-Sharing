@@ -52,7 +52,7 @@ fun NavGraphBuilder.settingsRoute(recipeNavigationActions: RecipeNavigationActio
         SettingsScreen(recipeNavigationActions = recipeNavigationActions)
     }
     composable(Screen.AccountInfo.route) {
-        EditAccountScreen()
+        EditAccountScreen(recipeNavigationActions = recipeNavigationActions)
     }
     composable(Screen.ProfileInfo.route) {
         EditProfileScreen()
