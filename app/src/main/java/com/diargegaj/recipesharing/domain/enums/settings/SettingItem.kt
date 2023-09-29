@@ -34,22 +34,26 @@ enum class SettingItem(
 
     EMAIL(
         settingIcon = Icons.Default.Email,
-        settingStringRes = R.string.change_email
+        settingStringRes = R.string.change_email,
+        route = Screen.ChangeEmail.route
     ),
 
     PASSWORD(
         settingIcon = R.drawable.ic_password,
-        settingStringRes = R.string.change_password
+        settingStringRes = R.string.change_password,
+        route = Screen.ChangePassword.route
     ),
 
 
     PROFILE_PICTURE(
         settingIcon = R.drawable.ic_edit_profile_picture,
-        settingStringRes = R.string.change_profile_picture
+        settingStringRes = R.string.change_profile_picture,
+        route = Screen.ChangeProfilePicture.route
     ),
 
     NAME(
         settingIcon = R.drawable.ic_change_name,
-        settingStringRes = R.string.change_name
+        settingStringRes = R.string.change_name,
+        route = Screen.ChangeName.route
     )
 }
