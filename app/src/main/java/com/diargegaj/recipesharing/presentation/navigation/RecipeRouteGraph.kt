@@ -7,8 +7,9 @@ import androidx.navigation.navArgument
 import com.diargegaj.recipesharing.presentation.screens.auth.LoginScreen
 import com.diargegaj.recipesharing.presentation.screens.auth.RegisterScreen
 import com.diargegaj.recipesharing.presentation.screens.home.HomeScreen
-import com.diargegaj.recipesharing.presentation.screens.home.recipes.recipeDetails.RecipeDetailsScreen
 import com.diargegaj.recipesharing.presentation.screens.home.recipes.RecipesWithHeader
+import com.diargegaj.recipesharing.presentation.screens.home.recipes.recipeDetails.RecipeDetailsScreen
+import com.diargegaj.recipesharing.presentation.screens.settings.SettingsScreen
 
 fun NavGraphBuilder.authRoute(recipeNavigationActions: RecipeNavigationActions) {
     composable(Screen.LoginScreen.route) {
@@ -18,7 +19,6 @@ fun NavGraphBuilder.authRoute(recipeNavigationActions: RecipeNavigationActions) 
         RegisterScreen(recipeNavigationActions = recipeNavigationActions)
     }
 }
-
 
 fun NavGraphBuilder.homeRoute(recipeNavigationActions: RecipeNavigationActions) {
     composable(Screen.HomeScreen.route) {
@@ -42,5 +42,11 @@ fun NavGraphBuilder.homeRoute(recipeNavigationActions: RecipeNavigationActions) 
             backStackEntry = backStackEntry,
             recipeNavigationActions = recipeNavigationActions
         )
+    }
+}
+
+fun NavGraphBuilder.settingsRoute(recipeNavigationActions: RecipeNavigationActions) {
+    composable(Screen.Settings.route) {
+        SettingsScreen(recipeNavigationActions = recipeNavigationActions)
     }
 }
