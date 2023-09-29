@@ -1,11 +1,14 @@
 package com.diargegaj.recipesharing.presentation.viewModel.settings.changeEmail
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.diargegaj.recipesharing.domain.models.settings.changeEmail.ChangeEmailState
 import com.diargegaj.recipesharing.domain.repository.UserRepository
+import com.diargegaj.recipesharing.domain.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,7 +20,26 @@ class ChangeEmailViewModel @Inject constructor(
     val changeEmailState = _changeEmailState.asStateFlow()
 
     fun confirmOldEmail() {
+        val email = _changeEmailState.value.oldEmail
+        val password = _changeEmailState.value.password
+        viewModelScope.launch {
+            when (userRepository.reAuthenticateUser(email = email, password = password)) {
+                is Resource.Success -> {
+                    val newEmail = _changeEmailState.value.newEmail
+                    changeUserEmail(newEmail)
+                }
 
+                is Resource.Error -> {
+
+                }
+
+                else -> Unit
+            }
+        }
+    }
+
+    private suspend fun changeUserEmail(email: String) {
+        val result = userRepository.changeUserEmail(email)
     }
 
     fun onEmailChange() {
@@ -41,6 +63,12 @@ class ChangeEmailViewModel @Inject constructor(
     fun onDismissDialog() {
         _changeEmailState.value = _changeEmailState.value.copy(
             showAuthDialog = false
+        )
+    }
+
+    fun newEmailUpdated(email: String) {
+        _changeEmailState.value = _changeEmailState.value.copy(
+            newEmail = email
         )
     }
 }

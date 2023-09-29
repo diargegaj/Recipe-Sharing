@@ -25,4 +25,7 @@ interface UserRepository {
 
     suspend fun updateUserProfilePhotoUrl(userId: String, imageUrl: String): Resource<Unit>
 
+    suspend fun reAuthenticateUser(email: String, password: String): Resource<Unit>
+
+    suspend fun changeUserEmail(email: String): Resource<Unit>
 }
