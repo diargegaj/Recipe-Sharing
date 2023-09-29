@@ -19,4 +19,11 @@
     <string name="settings">Settings</string>
     <string name="change_profile_picture">Change profile picture</string>
     <string name="change_name">Change name</string>
+    <string name="update_email">Update email</string>
+    <string name="new_email">New email</string>
+    <string name="password">Password</string>
+    <string name="authentication">Authentication</string>
+    <string name="old_email">Old email</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
 </resources>
