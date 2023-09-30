@@ -9,16 +9,25 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,57 +39,103 @@ import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.diargegaj.recipesharing.R
 import com.diargegaj.recipesharing.domain.utils.Resource
+import com.diargegaj.recipesharing.presentation.navigation.RecipeNavigationActions
+import com.diargegaj.recipesharing.presentation.utils.DefaultAppBar
 import com.diargegaj.recipesharing.presentation.viewModel.settings.changeEmail.ChangeEmailViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChangeEmailScreen(
+    recipeNavigationActions: RecipeNavigationActions,
     viewModel: ChangeEmailViewModel = hiltViewModel()
 ) {
     val state by viewModel.changeEmailState.collectAsState()
+    val userMessage by viewModel.userMessageEvent.collectAsState(initial = null)
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+    val snackbarHostState = remember { SnackbarHostState() }
+
+
+    Surface(
+        modifier = Modifier.fillMaxSize()
     ) {
-        if (state.showAuthDialog) {
-            AuthDialog(
-                email = state.oldEmail,
-                password = state.password,
-                processState = state.processState,
-                newEmail = {
-                    viewModel.oldEmailUpdated(it)
-                },
-                newPassword = {
-                    viewModel.passwordUpdated(it)
-                },
-                onDismiss = { viewModel.onDismissDialog() },
-                onConfirm = {
-                    viewModel.confirmOldEmail()
-                }
-            )
-        }
-
-
-        EmailField(email = state.newEmail, state.processState is Resource.Error, onEmailChanged = {
-            viewModel.newEmailUpdated(it)
-        })
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Button(
-            onClick = {
-                viewModel.onEmailChange()
+        Scaffold(
+            topBar = {
+                DefaultAppBar(
+                    title = stringResource(id = R.string.change_email),
+                    navigationIcon = Icons.Default.ArrowBack,
+                    onNavigationClick = { recipeNavigationActions.goBack() })
             },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = stringResource(id = R.string.update_email))
+            snackbarHost = {
+                SnackbarHost(snackbarHostState) { data ->
+                    Snackbar(
+                        action = {
+                            TextButton(onClick = {
+                                data.dismiss()
+                            }) {
+                                Text(text = "Dismiss")
+                            }
+                        },
+                        content = {
+                            Text(text = data.visuals.message)
+                        }
+                    )
+                }
+            }
+
+        ) { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues = paddingValues)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                userMessage?.let { message ->
+                    LaunchedEffect(message) {
+                        snackbarHostState.showSnackbar(message = message)
+                    }
+                }
+                if (state.showAuthDialog) {
+                    AuthDialog(
+                        email = state.oldEmail,
+                        password = state.password,
+                        processState = state.reAuthState,
+                        newEmail = {
+                            viewModel.oldEmailUpdated(it)
+                        },
+                        newPassword = {
+                            viewModel.passwordUpdated(it)
+                        },
+                        onDismiss = { viewModel.onDismissDialog() },
+                        onConfirm = {
+                            viewModel.confirmOldEmail()
+                        }
+                    )
+                }
+
+
+                EmailField(
+                    email = state.newEmail,
+                    state.newEmailState,
+                    onEmailChanged = {
+                        viewModel.newEmailUpdated(it)
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Button(
+                    onClick = {
+                        viewModel.onEmailChange()
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = stringResource(id = R.string.update_email))
+                }
+            }
         }
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -112,7 +167,7 @@ fun AuthDialog(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                EmailField(email = email, isError, onEmailChanged = {
+                EmailField(email = email, processState, onEmailChanged = {
                     newEmail(it)
                 })
 
@@ -165,7 +220,8 @@ fun AuthDialog(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EmailField(email: String, isError: Boolean, onEmailChanged: (String) -> Unit) {
+fun EmailField(email: String, state: Resource<*>, onEmailChanged: (String) -> Unit) {
+    val isError = state is Resource.Error
     TextField(
         modifier = Modifier.fillMaxWidth(),
         value = email,
@@ -183,6 +239,7 @@ fun EmailField(email: String, isError: Boolean, onEmailChanged: (String) -> Unit
         isError = isError
     )
     if (isError) {
-        Text("Invalid email format", color = Color.Red, fontSize = 12.sp)
+        val message = (state as Resource.Error).exception.message ?: ""
+        Text(text = message, color = Color.Red, fontSize = 12.sp)
     }
 }

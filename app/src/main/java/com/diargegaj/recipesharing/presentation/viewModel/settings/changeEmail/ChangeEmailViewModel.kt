@@ -7,7 +7,9 @@ import com.diargegaj.recipesharing.domain.models.settings.changeEmail.ChangeEmai
 import com.diargegaj.recipesharing.domain.repository.UserRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,6 +21,9 @@ class ChangeEmailViewModel @Inject constructor(
 
     private val _changeEmailState = MutableStateFlow(ChangeEmailState())
     val changeEmailState = _changeEmailState.asStateFlow()
+
+    private val _userMessageEvent = MutableSharedFlow<String>(replay = 0)
+    val userMessageEvent = _userMessageEvent.asSharedFlow()
 
     fun confirmOldEmail() {
         val email = _changeEmailState.value.oldEmail
@@ -33,7 +38,7 @@ class ChangeEmailViewModel @Inject constructor(
 
                 is Resource.Error -> {
                     _changeEmailState.value = _changeEmailState.value.copy(
-                        processState = Resource.Error(Exception("Email or password is wrong."))
+                        reAuthState = Resource.Error(Exception("Email or password is wrong."))
                     )
                 }
 
@@ -43,7 +48,26 @@ class ChangeEmailViewModel @Inject constructor(
     }
 
     private suspend fun changeUserEmail(email: String) {
-        val result = userRepository.changeUserEmail(email)
+        when (userRepository.changeUserEmail(email)) {
+            is Resource.Success -> {
+                _userMessageEvent.emit(
+                    "Email successfully updated"
+                )
+                resetToDefault()
+            }
+
+            is Resource.Error -> {
+                _userMessageEvent.emit(
+                    "Error while updating email"
+                )
+            }
+
+            else -> Unit
+        }
+    }
+
+    private fun resetToDefault() {
+        _changeEmailState.value = ChangeEmailState()
     }
 
     fun onEmailChange() {
@@ -52,7 +76,7 @@ class ChangeEmailViewModel @Inject constructor(
 
         _changeEmailState.value = _changeEmailState.value.copy(
             showAuthDialog = isValidEmail,
-            processState = if (isValidEmail) Resource.Success(Unit) else Resource.Error(Exception("Invalid email."))
+            newEmailState = if (isValidEmail) Resource.Success(Unit) else Resource.Error(Exception("Invalid email format."))
         )
     }
 
@@ -80,6 +104,7 @@ class ChangeEmailViewModel @Inject constructor(
         )
     }
 
-    fun isValidEmail(email: String): Boolean = Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    private fun isValidEmail(email: String): Boolean =
+        Patterns.EMAIL_ADDRESS.matcher(email).matches()
 
 }

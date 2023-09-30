@@ -64,7 +64,7 @@ fun NavGraphBuilder.editAccountInfoRoute(recipeNavigationActions: RecipeNavigati
         EditAccountScreen(recipeNavigationActions = recipeNavigationActions)
     }
     composable(Screen.ChangeEmail.route) {
-        ChangeEmailScreen()
+        ChangeEmailScreen(recipeNavigationActions = recipeNavigationActions)
     }
     composable(Screen.ChangePassword.route) {
         ChangePasswordScreen()

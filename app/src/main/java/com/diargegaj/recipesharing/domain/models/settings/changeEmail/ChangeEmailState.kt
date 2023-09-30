@@ -6,6 +6,7 @@ data class ChangeEmailState(
     val oldEmail: String = "",
     val newEmail: String = "",
     val password: String = "",
-    val processState: Resource<Unit> = Resource.Success(Unit),
+    val reAuthState: Resource<Unit> = Resource.Success(Unit),
+    val newEmailState: Resource<Unit> = Resource.Success(Unit),
     val showAuthDialog: Boolean = false
 )
