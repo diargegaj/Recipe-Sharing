@@ -26,4 +26,5 @@
     <string name="old_email">Old email</string>
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
+    <string name="email">Email</string>
 </resources>

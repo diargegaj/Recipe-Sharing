@@ -15,17 +15,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.diargegaj.recipesharing.R
+import com.diargegaj.recipesharing.domain.utils.Resource
 import com.diargegaj.recipesharing.presentation.viewModel.settings.changeEmail.ChangeEmailViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,6 +50,7 @@ fun ChangeEmailScreen(
             AuthDialog(
                 email = state.oldEmail,
                 password = state.password,
+                processState = state.processState,
                 newEmail = {
                     viewModel.oldEmailUpdated(it)
                 },
@@ -58,12 +63,11 @@ fun ChangeEmailScreen(
                 }
             )
         }
-        TextField(
-            value = state.newEmail,
-            onValueChange = { viewModel.newEmailUpdated(it) },
-            label = { Text(text = stringResource(id = R.string.new_email)) },
-            modifier = Modifier.fillMaxWidth()
-        )
+
+
+        EmailField(email = state.newEmail, state.processState is Resource.Error, onEmailChanged = {
+            viewModel.newEmailUpdated(it)
+        })
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -84,11 +88,13 @@ fun ChangeEmailScreen(
 fun AuthDialog(
     email: String,
     password: String,
+    processState: Resource<*>,
     newEmail: (email: String) -> Unit,
     newPassword: (password: String) -> Unit,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
+    val isError = processState is Resource.Error
     Dialog(onDismissRequest = onDismiss) {
         Surface(
             shape = RoundedCornerShape(8.dp)
@@ -106,21 +112,26 @@ fun AuthDialog(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                TextField(
-                    value = email,
-                    onValueChange = { newEmail(it) },
-                    label = { Text(text = stringResource(id = R.string.old_email)) },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                EmailField(email = email, isError, onEmailChanged = {
+                    newEmail(it)
+                })
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 TextField(
                     value = password,
-                    onValueChange = { newPassword(it) },
+                    onValueChange = {
+                        newPassword(it)
+                    },
                     label = { Text(text = stringResource(id = R.string.password)) },
                     visualTransformation = PasswordVisualTransformation(),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = if (isError) TextFieldDefaults.textFieldColors(
+                        errorLabelColor = Color.Red,
+                        errorCursorColor = Color.Red,
+                        textColor = Color.Red
+                    ) else TextFieldDefaults.textFieldColors(),
+                    isError = isError
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -139,7 +150,9 @@ fun AuthDialog(
 
                     Button(
                         onClick = {
-                            onConfirm()
+                            if (email.isNotEmpty() && password.isNotEmpty()) {
+                                onConfirm()
+                            }
                         }
                     ) {
                         Text(text = stringResource(id = R.string.confirm))
@@ -147,5 +160,29 @@ fun AuthDialog(
                 }
             }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EmailField(email: String, isError: Boolean, onEmailChanged: (String) -> Unit) {
+    TextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = email,
+        onValueChange = {
+            onEmailChanged(it)
+        },
+        label = {
+            Text(text = stringResource(id = R.string.email))
+        },
+        colors = if (isError) TextFieldDefaults.textFieldColors(
+            errorLabelColor = Color.Red,
+            errorCursorColor = Color.Red,
+            textColor = Color.Red
+        ) else TextFieldDefaults.textFieldColors(),
+        isError = isError
+    )
+    if (isError) {
+        Text("Invalid email format", color = Color.Red, fontSize = 12.sp)
     }
 }

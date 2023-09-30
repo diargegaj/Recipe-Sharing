@@ -1,5 +1,6 @@
 package com.diargegaj.recipesharing.presentation.viewModel.settings.changeEmail
 
+import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.diargegaj.recipesharing.domain.models.settings.changeEmail.ChangeEmailState
@@ -22,6 +23,7 @@ class ChangeEmailViewModel @Inject constructor(
     fun confirmOldEmail() {
         val email = _changeEmailState.value.oldEmail
         val password = _changeEmailState.value.password
+
         viewModelScope.launch {
             when (userRepository.reAuthenticateUser(email = email, password = password)) {
                 is Resource.Success -> {
@@ -30,7 +32,9 @@ class ChangeEmailViewModel @Inject constructor(
                 }
 
                 is Resource.Error -> {
-
+                    _changeEmailState.value = _changeEmailState.value.copy(
+                        processState = Resource.Error(Exception("Email or password is wrong."))
+                    )
                 }
 
                 else -> Unit
@@ -43,8 +47,12 @@ class ChangeEmailViewModel @Inject constructor(
     }
 
     fun onEmailChange() {
+        val newEmail = _changeEmailState.value.newEmail
+        val isValidEmail = isValidEmail(newEmail)
+
         _changeEmailState.value = _changeEmailState.value.copy(
-            showAuthDialog = true
+            showAuthDialog = isValidEmail,
+            processState = if (isValidEmail) Resource.Success(Unit) else Resource.Error(Exception("Invalid email."))
         )
     }
 
@@ -71,4 +79,7 @@ class ChangeEmailViewModel @Inject constructor(
             newEmail = email
         )
     }
+
+    fun isValidEmail(email: String): Boolean = Patterns.EMAIL_ADDRESS.matcher(email).matches()
+
 }
