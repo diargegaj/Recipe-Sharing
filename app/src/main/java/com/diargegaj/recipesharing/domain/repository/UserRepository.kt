@@ -28,4 +28,8 @@ interface UserRepository {
     suspend fun reAuthenticateUser(email: String, password: String): Resource<Unit>
 
     suspend fun changeUserEmail(email: String): Resource<Unit>
+
+    fun getCurrentUser(): FirebaseUser?
+
+    suspend fun changeUserPassword(newPassword: String): Resource<Unit>
 }

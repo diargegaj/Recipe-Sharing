@@ -165,4 +165,20 @@ class UserRepositoryImpl @Inject constructor(
                 }
             }
         }
+
+    override fun getCurrentUser() = auth.currentUser
+
+    override suspend fun changeUserPassword(newPassword: String): Resource<Unit> =
+        withContext(Dispatchers.IO) {
+            safeCall {
+                val user = getCurrentUser()
+
+                if (user != null) {
+                    user.updatePassword(newPassword).await()
+                    Resource.Success(Unit)
+                } else {
+                    Resource.Error(Exception("Can not find user."))
+                }
+            }
+        }
 }
