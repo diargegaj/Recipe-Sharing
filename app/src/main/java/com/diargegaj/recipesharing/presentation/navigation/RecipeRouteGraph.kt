@@ -76,7 +76,7 @@ fun NavGraphBuilder.editProfileInfoRoute(recipeNavigationActions: RecipeNavigati
         EditProfileScreen(recipeNavigationActions = recipeNavigationActions)
     }
     composable(Screen.ChangeProfilePicture.route) {
-        ChangeProfilePictureScreen()
+        ChangeProfilePictureScreen(recipeNavigationActions = recipeNavigationActions)
     }
     composable(Screen.ChangeName.route) {
         ChangeNameScreen(recipeNavigationActions = recipeNavigationActions)
