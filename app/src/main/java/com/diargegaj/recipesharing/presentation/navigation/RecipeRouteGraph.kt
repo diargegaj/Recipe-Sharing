@@ -55,6 +55,7 @@ fun NavGraphBuilder.homeRoute(recipeNavigationActions: RecipeNavigationActions) 
         arguments = listOf(navArgument("recipeId") { type = NavType.StringType })
     ) { backStackEntry ->
         EditRecipeScreen(
+            recipeNavigationActions = recipeNavigationActions,
             backStackEntry = backStackEntry
         )
     }

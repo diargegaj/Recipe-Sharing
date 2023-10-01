@@ -1,5 +1,7 @@
 package com.diargegaj.recipesharing.presentation.screens.home.recipes.editRecipe
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,8 +11,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -28,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import com.diargegaj.recipesharing.R
+import com.diargegaj.recipesharing.presentation.navigation.RecipeNavigationActions
 import com.diargegaj.recipesharing.presentation.screens.home.recipes.IngredientTextField
 import com.diargegaj.recipesharing.presentation.screens.home.recipes.recipeDetails.RecipeImage
 import com.diargegaj.recipesharing.presentation.utils.DefaultAppBar
@@ -36,6 +42,7 @@ import com.diargegaj.recipesharing.presentation.viewModel.home.recipes.editRecip
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditRecipeScreen(
+    recipeNavigationActions: RecipeNavigationActions,
     backStackEntry: NavBackStackEntry,
     viewModel: EditRecipeViewModel = hiltViewModel(backStackEntry)
 ) {
@@ -50,7 +57,7 @@ fun EditRecipeScreen(
                     title = stringResource(id = R.string.edit_recipe),
                     navigationIcon = Icons.Default.ArrowBack,
                     onNavigationClick = {
-
+                        recipeNavigationActions.goBack()
                     }
                 )
             }
@@ -75,31 +82,42 @@ fun EditRecipeScreen(
                 }
 
                 item {
-                    Text(
-                        text = stringResource(id = R.string.recipe_title),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.recipe_title),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
 
-                    TextField(
-                        value = recipe.title,
-                        onValueChange = { viewModel.updateTitle(it) }
-                    )
+                        TextField(
+                            value = recipe.title,
+                            onValueChange = { viewModel.updateTitle(it) },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                     Spacer(modifier = Modifier.height(8.dp))
                 }
 
                 item {
-                    Text(
-                        text = stringResource(id = R.string.recipe_description),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.recipe_description),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
 
-                    TextField(
-                        value = recipe.description,
-                        onValueChange = { viewModel.updateDescription(it) }
-                    )
-
+                        TextField(
+                            value = recipe.description,
+                            onValueChange = { viewModel.updateDescription(it) },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                     Spacer(modifier = Modifier.height(8.dp))
                 }
 
@@ -112,11 +130,23 @@ fun EditRecipeScreen(
                 }
 
                 items(recipe.ingredients.size) { index ->
-                    IngredientTextField(
-                        currentValue = recipe.ingredients[index],
-                        onValueChange = { newValue ->
-                            viewModel.updateIngredient(index, newValue)
-                        })
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IngredientTextField(
+                            currentValue = recipe.ingredients[index],
+                            onValueChange = { newValue ->
+                                viewModel.updateIngredient(index, newValue)
+                            })
+
+                        IconButton(onClick = {
+
+                        }) {
+                            Icon(imageVector = Icons.Default.Delete, contentDescription = "")
+                        }
+                    }
+
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 
@@ -126,12 +156,6 @@ fun EditRecipeScreen(
                     }
 
                     Spacer(modifier = Modifier.height(8.dp))
-
-                    Button(onClick = {
-
-                    }) {
-                        Text("Discard Changes")
-                    }
                 }
             }
         }
