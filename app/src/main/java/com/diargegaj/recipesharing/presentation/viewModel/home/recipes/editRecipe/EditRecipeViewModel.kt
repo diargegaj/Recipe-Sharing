@@ -7,8 +7,10 @@ import com.diargegaj.recipesharing.domain.models.recipe.recipeDetails.RecipeDeta
 import com.diargegaj.recipesharing.domain.repository.RecipeRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,6 +23,9 @@ class EditRecipeViewModel @Inject constructor(
 
     private val _recipeState = MutableStateFlow(RecipeDetailsModel())
     val recipeState: StateFlow<RecipeDetailsModel> = _recipeState.asStateFlow()
+
+    private val _userMessageEvent = MutableSharedFlow<String>(replay = 0)
+    val userMessageEvent = _userMessageEvent.asSharedFlow()
 
     var recipeId: String
 
@@ -40,7 +45,9 @@ class EditRecipeViewModel @Inject constructor(
                     }
 
                     is Resource.Error -> {
-
+                        _userMessageEvent.emit(
+                            "Failed loading recipe data."
+                        )
                     }
 
                     else -> Unit
@@ -55,11 +62,15 @@ class EditRecipeViewModel @Inject constructor(
 
             when (recipeRepository.updateRecipe(recipe)) {
                 is Resource.Success -> {
-
+                    _userMessageEvent.emit(
+                        "Recipe updated successfully."
+                    )
                 }
 
                 is Resource.Error -> {
-
+                    _userMessageEvent.emit(
+                        "Failed to update recipe. Please try again."
+                    )
                 }
 
                 else -> Unit

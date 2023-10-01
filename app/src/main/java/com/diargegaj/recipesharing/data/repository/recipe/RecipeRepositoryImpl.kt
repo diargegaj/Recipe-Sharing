@@ -132,6 +132,7 @@ class RecipeRepositoryImpl @Inject constructor(
         withContext(Dispatchers.IO) {
             safeCall {
                 firestoreDataSource.updateRecipe(recipe.mapToDto())
+                updateRecipesFromFirestore()
                 Resource.Success(Unit)
             }
         }
