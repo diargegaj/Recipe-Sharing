@@ -112,6 +112,9 @@ class UserProfileViewModel @Inject constructor(
         when (result) {
             is Resource.Success -> {
                 updateUserDataFromFirestore()
+                _messages.emit(
+                    "Profile photo updated."
+                )
             }
 
             is Resource.Error -> {
