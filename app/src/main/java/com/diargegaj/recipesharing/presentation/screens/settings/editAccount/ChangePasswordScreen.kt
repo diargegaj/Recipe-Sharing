@@ -33,7 +33,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.diargegaj.recipesharing.R
 import com.diargegaj.recipesharing.presentation.navigation.RecipeNavigationActions
 import com.diargegaj.recipesharing.presentation.utils.DefaultAppBar
-import com.diargegaj.recipesharing.presentation.viewModel.settings.changeEmail.ChangePasswordViewModel
+import com.diargegaj.recipesharing.presentation.viewModel.settings.changePassword.ChangePasswordViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -1,4 +1,4 @@
-package com.diargegaj.recipesharing.presentation.viewModel.settings.changeEmail
+package com.diargegaj.recipesharing.presentation.viewModel.settings.changePassword
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
