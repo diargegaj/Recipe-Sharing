@@ -25,4 +25,13 @@ interface UserRepository {
 
     suspend fun updateUserProfilePhotoUrl(userId: String, imageUrl: String): Resource<Unit>
 
+    suspend fun reAuthenticateUser(email: String, password: String): Resource<Unit>
+
+    suspend fun changeUserEmail(email: String): Resource<Unit>
+
+    fun getCurrentUser(): FirebaseUser?
+
+    suspend fun changeUserPassword(newPassword: String): Resource<Unit>
+
+    suspend fun updateUserName(name: String, lastName: String): Resource<Unit>
 }

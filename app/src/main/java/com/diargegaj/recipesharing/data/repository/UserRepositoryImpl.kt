@@ -13,8 +13,10 @@ import com.diargegaj.recipesharing.data.utils.safeCall
 import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.domain.repository.UserRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -136,4 +138,81 @@ class UserRepositoryImpl @Inject constructor(
             Resource.Success(Unit)
         }
     }
+
+    override suspend fun reAuthenticateUser(email: String, password: String): Resource<Unit> =
+        withContext(Dispatchers.IO) {
+            safeCall {
+                val user = auth.currentUser
+                if (user != null) {
+                    val credential = EmailAuthProvider.getCredential(email, password)
+                    user.reauthenticate(credential).await()
+                    Resource.Success(Unit)
+                } else {
+                    Resource.Error(NotFoundException("No current user to re-authenticate"))
+                }
+            }
+        }
+
+    override suspend fun changeUserEmail(email: String): Resource<Unit> =
+        withContext(Dispatchers.IO) {
+            safeCall {
+                val user = auth.currentUser
+
+                if (user != null) {
+                    user.updateEmail(email).await()
+                    Resource.Success(Unit)
+                } else {
+                    Resource.Error(NotFoundException("Can not find user."))
+                }
+            }
+        }
+
+    override fun getCurrentUser() = auth.currentUser
+
+    override suspend fun changeUserPassword(newPassword: String): Resource<Unit> =
+        withContext(Dispatchers.IO) {
+            safeCall {
+                val user = getCurrentUser()
+
+                if (user != null) {
+                    user.updatePassword(newPassword).await()
+                    Resource.Success(Unit)
+                } else {
+                    Resource.Error(Exception("Can not find user."))
+                }
+            }
+        }
+
+    override suspend fun updateUserName(name: String, lastName: String): Resource<Unit> =
+        withContext(Dispatchers.IO) {
+            safeCall {
+                val user = getCurrentUser()
+
+                if (user != null) {
+                    updateNameToFirestore(user, name, lastName)
+                    updateDisplayName(user, name, lastName)
+                    Resource.Success(Unit)
+                } else {
+                    Resource.Error(Exception("Can not find user."))
+                }
+            }
+        }
+
+    private suspend fun updateDisplayName(user: FirebaseUser, name: String, lastName: String) =
+        withContext(Dispatchers.IO) {
+            val profileUpdates = UserProfileChangeRequest.Builder()
+                .setDisplayName("$name $lastName")
+                .build()
+
+            user.updateProfile(profileUpdates).await()
+        }
+
+    private suspend fun updateNameToFirestore(user: FirebaseUser, name: String, lastName: String) =
+        withContext(Dispatchers.IO) {
+            val userDocument =
+                fireStore.collection(DBCollection.User.collectionName).document(user.uid)
+
+            userDocument.update("name", name).await()
+            userDocument.update("lastName", lastName).await()
+        }
 }

@@ -3,6 +3,7 @@ package com.diargegaj.recipesharing.presentation.screens.home.recipes.recipeDeta
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,7 +29,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -102,16 +104,13 @@ fun RecipeDetailsScreen(
                         .padding(horizontal = 16.dp)
                 ) {
                     item {
-                        Column(
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            RecipeImage(
-                                modifier = Modifier
-                                    .width(250.dp)
-                                    .align(CenterHorizontally),
-                                imageUrl = recipe.imageUrl
-                            )
-                        }
+                        RecipeImage(
+                            imageUrl = recipe.imageUrl,
+                            modifier = Modifier
+                                .height(200.dp)
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(8.dp))
+                        )
 
                         Spacer(modifier = Modifier.height(16.dp))
                     }
@@ -142,7 +141,7 @@ fun RecipeDetailsScreen(
                     item {
                         Text(
                             text = recipe.description,
-                            style = MaterialTheme.typography.labelSmall
+                            style = MaterialTheme.typography.labelMedium
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                     }
@@ -214,23 +213,41 @@ fun UserInfo(user: UserModel) {
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.08f))
-            .padding(8.dp)
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        LoadImage(
-            imageUrl = user.profilePhotoUrl,
-            contentDescription = "User Image",
-            shape = CircleShape,
+        Box(
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.primary, CircleShape)
-                .size(40.dp)
+                .size(50.dp)
                 .clip(CircleShape)
-        )
+                .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.12f)),
+            contentAlignment = Alignment.Center
+        ) {
+            LoadImage(
+                imageUrl = user.profilePhotoUrl,
+                contentDescription = "User Image",
+                shape = CircleShape,
+                modifier = Modifier
+                    .size(46.dp)
+                    .clip(CircleShape)
+            )
+        }
+
+        Spacer(modifier = Modifier.width(12.dp))
 
         Column(
             Modifier.padding(start = 10.dp)
         ) {
-            Text(text = "${user.name} ${user.lastName}", fontWeight = FontWeight.Bold)
-            Text(text = user.email, style = MaterialTheme.typography.labelMedium)
+            Text(
+                text = "${user.name} ${user.lastName}",
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = user.email,
+                style = MaterialTheme.typography.labelMedium
+            )
         }
     }
 }

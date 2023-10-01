@@ -7,8 +7,15 @@ import androidx.navigation.navArgument
 import com.diargegaj.recipesharing.presentation.screens.auth.LoginScreen
 import com.diargegaj.recipesharing.presentation.screens.auth.RegisterScreen
 import com.diargegaj.recipesharing.presentation.screens.home.HomeScreen
-import com.diargegaj.recipesharing.presentation.screens.home.recipes.recipeDetails.RecipeDetailsScreen
 import com.diargegaj.recipesharing.presentation.screens.home.recipes.RecipesWithHeader
+import com.diargegaj.recipesharing.presentation.screens.home.recipes.recipeDetails.RecipeDetailsScreen
+import com.diargegaj.recipesharing.presentation.screens.settings.SettingsScreen
+import com.diargegaj.recipesharing.presentation.screens.settings.editAccount.ChangeEmailScreen
+import com.diargegaj.recipesharing.presentation.screens.settings.editAccount.ChangePasswordScreen
+import com.diargegaj.recipesharing.presentation.screens.settings.editAccount.EditAccountScreen
+import com.diargegaj.recipesharing.presentation.screens.settings.editProfile.ChangeNameScreen
+import com.diargegaj.recipesharing.presentation.screens.settings.editProfile.ChangeProfilePictureScreen
+import com.diargegaj.recipesharing.presentation.screens.settings.editProfile.EditProfileScreen
 
 fun NavGraphBuilder.authRoute(recipeNavigationActions: RecipeNavigationActions) {
     composable(Screen.LoginScreen.route) {
@@ -18,7 +25,6 @@ fun NavGraphBuilder.authRoute(recipeNavigationActions: RecipeNavigationActions) 
         RegisterScreen(recipeNavigationActions = recipeNavigationActions)
     }
 }
-
 
 fun NavGraphBuilder.homeRoute(recipeNavigationActions: RecipeNavigationActions) {
     composable(Screen.HomeScreen.route) {
@@ -42,5 +48,37 @@ fun NavGraphBuilder.homeRoute(recipeNavigationActions: RecipeNavigationActions) 
             backStackEntry = backStackEntry,
             recipeNavigationActions = recipeNavigationActions
         )
+    }
+}
+
+fun NavGraphBuilder.settingsRoute(recipeNavigationActions: RecipeNavigationActions) {
+    composable(Screen.Settings.route) {
+        SettingsScreen(recipeNavigationActions = recipeNavigationActions)
+    }
+    editAccountInfoRoute(recipeNavigationActions = recipeNavigationActions)
+    editProfileInfoRoute(recipeNavigationActions = recipeNavigationActions)
+}
+
+fun NavGraphBuilder.editAccountInfoRoute(recipeNavigationActions: RecipeNavigationActions) {
+    composable(Screen.AccountInfo.route) {
+        EditAccountScreen(recipeNavigationActions = recipeNavigationActions)
+    }
+    composable(Screen.ChangeEmail.route) {
+        ChangeEmailScreen(recipeNavigationActions = recipeNavigationActions)
+    }
+    composable(Screen.ChangePassword.route) {
+        ChangePasswordScreen(recipeNavigationActions = recipeNavigationActions)
+    }
+}
+
+fun NavGraphBuilder.editProfileInfoRoute(recipeNavigationActions: RecipeNavigationActions) {
+    composable(Screen.ProfileInfo.route) {
+        EditProfileScreen(recipeNavigationActions = recipeNavigationActions)
+    }
+    composable(Screen.ChangeProfilePicture.route) {
+        ChangeProfilePictureScreen(recipeNavigationActions = recipeNavigationActions)
+    }
+    composable(Screen.ChangeName.route) {
+        ChangeNameScreen(recipeNavigationActions = recipeNavigationActions)
     }
 }

@@ -58,7 +58,7 @@ fun HomeScreen(
                         searchQuery = searchQuery,
                         onSearchChanged = { searchViewModel.onNewSearchQuery(it) },
                         navigationIcon = Icons.Default.Menu,
-                        onNavigationClick = { TODO("Handle icon click...") },
+                        onNavigationClick = { recipeNavigationActions.navigateToSettings() },
                         onSearchAction = {
                             searchViewModel.onNewSearchQuery(searchQuery)
                         },
@@ -68,7 +68,7 @@ fun HomeScreen(
                     DefaultAppBar(
                         title = stringResource(id = R.string.app_name),
                         navigationIcon = Icons.Default.Menu,
-                        onNavigationClick = { TODO("Handle icon click...") },
+                        onNavigationClick = { recipeNavigationActions.navigateToSettings() },
                         actions = {
                             if (homeState.shouldShowSearchIcon) {
                                 IconButton(onClick = { homeViewModel.onSearchIconClicked() }) {
