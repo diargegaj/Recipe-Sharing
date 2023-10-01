@@ -41,4 +41,11 @@ class FirestoreRecipeDataSource @Inject constructor(
             feedbackDto
         }
     }
+
+    suspend fun updateRecipe(recipeDto: RecipeDto) {
+        firestore.collection(DBCollection.Recipe.collectionName)
+            .document(recipeDto.recipeId)
+            .set(recipeDto)
+            .await()
+    }
 }

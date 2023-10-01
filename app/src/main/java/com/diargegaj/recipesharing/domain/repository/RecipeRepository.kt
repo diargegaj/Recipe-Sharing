@@ -22,4 +22,6 @@ interface RecipeRepository {
 
     fun getFeedbacksPerRecipe(recipeId: String): Flow<Resource<List<FeedbackModel>>>
 
+    suspend fun updateRecipe(recipe: RecipeDetailsModel): Resource<Unit>
+
 }

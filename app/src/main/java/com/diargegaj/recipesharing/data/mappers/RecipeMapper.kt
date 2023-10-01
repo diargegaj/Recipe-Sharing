@@ -72,3 +72,14 @@ fun RecipeEntity.mapToRecipeModel(): RecipeModel {
         userId = this.userId
     )
 }
+
+fun RecipeDetailsModel.mapToDto(): RecipeDto {
+    return RecipeDto(
+        recipeId = this.recipeId,
+        title = this.title,
+        description = this.description,
+        ingredients = this.ingredients,
+        imageUrl = this.imageUrl,
+        userId = this.userModel?.userUUID ?: ""
+    )
+}

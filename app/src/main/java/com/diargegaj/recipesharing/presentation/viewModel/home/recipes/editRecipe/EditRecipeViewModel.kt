@@ -50,7 +50,21 @@ class EditRecipeViewModel @Inject constructor(
     }
 
     fun saveChanges() {
+        viewModelScope.launch {
+            val recipe = _recipeState.value
 
+            when (recipeRepository.updateRecipe(recipe)) {
+                is Resource.Success -> {
+
+                }
+
+                is Resource.Error -> {
+
+                }
+
+                else -> Unit
+            }
+        }
     }
 
     fun updateTitle(title: String) {
