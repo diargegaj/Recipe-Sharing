@@ -12,12 +12,18 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -35,6 +41,15 @@ fun ChangeNameScreen(
     viewModel: ChangeNameViewModel = hiltViewModel()
 ) {
     val state by viewModel.changeNameState.collectAsState()
+    val userMessage by viewModel.userMessageEvent.collectAsState(initial = null)
+
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    userMessage?.let { message ->
+        LaunchedEffect(message) {
+            snackbarHostState.showSnackbar(message = message)
+        }
+    }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -47,6 +62,22 @@ fun ChangeNameScreen(
                     navigationIcon = Icons.Default.ArrowBack,
                     onNavigationClick = { recipeNavigationActions.goBack() }
                 )
+            },
+            snackbarHost = {
+                SnackbarHost(snackbarHostState) { data ->
+                    Snackbar(
+                        action = {
+                            TextButton(onClick = {
+                                data.dismiss()
+                            }) {
+                                Text(text = stringResource(id = R.string.dismiss))
+                            }
+                        },
+                        content = {
+                            Text(text = data.visuals.message)
+                        }
+                    )
+                }
             }
         ) { paddingValues ->
             Column(
