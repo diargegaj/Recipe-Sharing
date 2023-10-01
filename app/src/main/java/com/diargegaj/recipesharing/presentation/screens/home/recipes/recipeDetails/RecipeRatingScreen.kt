@@ -70,7 +70,11 @@ fun RecipeFeedbackSection(
         style = MaterialTheme.typography.titleMedium
     )
 
-    FeedbackList(feedbacks = usersFeedbacks, onFeedbackClicked)
+    if (usersFeedbacks.isEmpty()) {
+        Text(text = stringResource(id = R.string.no_feedbacks))
+    } else {
+        FeedbackList(feedbacks = usersFeedbacks, onFeedbackClicked)
+    }
 
 }
 
