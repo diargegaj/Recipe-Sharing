@@ -32,4 +32,6 @@ interface UserRepository {
     fun getCurrentUser(): FirebaseUser?
 
     suspend fun changeUserPassword(newPassword: String): Resource<Unit>
+
+    suspend fun updateUserName(name: String, lastName: String): Resource<Unit>
 }

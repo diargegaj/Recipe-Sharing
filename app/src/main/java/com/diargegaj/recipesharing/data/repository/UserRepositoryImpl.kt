@@ -16,6 +16,7 @@ import com.diargegaj.recipesharing.domain.utils.Resource
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -180,5 +181,38 @@ class UserRepositoryImpl @Inject constructor(
                     Resource.Error(Exception("Can not find user."))
                 }
             }
+        }
+
+    override suspend fun updateUserName(name: String, lastName: String): Resource<Unit> =
+        withContext(Dispatchers.IO) {
+            safeCall {
+                val user = getCurrentUser()
+
+                if (user != null) {
+                    updateNameToFirestore(user, name, lastName)
+                    updateDisplayName(user, name, lastName)
+                    Resource.Success(Unit)
+                } else {
+                    Resource.Error(Exception("Can not find user."))
+                }
+            }
+        }
+
+    private suspend fun updateDisplayName(user: FirebaseUser, name: String, lastName: String) =
+        withContext(Dispatchers.IO) {
+            val profileUpdates = UserProfileChangeRequest.Builder()
+                .setDisplayName("$name $lastName")
+                .build()
+
+            user.updateProfile(profileUpdates).await()
+        }
+
+    private suspend fun updateNameToFirestore(user: FirebaseUser, name: String, lastName: String) =
+        withContext(Dispatchers.IO) {
+            val userDocument =
+                fireStore.collection(DBCollection.User.collectionName).document(user.uid)
+
+            userDocument.update("name", name).await()
+            userDocument.update("lastName", lastName).await()
         }
 }
