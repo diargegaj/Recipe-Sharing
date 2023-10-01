@@ -1,5 +1,6 @@
 package com.diargegaj.recipesharing.presentation.screens.home.recipes.editRecipe
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -34,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -44,6 +46,7 @@ import com.diargegaj.recipesharing.presentation.navigation.RecipeNavigationActio
 import com.diargegaj.recipesharing.presentation.screens.home.recipes.IngredientTextField
 import com.diargegaj.recipesharing.presentation.screens.home.recipes.recipeDetails.RecipeImage
 import com.diargegaj.recipesharing.presentation.utils.DefaultAppBar
+import com.diargegaj.recipesharing.presentation.utils.ImagePicker
 import com.diargegaj.recipesharing.presentation.viewModel.home.recipes.editRecipe.EditRecipeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,6 +57,7 @@ fun EditRecipeScreen(
     viewModel: EditRecipeViewModel = hiltViewModel(backStackEntry)
 ) {
     val recipe by viewModel.recipeState.collectAsState()
+    val recipeImage by viewModel.recipeImage.collectAsState()
     val userMessage by viewModel.userMessageEvent.collectAsState(initial = null)
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -102,13 +106,30 @@ fun EditRecipeScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 item {
-                    RecipeImage(
-                        imageUrl = recipe.imageUrl,
-                        modifier = Modifier
-                            .height(200.dp)
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(8.dp))
-                    )
+                    ImagePicker(modifier = Modifier
+                        .height(200.dp)
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp)),
+                        image = recipeImage,
+                        onImagePicked = { pickedImage ->
+                            viewModel.updatePickedImage(
+                                pickedImage = pickedImage
+                            )
+                        }
+                    ) {
+                        RecipeImage(
+                            modifier = Modifier
+                                .height(200.dp)
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(8.dp)),
+                            imageUrl = recipe.imageUrl
+                        )
+                        Image(
+                            alignment = Alignment.BottomEnd,
+                            painter = painterResource(id = R.drawable.ic_edit),
+                            contentDescription = "Edit icon"
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(16.dp))
                 }
