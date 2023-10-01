@@ -54,6 +54,11 @@ fun ChangeEmailScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
+    userMessage?.let { message ->
+        LaunchedEffect(message) {
+            snackbarHostState.showSnackbar(message = message)
+        }
+    }
 
     Surface(
         modifier = Modifier.fillMaxSize()
@@ -72,7 +77,7 @@ fun ChangeEmailScreen(
                             TextButton(onClick = {
                                 data.dismiss()
                             }) {
-                                Text(text = "Dismiss")
+                                Text(text = stringResource(id = R.string.dismiss))
                             }
                         },
                         content = {
@@ -91,11 +96,6 @@ fun ChangeEmailScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                userMessage?.let { message ->
-                    LaunchedEffect(message) {
-                        snackbarHostState.showSnackbar(message = message)
-                    }
-                }
                 if (state.showAuthDialog) {
                     AuthDialog(
                         email = state.oldEmail,
