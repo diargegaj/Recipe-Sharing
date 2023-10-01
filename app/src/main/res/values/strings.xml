@@ -37,4 +37,5 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="edit_recipe">Edit recipe</string>
+    <string name="save_changes">Save changes</string>
 </resources>

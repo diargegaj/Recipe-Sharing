@@ -141,7 +141,7 @@ fun EditRecipeScreen(
                             })
 
                         IconButton(onClick = {
-
+                            viewModel.deleteIngredient(index)
                         }) {
                             Icon(imageVector = Icons.Default.Delete, contentDescription = "")
                         }
@@ -152,7 +152,7 @@ fun EditRecipeScreen(
 
                 item {
                     Button(onClick = { viewModel.saveChanges() }) {
-                        Text("Save Changes")
+                        Text(text = stringResource(id = R.string.save_changes))
                     }
 
                     Spacer(modifier = Modifier.height(8.dp))

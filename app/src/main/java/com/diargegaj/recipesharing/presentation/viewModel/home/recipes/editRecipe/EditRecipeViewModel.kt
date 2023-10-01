@@ -86,4 +86,12 @@ class EditRecipeViewModel @Inject constructor(
         }
     }
 
+    fun deleteIngredient(index: Int) {
+        val ingredients = _recipeState.value.ingredients.toMutableList()
+        ingredients.removeAt(index)
+        _recipeState.value = _recipeState.value.copy(
+            ingredients = ingredients
+        )
+    }
+
 }
