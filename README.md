@@ -5,11 +5,11 @@ Recipe Sharing is an Android app that allows users to post and share their favor
 ## 📸 Screenshot of the App
 
 <div align="center">
-  <img src="./app_screnshoots/Screenshot_1.png" alt="Screenshot 1" width="200"/>
-  <img src="./app_screnshoots/Screenshot_2.png" alt="Screenshot 2" width="200"/>
+  <img src="./app_screnshoots/Screenshot_21.png" alt="Screenshot 1" width="200"/>
+  <img src="./app_screnshoots/Screenshot_22.png" alt="Screenshot 2" width="200"/>
   <img src="./app_screnshoots/Screenshot_3.png" alt="Screenshot 3" width="200"/>
-  <img src="./app_screnshoots/Screenshot_18.png" alt="Screenshot 18" width="200"/>
-  <img src="./app_screnshoots/Screenshot_19.png" alt="Screenshot 19" width="200"/>
+  <img src="./app_screnshoots/Screenshot_24.png" alt="Screenshot 18" width="200"/>
+  <img src="./app_screnshoots/Screenshot_23.png" alt="Screenshot 19" width="200"/>
   <img src="./app_screnshoots/Screenshot_20.png" alt="Screenshot 20" width="200"/>
 </div>
 
