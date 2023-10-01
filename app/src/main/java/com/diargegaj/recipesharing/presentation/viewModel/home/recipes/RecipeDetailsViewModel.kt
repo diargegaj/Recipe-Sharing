@@ -114,9 +114,14 @@ class RecipeDetailsViewModel @Inject constructor(
 
     private fun getRecipeFromCache() {
         viewModelScope.launch {
+            val loggedInUserId = when (val result = userRepository.getUserId()) {
+                is Resource.Success -> result.data
+                else -> ""
+            }
             recipeRepository.getRecipeDetailsWithId(recipeId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
+                        result.data.isPostedByLoggedUser = loggedInUserId == result.data.userModel?.userUUID
                         _state.value = result.data
                     }
 

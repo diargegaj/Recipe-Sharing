@@ -34,4 +34,6 @@
     <string name="last_name">Last name</string>
     <string name="first_name">First name</string>
     <string name="no_feedbacks">There are no feedbacks for this recipe</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 </resources>
