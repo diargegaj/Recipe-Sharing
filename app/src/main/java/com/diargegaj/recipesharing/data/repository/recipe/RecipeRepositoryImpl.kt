@@ -136,4 +136,14 @@ class RecipeRepositoryImpl @Inject constructor(
                 Resource.Success(Unit)
             }
         }
+
+    override suspend fun deleteRecipe(recipeId: String): Resource<Unit> =
+        withContext(Dispatchers.IO) {
+            safeCall {
+                firestoreDataSource.deleteRecipe(recipeId)
+                databaseDataSource.deleteRecipe(recipeId)
+                updateRecipesFromFirestore()
+                Resource.Success(Unit)
+            }
+        }
 }

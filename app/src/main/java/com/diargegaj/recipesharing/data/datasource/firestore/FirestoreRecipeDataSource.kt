@@ -1,5 +1,6 @@
 package com.diargegaj.recipesharing.data.datasource.firestore
 
+import DBCollection
 import com.diargegaj.recipesharing.data.models.RecipeDto
 import com.diargegaj.recipesharing.data.models.recipe.FeedbackDto
 import com.google.firebase.firestore.FirebaseFirestore
@@ -46,6 +47,13 @@ class FirestoreRecipeDataSource @Inject constructor(
         firestore.collection(DBCollection.Recipe.collectionName)
             .document(recipeDto.recipeId)
             .set(recipeDto)
+            .await()
+    }
+
+    suspend fun deleteRecipe(recipeId: String) {
+        firestore.collection(DBCollection.Recipe.collectionName)
+            .document(recipeId)
+            .delete()
             .await()
     }
 }

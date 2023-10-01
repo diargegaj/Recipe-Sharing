@@ -24,4 +24,6 @@ interface RecipeRepository {
 
     suspend fun updateRecipe(recipe: RecipeDetailsModel): Resource<Unit>
 
+    suspend fun deleteRecipe(recipeId: String): Resource<Unit>
+
 }

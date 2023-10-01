@@ -137,6 +137,26 @@ class RecipeDetailsViewModel @Inject constructor(
         }
     }
 
+    fun deleteRecipe() {
+        viewModelScope.launch {
+            when (recipeRepository.deleteRecipe(recipeId)) {
+                is Resource.Success -> {
+                    _messages.emit(
+                        "Recipe deleted successfully"
+                    )
+                }
+
+                is Resource.Error -> {
+                    _messages.emit(
+                        "Failed to delete recipe"
+                    )
+                }
+
+                else -> Unit
+            }
+        }
+    }
+
     private var _currentRating = MutableStateFlow(1)
     val currentRating = _currentRating.asStateFlow()
 

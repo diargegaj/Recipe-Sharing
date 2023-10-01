@@ -110,7 +110,7 @@ fun RecipeDetailsScreen(
                                 recipeNavigationActions.navigateToEditRecipe(recipeId = recipe.recipeId)
                             },
                             onDelete = {
-
+                                viewModel.deleteRecipe()
                             }
                         )
                     }
