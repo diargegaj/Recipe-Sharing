@@ -107,7 +107,7 @@ fun RecipeDetailsScreen(
                         RecipeDetailsTopBarActions(
                             shouldShow = recipe.isPostedByLoggedUser,
                             onEdit = {
-
+                                recipeNavigationActions.navigateToEditRecipe(recipeId = recipe.recipeId)
                             },
                             onDelete = {
 
