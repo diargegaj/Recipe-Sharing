@@ -30,6 +30,7 @@ import com.diargegaj.recipesharing.domain.enums.settings.SettingItem
 import com.diargegaj.recipesharing.presentation.navigation.RecipeNavigationActions
 import com.diargegaj.recipesharing.presentation.screens.home.recipes.RightButton
 import com.diargegaj.recipesharing.presentation.utils.DefaultAppBar
+import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,7 +64,8 @@ fun SettingsScreen(
                 Spacer(modifier = Modifier.weight(0.5f))
 
                 SettingsItem(item = SettingItem.LOG_OUT) {
-
+                    FirebaseAuth.getInstance().signOut()
+                    recipeNavigationActions.navigateToLogin()
                 }
             }
         }
