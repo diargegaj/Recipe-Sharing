@@ -114,9 +114,14 @@ class RecipeDetailsViewModel @Inject constructor(
 
     private fun getRecipeFromCache() {
         viewModelScope.launch {
+            val loggedInUserId = when (val result = userRepository.getUserId()) {
+                is Resource.Success -> result.data
+                else -> ""
+            }
             recipeRepository.getRecipeDetailsWithId(recipeId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
+                        result.data.isPostedByLoggedUser = loggedInUserId == result.data.userModel?.userUUID
                         _state.value = result.data
                     }
 
@@ -128,6 +133,26 @@ class RecipeDetailsViewModel @Inject constructor(
 
                     else -> Unit
                 }
+            }
+        }
+    }
+
+    fun deleteRecipe() {
+        viewModelScope.launch {
+            when (recipeRepository.deleteRecipe(recipeId)) {
+                is Resource.Success -> {
+                    _messages.emit(
+                        "Recipe deleted successfully"
+                    )
+                }
+
+                is Resource.Error -> {
+                    _messages.emit(
+                        "Failed to delete recipe"
+                    )
+                }
+
+                else -> Unit
             }
         }
     }

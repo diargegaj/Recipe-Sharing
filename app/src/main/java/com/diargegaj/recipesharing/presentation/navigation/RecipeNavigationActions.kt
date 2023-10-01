@@ -41,6 +41,10 @@ class RecipeNavigationActions(val navController: NavHostController) {
         navController.navigate(Screen.Settings.route)
     }
 
+    fun navigateToEditRecipe(recipeId: String) {
+        navController.navigate(Screen.EditRecipe.route + "/$recipeId")
+    }
+
     fun navigateTo(route: String) {
         navController.navigate(route)
     }

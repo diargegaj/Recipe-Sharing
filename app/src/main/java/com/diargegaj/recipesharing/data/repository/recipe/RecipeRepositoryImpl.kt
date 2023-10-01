@@ -127,4 +127,23 @@ class RecipeRepositoryImpl @Inject constructor(
                 Resource.Error(Exception(e.message))
             }
     }
+
+    override suspend fun updateRecipe(recipe: RecipeDetailsModel): Resource<Unit> =
+        withContext(Dispatchers.IO) {
+            safeCall {
+                firestoreDataSource.updateRecipe(recipe.mapToDto())
+                updateRecipesFromFirestore()
+                Resource.Success(Unit)
+            }
+        }
+
+    override suspend fun deleteRecipe(recipeId: String): Resource<Unit> =
+        withContext(Dispatchers.IO) {
+            safeCall {
+                firestoreDataSource.deleteRecipe(recipeId)
+                databaseDataSource.deleteRecipe(recipeId)
+                updateRecipesFromFirestore()
+                Resource.Success(Unit)
+            }
+        }
 }

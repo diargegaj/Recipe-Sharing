@@ -68,4 +68,8 @@ class DatabaseRecipeDataSource @Inject constructor(
             feedbackDao.insertFeedback(feedbackEntity)
         }
     }
+
+    suspend fun deleteRecipe(recipeId: String) {
+        recipeDao.deleteRecipe(recipeId)
+    }
 }

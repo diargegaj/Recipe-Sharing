@@ -8,6 +8,7 @@ import com.diargegaj.recipesharing.presentation.screens.auth.LoginScreen
 import com.diargegaj.recipesharing.presentation.screens.auth.RegisterScreen
 import com.diargegaj.recipesharing.presentation.screens.home.HomeScreen
 import com.diargegaj.recipesharing.presentation.screens.home.recipes.RecipesWithHeader
+import com.diargegaj.recipesharing.presentation.screens.home.recipes.editRecipe.EditRecipeScreen
 import com.diargegaj.recipesharing.presentation.screens.home.recipes.recipeDetails.RecipeDetailsScreen
 import com.diargegaj.recipesharing.presentation.screens.settings.SettingsScreen
 import com.diargegaj.recipesharing.presentation.screens.settings.editAccount.ChangeEmailScreen
@@ -47,6 +48,15 @@ fun NavGraphBuilder.homeRoute(recipeNavigationActions: RecipeNavigationActions) 
         RecipeDetailsScreen(
             backStackEntry = backStackEntry,
             recipeNavigationActions = recipeNavigationActions
+        )
+    }
+    composable(
+        Screen.EditRecipe.route + "/{recipeId}",
+        arguments = listOf(navArgument("recipeId") { type = NavType.StringType })
+    ) { backStackEntry ->
+        EditRecipeScreen(
+            recipeNavigationActions = recipeNavigationActions,
+            backStackEntry = backStackEntry
         )
     }
 }
