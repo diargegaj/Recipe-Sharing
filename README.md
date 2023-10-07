@@ -11,11 +11,18 @@ Recipe Sharing is an Android app that allows users to post and share their favor
   <img src="./app_screnshoots/Screenshot_24.png" alt="Screenshot 18" width="200"/>
   <img src="./app_screnshoots/Screenshot_23.png" alt="Screenshot 19" width="200"/>
   <img src="./app_screnshoots/Screenshot_20.png" alt="Screenshot 20" width="200"/>
+  <img src="./app_screnshoots/Screenshot_25.png" alt="Screenshot 20" width="200"/>
+  <img src="./app_screnshoots/Screenshot_26.png" alt="Screenshot 20" width="200"/>
+  <img src="./app_screnshoots/Screenshot_27.png" alt="Screenshot 20" width="200"/>
+  <img src="./app_screnshoots/Screenshot_28.png" alt="Screenshot 20" width="200"/>
+  <img src="./app_screnshoots/Screenshot_29.png" alt="Screenshot 20" width="200"/>
 </div>
 
 ## 🚀 Features
 
 - **User Authentication**: Sign in, register and manage your account.
+- **Social Interactions**:
+    - **Follow & Unfollow Users**: Engage with other users by following them and manage your own followers.
 - **Post and Edit Recipes**: Share your culinary wisdom.
 - **Search and View**: Discover recipes posted by other users.
 - **Detailed Recipe Information**: Includes ingredients, steps, and author info.
