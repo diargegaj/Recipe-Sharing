@@ -27,6 +27,7 @@ class UserProfileViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var userId: String = ""
+    private var isLoggedInUser = false
 
     private val _userState = MutableStateFlow(emptyUserModel())
     val userState: StateFlow<UserModel> = _userState.asStateFlow()
@@ -44,6 +45,8 @@ class UserProfileViewModel @Inject constructor(
         userId = savedStateHandle?.get<String>("userId")?.takeIf { it.isNotEmpty() }
             ?: when (val result = userRepository.getUserId()) {
                 is Resource.Success -> {
+                    isLoggedInUser = true
+                    updateLoggedInUserState()
                     result.data
                 }
 
@@ -51,11 +54,18 @@ class UserProfileViewModel @Inject constructor(
             }
     }
 
+    private fun updateLoggedInUserState() {
+        _userState.value = _userState.value.copy(
+            isCurrentUser = isLoggedInUser
+        )
+    }
+
     private fun updateUserDataFromFirestore() {
         viewModelScope.launch {
             when (val result = userRepository.getUserInfoFromFirestore(userId)) {
                 is Resource.Success -> {
                     userRepository.saveUserInfoOnCache(result.data)
+                    updateLoggedInUserState()
                 }
 
                 is Resource.Error -> {
@@ -75,6 +85,7 @@ class UserProfileViewModel @Inject constructor(
                 when (result) {
                     is Resource.Success -> {
                         _userState.value = result.data
+                        updateLoggedInUserState()
                     }
 
                     else -> Unit

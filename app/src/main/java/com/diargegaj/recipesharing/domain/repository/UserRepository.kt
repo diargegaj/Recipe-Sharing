@@ -19,7 +19,7 @@ interface UserRepository {
 
     fun getUserInfoFromCache(userId: String): Flow<Resource<UserModel>>
 
-    suspend fun saveUserInfoOnCache(userModel: UserModel): Resource<Any>
+    suspend fun saveUserInfoOnCache(userModel: UserModel): Resource<Unit>
 
     fun getUserId(): Resource<String>
 
@@ -34,4 +34,13 @@ interface UserRepository {
     suspend fun changeUserPassword(newPassword: String): Resource<Unit>
 
     suspend fun updateUserName(name: String, lastName: String): Resource<Unit>
+
+    fun isUserFollowing(loggedInUserId: String, otherUserId: String): Flow<Resource<Boolean>>
+
+    suspend fun followUser(loggedInUserId: String, otherUserId: String): Resource<Unit>
+
+    suspend fun unfollowUser(loggedInUserId: String, otherUserId: String): Resource<Unit>
+
+    suspend fun updateUserInfoFromFirestore(userId: String): Resource<Unit>
+
 }

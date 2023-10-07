@@ -38,4 +38,8 @@
     <string name="delete">Delete</string>
     <string name="edit_recipe">Edit recipe</string>
     <string name="save_changes">Save changes</string>
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
+    <string name="unfollow">Unfollow</string>
+    <string name="follow">Follow</string>
 </resources>

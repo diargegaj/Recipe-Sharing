@@ -8,7 +8,10 @@ data class UserModel(
     val lastName: String,
     val email: String,
     val profilePhotoUrl: String = "",
-    val userRecipes: List<RecipeModel> = listOf()
+    val userRecipes: List<RecipeModel> = listOf(),
+    val followersCount: Int = 0,
+    val followingCount: Int = 0,
+    val isCurrentUser: Boolean = false
 ) {
     fun getUserFullName() = "$name $lastName"
 }
