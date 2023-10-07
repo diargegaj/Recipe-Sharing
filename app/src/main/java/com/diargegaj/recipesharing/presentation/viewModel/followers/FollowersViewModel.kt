@@ -128,16 +128,18 @@ class FollowersViewModel @Inject constructor(
         }
     }
 
-    private fun handleFollowSuccess(targetUserId: String) {
+    private suspend fun handleFollowSuccess(targetUserId: String) {
         val updatedFollowers = updateFollowStateInList(_followers.value, targetUserId, true)
         _followers.value = updatedFollowers
         _isFollowing.value = true
+        userRepository.updateUserInfoFromFirestore(targetUserId)
     }
 
-    private fun handleUnfollowSuccess(targetUserId: String) {
+    private suspend fun handleUnfollowSuccess(targetUserId: String) {
         val updatedFollowers = updateFollowStateInList(_followers.value, targetUserId, false)
         _followers.value = updatedFollowers
         _isFollowing.value = false
+        userRepository.updateUserInfoFromFirestore(targetUserId)
     }
 
     private fun updateFollowStateInList(
