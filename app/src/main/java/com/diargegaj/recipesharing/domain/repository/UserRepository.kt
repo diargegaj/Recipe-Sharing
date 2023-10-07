@@ -43,4 +43,13 @@ interface UserRepository {
 
     suspend fun updateUserInfoFromFirestore(userId: String): Resource<Unit>
 
+    suspend fun getFollowersForUser(
+        userId: String,
+        currentUserId: String
+    ): Resource<List<UserModel>>
+
+    suspend fun getFollowingForUser(
+        userId: String,
+        currentUserId: String
+    ): Resource<List<UserModel>>
 }
