@@ -1,6 +1,5 @@
 package com.diargegaj.recipesharing.presentation.viewModel.user
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,7 +20,6 @@ class OtherUserViewModel @Inject constructor(
     init {
         userId = savedStateHandle["userId"] ?: ""
         updateUserDataFromFirestore()
-        Log.d("diari1", "on init other user viewmodel")
     }
 
     private fun updateUserDataFromFirestore() {

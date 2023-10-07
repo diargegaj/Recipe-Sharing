@@ -4,4 +4,9 @@ sealed class DBCollection(val collectionName: String) {
     object Recipe : DBCollection("recipes")
     object Feedbacks : DBCollection("feedbacks")
 
+    object Following : DBCollection("following")
+    object Followers : DBCollection("followers")
+
+    object UserFollowing : DBCollection("userFollowing")
+    object UserFollowers : DBCollection("userFollowers")
 }
