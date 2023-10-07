@@ -11,7 +11,8 @@ data class UserModel(
     val userRecipes: List<RecipeModel> = listOf(),
     val followersCount: Int = 0,
     val followingCount: Int = 0,
-    val isCurrentUser: Boolean = false
+    val isCurrentUser: Boolean = false,
+    var isFollowedByCurrentUser: Boolean = false
 ) {
     fun getUserFullName() = "$name $lastName"
 }
