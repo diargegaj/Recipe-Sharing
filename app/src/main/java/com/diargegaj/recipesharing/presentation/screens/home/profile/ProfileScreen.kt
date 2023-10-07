@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -38,15 +39,18 @@ import com.diargegaj.recipesharing.domain.models.recipe.RecipeModel
 import com.diargegaj.recipesharing.presentation.navigation.RecipeNavigationActions
 import com.diargegaj.recipesharing.presentation.utils.LoadImage
 import com.diargegaj.recipesharing.presentation.utils.hiltViewModelFromEntry
+import com.diargegaj.recipesharing.presentation.viewModel.followers.FollowersViewModel
 import com.diargegaj.recipesharing.presentation.viewModel.home.profile.UserProfileViewModel
 
 @Composable
 fun ProfileScreen(
     recipeNavigationActions: RecipeNavigationActions,
     backStackEntry: NavBackStackEntry? = null,
-    viewModel: UserProfileViewModel = hiltViewModelFromEntry(backStackEntry)
+    viewModel: UserProfileViewModel = hiltViewModelFromEntry(entry = backStackEntry),
+    followersViewModel: FollowersViewModel = hiltViewModelFromEntry(entry = backStackEntry)
 ) {
     val userState by viewModel.userState.collectAsState()
+    val isFollowing by followersViewModel.isFollowing.collectAsState()
     val messages by viewModel.messages.collectAsState(initial = "")
 
     if (messages.isNotEmpty()) {
@@ -56,7 +60,16 @@ fun ProfileScreen(
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        ProfileHeader(user = userState)
+        ProfileHeader(
+            user = userState,
+            isFollowing = isFollowing,
+            onFollowClicked = {
+                followersViewModel.onFollowClicked()
+            },
+            onUnfollowClicked = {
+                followersViewModel.onUnfollowCLicked()
+            }
+        )
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -97,7 +110,12 @@ fun RecipeThumbnail(recipe: RecipeModel, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ProfileHeader(user: UserModel) {
+fun ProfileHeader(
+    user: UserModel,
+    isFollowing: Boolean,
+    onFollowClicked: () -> Unit,
+    onUnfollowClicked: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -126,7 +144,7 @@ fun ProfileHeader(user: UserModel) {
                             fontWeight = FontWeight.Bold,
                             style = TextStyle(fontSize = 20.sp)
                         )
-                        Text(text = "Followers")
+                        Text(text = stringResource(id = R.string.followers))
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
@@ -134,7 +152,7 @@ fun ProfileHeader(user: UserModel) {
                             fontWeight = FontWeight.Bold,
                             style = TextStyle(fontSize = 20.sp)
                         )
-                        Text(text = "Following")
+                        Text(text = stringResource(id = R.string.following))
                     }
                 }
             }
@@ -146,5 +164,42 @@ fun ProfileHeader(user: UserModel) {
 
         Spacer(modifier = Modifier.height(4.dp))
 
+        FollowerButton(
+            isCurrentUser = user.isCurrentUser,
+            isFollowing = isFollowing,
+            onFollowClicked = onFollowClicked,
+            onUnfollowClicked = onUnfollowClicked,
+            Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally)
+        )
+    }
+}
+
+@Composable
+fun FollowerButton(
+    isCurrentUser: Boolean,
+    isFollowing: Boolean,
+    onFollowClicked: () -> Unit,
+    onUnfollowClicked: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    if (!isCurrentUser) {
+        if (isFollowing) {
+            Button(
+                modifier = modifier,
+                onClick = onUnfollowClicked
+            ) {
+                Text(text = stringResource(id = R.string.unfollow))
+            }
+        } else {
+            Button(
+                modifier = modifier,
+                onClick = onFollowClicked
+            ) {
+                Text(text = stringResource(id = R.string.follow))
+            }
+        }
     }
 }
