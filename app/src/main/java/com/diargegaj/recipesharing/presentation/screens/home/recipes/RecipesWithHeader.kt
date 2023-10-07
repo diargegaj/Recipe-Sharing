@@ -35,7 +35,7 @@ fun RecipesWithHeader(
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
                 DefaultAppBar(
-                    title = stringResource(id = R.string.my_recipes),
+                    title = stringResource(id = R.string.recipes),
                     navigationIcon = Icons.Default.ArrowBack,
                     onNavigationClick = { recipeNavigationActions.goBack() },
                     scrollBehavior = scrollBehavior

@@ -82,7 +82,7 @@ fun ProfileScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            text = stringResource(id = R.string.my_recipes),
+            text = stringResource(id = R.string.recipes),
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 
