@@ -1,6 +1,7 @@
 package com.diargegaj.recipesharing.presentation.viewModel.home.profile
 
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.diargegaj.recipesharing.domain.enums.ImagePath
@@ -20,6 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserProfileViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle? = null,
     private val userRepository: UserRepository,
     private val imageUploadRepository: ImageUploadRepository
 ) : ViewModel() {
@@ -39,13 +41,14 @@ class UserProfileViewModel @Inject constructor(
     }
 
     private fun updateLocalUserID() {
-        when (val result = userRepository.getUserId()) {
-            is Resource.Success -> {
-                userId = result.data
-            }
+        userId = savedStateHandle?.get<String>("userId")?.takeIf { it.isNotEmpty() }
+            ?: when (val result = userRepository.getUserId()) {
+                is Resource.Success -> {
+                    result.data
+                }
 
-            else -> Unit
-        }
+                else -> throw IllegalArgumentException("UserId is required.")
+            }
     }
 
     private fun updateUserDataFromFirestore() {

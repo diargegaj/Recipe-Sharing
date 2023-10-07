@@ -28,17 +28,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import com.diargegaj.recipesharing.R
 import com.diargegaj.recipesharing.domain.models.recipe.RecipeModel
 import com.diargegaj.recipesharing.presentation.navigation.RecipeNavigationActions
 import com.diargegaj.recipesharing.presentation.utils.LoadImage
+import com.diargegaj.recipesharing.presentation.utils.hiltViewModelFromEntry
 import com.diargegaj.recipesharing.presentation.viewModel.home.profile.UserProfileViewModel
 
 @Composable
 fun ProfileScreen(
     recipeNavigationActions: RecipeNavigationActions,
-    viewModel: UserProfileViewModel = hiltViewModel()
+    backStackEntry: NavBackStackEntry? = null,
+    viewModel: UserProfileViewModel = hiltViewModelFromEntry(backStackEntry)
 ) {
     val userState by viewModel.userState.collectAsState()
     val messages by viewModel.messages.collectAsState(initial = "")
@@ -80,7 +82,7 @@ fun ProfileScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            text = stringResource(id = R.string.my_recipes),
+            text = stringResource(id = R.string.recipes),
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 

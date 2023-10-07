@@ -18,5 +18,6 @@ fun Navigation(navigationActions: RecipeNavigationActions) {
         authRoute(recipeNavigationActions = navigationActions)
         homeRoute(recipeNavigationActions = navigationActions)
         settingsRoute(recipeNavigationActions = navigationActions)
+        userRoute(recipeNavigationActions = navigationActions)
     }
 }
