@@ -17,6 +17,7 @@ import com.diargegaj.recipesharing.presentation.screens.settings.editAccount.Edi
 import com.diargegaj.recipesharing.presentation.screens.settings.editProfile.ChangeNameScreen
 import com.diargegaj.recipesharing.presentation.screens.settings.editProfile.ChangeProfilePictureScreen
 import com.diargegaj.recipesharing.presentation.screens.settings.editProfile.EditProfileScreen
+import com.diargegaj.recipesharing.presentation.screens.user.OtherUserProfile
 
 fun NavGraphBuilder.authRoute(recipeNavigationActions: RecipeNavigationActions) {
     composable(Screen.LoginScreen.route) {
@@ -90,5 +91,17 @@ fun NavGraphBuilder.editProfileInfoRoute(recipeNavigationActions: RecipeNavigati
     }
     composable(Screen.ChangeName.route) {
         ChangeNameScreen(recipeNavigationActions = recipeNavigationActions)
+    }
+}
+
+fun NavGraphBuilder.userRoute(recipeNavigationActions: RecipeNavigationActions) {
+    composable(
+        Screen.OtherUserProfile.route + "/{userId}",
+        arguments = listOf(navArgument("userId") { type = NavType.StringType })
+    ) { backStackEntry ->
+        OtherUserProfile(
+            backStackEntry = backStackEntry,
+            recipeNavigationActions
+        )
     }
 }

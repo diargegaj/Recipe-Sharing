@@ -2,6 +2,7 @@ package com.diargegaj.recipesharing.presentation.screens.home.recipes.recipeDeta
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,6 +49,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.compose.rememberNavController
 import com.diargegaj.recipesharing.R
 import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.domain.models.emptyUserModel
@@ -153,7 +155,10 @@ fun RecipeDetailsScreen(
                     }
 
                     item {
-                        UserInfo(recipe.userModel ?: emptyUserModel())
+                        UserInfo(
+                            user = recipe.userModel ?: emptyUserModel(),
+                            recipeNavigationActions = recipeNavigationActions
+                        )
 
                         Spacer(modifier = Modifier.height(16.dp))
                     }
@@ -267,12 +272,20 @@ fun RecipeImage(
 }
 
 @Composable
-fun UserInfo(user: UserModel) {
+fun UserInfo(
+    user: UserModel,
+    recipeNavigationActions: RecipeNavigationActions = RecipeNavigationActions.create(
+        navController = rememberNavController()
+    )
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.08f))
-            .padding(8.dp),
+            .padding(8.dp)
+            .clickable {
+                recipeNavigationActions.navigateToUserProfile(user.userUUID)
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
