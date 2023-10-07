@@ -49,6 +49,14 @@ class RecipeNavigationActions constructor(val navController: NavHostController) 
         navController.navigate(Screen.OtherUserProfile.route + "/$userId")
     }
 
+    fun navigateToUserFollowers(userId: String) {
+        navController.navigate(Screen.UserFollowers.route + "/$userId")
+    }
+
+    fun navigateToUserFollowing(userId: String) {
+        navController.navigate(Screen.UserFollowing.route + "/$userId")
+    }
+
     fun navigateTo(route: String) {
         navController.navigate(route)
     }

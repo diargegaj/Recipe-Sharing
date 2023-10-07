@@ -63,6 +63,7 @@ fun ProfileScreen(
         ProfileHeader(
             user = userState,
             isFollowing = isFollowing,
+            recipeNavigationActions = recipeNavigationActions,
             onFollowClicked = {
                 followersViewModel.onFollowClicked()
             },
@@ -113,6 +114,7 @@ fun RecipeThumbnail(recipe: RecipeModel, modifier: Modifier = Modifier) {
 fun ProfileHeader(
     user: UserModel,
     isFollowing: Boolean,
+    recipeNavigationActions: RecipeNavigationActions,
     onFollowClicked: () -> Unit,
     onUnfollowClicked: () -> Unit
 ) {
@@ -138,7 +140,12 @@ fun ProfileHeader(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.clickable {
+                            recipeNavigationActions.navigateToUserFollowers(user.userUUID)
+                        }
+                    ) {
                         Text(
                             text = "${user.followersCount}",
                             fontWeight = FontWeight.Bold,
@@ -146,7 +153,12 @@ fun ProfileHeader(
                         )
                         Text(text = stringResource(id = R.string.followers))
                     }
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.clickable {
+                            recipeNavigationActions.navigateToUserFollowing(user.userUUID)
+                        }
+                    ) {
                         Text(
                             text = "${user.followingCount}",
                             fontWeight = FontWeight.Bold,
