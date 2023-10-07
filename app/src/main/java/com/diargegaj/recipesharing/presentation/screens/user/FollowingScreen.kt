@@ -55,7 +55,8 @@ fun FollowingScreen(
                         },
                         onUnfollowClicked = {
                             followersViewModel.onUnfollowUser(user.userUUID)
-                        }
+                        },
+                        recipeNavigationActions = recipeNavigationActions
                     )
                 }
             }

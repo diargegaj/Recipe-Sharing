@@ -1,6 +1,7 @@
 package com.diargegaj.recipesharing.presentation.screens.user
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -70,7 +71,8 @@ fun FollowersScreen(
                         },
                         onUnfollowClicked = {
                             followersViewModel.onUnfollowUser(user.userUUID)
-                        }
+                        },
+                        recipeNavigationActions = recipeNavigationActions
                     )
                 }
             }
@@ -82,12 +84,16 @@ fun FollowersScreen(
 fun FollowerItem(
     follower: UserModel,
     onFollowClicked: () -> Unit,
-    onUnfollowClicked: () -> Unit
+    onUnfollowClicked: () -> Unit,
+    recipeNavigationActions: RecipeNavigationActions
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(8.dp)
+            .clickable {
+                recipeNavigationActions.navigateToUserProfile(follower.userUUID)
+            },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
