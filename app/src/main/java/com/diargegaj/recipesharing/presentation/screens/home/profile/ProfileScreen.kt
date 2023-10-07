@@ -2,11 +2,13 @@ package com.diargegaj.recipesharing.presentation.screens.home.profile
 
 import android.widget.Toast
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,11 +27,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavBackStackEntry
 import com.diargegaj.recipesharing.R
+import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.domain.models.recipe.RecipeModel
 import com.diargegaj.recipesharing.presentation.navigation.RecipeNavigationActions
 import com.diargegaj.recipesharing.presentation.utils.LoadImage
@@ -50,34 +54,9 @@ fun ProfileScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.fillMaxSize()
     ) {
-        Box(
-            modifier = Modifier
-                .size(120.dp)
-                .shadow(4.dp, CircleShape) // Shadow for depth
-                .clip(CircleShape),
-            contentAlignment = Alignment.BottomEnd
-        ) {
-            LoadImage(
-                imageUrl = userState.profilePhotoUrl,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(CircleShape)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = userState.getUserFullName(),
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(text = userState.email, textAlign = TextAlign.Center)
+        ProfileHeader(user = userState)
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -115,4 +94,57 @@ fun RecipeThumbnail(recipe: RecipeModel, modifier: Modifier = Modifier) {
             .shadow(2.dp, RoundedCornerShape(8.dp))
     )
 
+}
+
+@Composable
+fun ProfileHeader(user: UserModel) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            LoadImage(
+                imageUrl = user.profilePhotoUrl,
+                contentDescription = "User profile image",
+                modifier = Modifier
+                    .size(80.dp)
+                    .clip(CircleShape)
+            )
+
+            Column(horizontalAlignment = Alignment.End) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "${user.followersCount}",
+                            fontWeight = FontWeight.Bold,
+                            style = TextStyle(fontSize = 20.sp)
+                        )
+                        Text(text = "Followers")
+                    }
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "${user.followingCount}",
+                            fontWeight = FontWeight.Bold,
+                            style = TextStyle(fontSize = 20.sp)
+                        )
+                        Text(text = "Following")
+                    }
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(text = user.getUserFullName(), fontWeight = FontWeight.Bold)
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+    }
 }
