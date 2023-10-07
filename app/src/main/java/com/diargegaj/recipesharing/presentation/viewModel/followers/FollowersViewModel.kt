@@ -1,8 +1,10 @@
 package com.diargegaj.recipesharing.presentation.viewModel.followers
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.domain.repository.UserRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,8 +27,13 @@ class FollowersViewModel @Inject constructor(
     private val _isFollowing = MutableStateFlow(false)
     val isFollowing: StateFlow<Boolean> = _isFollowing.asStateFlow()
 
+    private val _followers = MutableStateFlow<List<UserModel>>(listOf())
+    val followers: StateFlow<List<UserModel>> = _followers.asStateFlow()
+
+    private val _following = MutableStateFlow<List<UserModel>>(listOf())
+    val following: StateFlow<List<UserModel>> = _following.asStateFlow()
+
     init {
-        otherUserId = savedStateHandle?.get<String>("userId")?.takeIf { it.isNotEmpty() } ?: ""
         loggedInUserId = when (val result = userRepository.getUserId()) {
             is Resource.Success -> {
                 result.data
@@ -34,7 +41,45 @@ class FollowersViewModel @Inject constructor(
 
             else -> ""
         }
+        otherUserId =
+            savedStateHandle?.get<String>("userId")?.takeIf { it.isNotEmpty() } ?: loggedInUserId
         checkIsUserFollowing()
+        getFollowers()
+        getFollowing()
+    }
+
+    private fun getFollowing() {
+        viewModelScope.launch {
+            when (val result = userRepository.getFollowingForUser(otherUserId, loggedInUserId)) {
+                is Resource.Success -> {
+                    _followers.value = result.data
+                }
+
+                is Resource.Error -> {
+                    Log.d("diari1", "error ${result.exception}", result.exception)
+                }
+
+                else -> Unit
+            }
+
+        }
+    }
+
+    private fun getFollowers() {
+        viewModelScope.launch {
+            when (val result = userRepository.getFollowersForUser(otherUserId, loggedInUserId)) {
+                is Resource.Success -> {
+                    _followers.value = result.data
+                }
+
+                is Resource.Error -> {
+                    Log.d("diari1", "error ${result.exception}", result.exception)
+                }
+
+                else -> Unit
+            }
+
+        }
     }
 
     private fun checkIsUserFollowing() {
@@ -54,11 +99,14 @@ class FollowersViewModel @Inject constructor(
     }
 
     fun onUnfollowCLicked() {
+        onUnfollowUser(otherUserId)
+    }
+
+    fun onUnfollowUser(targetUserId: String) {
         viewModelScope.launch {
-            when (userRepository.unfollowUser(loggedInUserId, otherUserId)) {
+            when (userRepository.unfollowUser(loggedInUserId, targetUserId)) {
                 is Resource.Success -> {
-                    _isFollowing.value = false
-                    userRepository.updateUserInfoFromFirestore(otherUserId)
+                    handleUnfollowSuccess(targetUserId)
                 }
 
                 is Resource.Error -> {
@@ -71,11 +119,14 @@ class FollowersViewModel @Inject constructor(
     }
 
     fun onFollowClicked() {
+        onFollowUser(targetUserId = otherUserId)
+    }
+
+    fun onFollowUser(targetUserId: String) {
         viewModelScope.launch {
-            when (userRepository.followUser(loggedInUserId, otherUserId)) {
+            when (userRepository.followUser(loggedInUserId, targetUserId)) {
                 is Resource.Success -> {
-                    _isFollowing.value = true
-                    userRepository.updateUserInfoFromFirestore(otherUserId)
+                    handleFollowSuccess(targetUserId)
                 }
 
                 is Resource.Error -> {
@@ -83,6 +134,30 @@ class FollowersViewModel @Inject constructor(
 
                 else -> Unit
             }
+        }
+    }
+
+    private fun handleFollowSuccess(targetUserId: String) {
+        val updatedFollowers = updateFollowStateInList(_followers.value, targetUserId, true)
+        _followers.value = updatedFollowers
+        _isFollowing.value = true
+    }
+
+    private fun handleUnfollowSuccess(targetUserId: String) {
+        val updatedFollowers = updateFollowStateInList(_followers.value, targetUserId, false)
+        _followers.value = updatedFollowers
+        _isFollowing.value = false
+    }
+
+    private fun updateFollowStateInList(
+        users: List<UserModel>,
+        targetUserId: String,
+        isFollowing: Boolean
+    ): List<UserModel> {
+        return users.map { user ->
+            if (user.userUUID == targetUserId) {
+                user.copy(isFollowedByCurrentUser = isFollowing)
+            } else user
         }
     }
 }
