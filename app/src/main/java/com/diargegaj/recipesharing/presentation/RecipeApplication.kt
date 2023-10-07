@@ -14,9 +14,7 @@ fun RecipeApplication() {
 
         val navController = rememberNavController()
         val navigationActions = remember(navController) {
-            RecipeNavigationActions.create(
-                navController
-            )
+            RecipeNavigationActions(navController)
         }
         Navigation(navigationActions = navigationActions)
     }

@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.diargegaj.recipesharing.R
 import com.diargegaj.recipesharing.domain.models.emptyUserModel
 import com.diargegaj.recipesharing.domain.models.recipe.recipeDetails.FeedbackModel
+import com.diargegaj.recipesharing.presentation.navigation.RecipeNavigationActions
 
 @Composable
 fun RecipeFeedbackSection(
@@ -223,6 +224,7 @@ fun FeedbackInput(
 @Composable
 fun FeedbackInfo(
     feedbackModel: FeedbackModel,
+    recipeNavigationActions: RecipeNavigationActions,
     onDismiss: () -> Unit
 ) {
     AlertDialog(
@@ -232,7 +234,10 @@ fun FeedbackInfo(
         },
         text = {
             Column {
-                UserInfo(feedbackModel.userModel ?: emptyUserModel())
+                UserInfo(
+                    user = feedbackModel.userModel ?: emptyUserModel(),
+                    recipeNavigationActions = recipeNavigationActions
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 

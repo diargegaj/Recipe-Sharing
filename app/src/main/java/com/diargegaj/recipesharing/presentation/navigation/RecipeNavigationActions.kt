@@ -3,7 +3,7 @@ package com.diargegaj.recipesharing.presentation.navigation
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 
-class RecipeNavigationActions private constructor(val navController: NavHostController) {
+class RecipeNavigationActions constructor(val navController: NavHostController) {
 
     fun navigateToLogin() {
         navController.navigate(Screen.LoginScreen.route) {
@@ -55,12 +55,6 @@ class RecipeNavigationActions private constructor(val navController: NavHostCont
 
     fun goBack() {
         navController.popBackStack()
-    }
-
-    companion object {
-        fun create(navController: NavHostController): RecipeNavigationActions {
-            return RecipeNavigationActions(navController)
-        }
     }
 
 }

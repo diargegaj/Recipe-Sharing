@@ -49,7 +49,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.compose.rememberNavController
 import com.diargegaj.recipesharing.R
 import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.domain.models.emptyUserModel
@@ -82,6 +81,7 @@ fun RecipeDetailsScreen(
     if (showDialog.value && selectedFeedback.value != null) {
         FeedbackInfo(
             feedbackModel = selectedFeedback.value!!,
+            recipeNavigationActions = recipeNavigationActions,
             onDismiss = {
                 showDialog.value = false
                 selectedFeedback.value = null
@@ -274,9 +274,7 @@ fun RecipeImage(
 @Composable
 fun UserInfo(
     user: UserModel,
-    recipeNavigationActions: RecipeNavigationActions = RecipeNavigationActions.create(
-        navController = rememberNavController()
-    )
+    recipeNavigationActions: RecipeNavigationActions
 ) {
     Row(
         modifier = Modifier
