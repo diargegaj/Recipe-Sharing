@@ -17,10 +17,12 @@ import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
@@ -107,7 +109,7 @@ class UserRepositoryImpl @Inject constructor(
             }
     }
 
-    override suspend fun saveUserInfoOnCache(userModel: UserModel): Resource<Any> =
+    override suspend fun saveUserInfoOnCache(userModel: UserModel): Resource<Unit> =
         withContext(Dispatchers.IO) {
             val result = userDao.insert(userModel.mapToDto().mapToEntity())
             if (result != INSERTION_FAILED) {
@@ -197,6 +199,102 @@ class UserRepositoryImpl @Inject constructor(
                 }
             }
         }
+
+    override fun isUserFollowing(
+        loggedInUserId: String,
+        otherUserId: String
+    ): Flow<Resource<Boolean>> = flow<Resource<Boolean>> {
+        val docSnapshot = fireStore.collection("following")
+            .document(loggedInUserId)
+            .collection("userFollowing")
+            .document(otherUserId)
+            .get()
+            .await()
+
+        emit(Resource.Success(docSnapshot.exists()))
+    }.catch { throwable ->
+        emit(
+            Resource.Error(Exception(throwable))
+        )
+    }
+
+    override suspend fun followUser(loggedInUserId: String, otherUserId: String): Resource<Unit> {
+        return safeCall {
+            val batch = fireStore.batch()
+
+            val loggedInUserRef =
+                fireStore.collection(DBCollection.User.collectionName).document(loggedInUserId)
+            batch.update(loggedInUserRef, "followingCount", FieldValue.increment(1))
+
+            val otherUserRef =
+                fireStore.collection(DBCollection.User.collectionName).document(otherUserId)
+            batch.update(otherUserRef, "followersCount", FieldValue.increment(1))
+
+            val followingRef =
+                fireStore.collection(DBCollection.Following.collectionName).document(loggedInUserId)
+                    .collection(DBCollection.UserFollowing.collectionName).document(otherUserId)
+            batch.set(followingRef, mapOf("followingUserId" to otherUserId))
+
+            val followersRef =
+                fireStore.collection(DBCollection.Followers.collectionName).document(otherUserId)
+                    .collection(DBCollection.UserFollowers.collectionName)
+                    .document(loggedInUserId)
+            batch.set(followersRef, mapOf("followerUserId" to loggedInUserId))
+
+            batch.commit().await()
+
+            Resource.Success(Unit)
+        }
+    }
+
+    override suspend fun unfollowUser(loggedInUserId: String, otherUserId: String): Resource<Unit> {
+        return safeCall {
+            val batch = fireStore.batch()
+
+            val loggedInUserRef =
+                fireStore.collection(DBCollection.User.collectionName).document(loggedInUserId)
+            batch.update(loggedInUserRef, "followingCount", FieldValue.increment(-1))
+
+            val otherUserRef =
+                fireStore.collection(DBCollection.User.collectionName).document(otherUserId)
+            batch.update(otherUserRef, "followersCount", FieldValue.increment(-1))
+
+            val followingRef =
+                fireStore.collection(DBCollection.Following.collectionName).document(loggedInUserId)
+                    .collection(DBCollection.UserFollowing.collectionName).document(otherUserId)
+            batch.delete(followingRef)
+
+            val followersRef =
+                fireStore.collection(DBCollection.Followers.collectionName).document(otherUserId)
+                    .collection(DBCollection.UserFollowers.collectionName)
+                    .document(loggedInUserId)
+            batch.delete(followersRef)
+
+            batch.commit().await()
+
+            Resource.Success(Unit)
+        }
+    }
+
+    override suspend fun updateUserInfoFromFirestore(userId: String): Resource<Unit> =
+        withContext(Dispatchers.IO) {
+            safeCall {
+                val document = fireStore.collection(DBCollection.User.collectionName)
+                    .document(userId)
+                    .get()
+                    .await()
+
+                val userDto = document.toObject(UserDto::class.java)
+                userDto?.userUUID = userId
+
+                if (userDto != null) {
+                    saveUserInfoOnCache(userDto.mapToDomain())
+                } else {
+                    Resource.Error(Exception("No user found"))
+                }
+            }
+        }
+
 
     private suspend fun updateDisplayName(user: FirebaseUser, name: String, lastName: String) =
         withContext(Dispatchers.IO) {
