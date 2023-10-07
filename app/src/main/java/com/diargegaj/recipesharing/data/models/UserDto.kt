@@ -5,5 +5,7 @@ data class UserDto(
     val name: String = "",
     val lastName: String = "",
     val email: String = "",
-    val profilePhotoUrl: String = ""
+    val profilePhotoUrl: String = "",
+    val followersCount: Int? = 0,
+    val followingCount: Int? = 0
 )

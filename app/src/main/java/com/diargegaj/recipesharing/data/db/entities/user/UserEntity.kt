@@ -9,5 +9,7 @@ data class UserEntity(
     val name: String,
     val lastName: String,
     val email: String,
-    val profilePhotoUrl: String
+    val profilePhotoUrl: String,
+    val followersCount: Int,
+    val followingCount: Int
 )

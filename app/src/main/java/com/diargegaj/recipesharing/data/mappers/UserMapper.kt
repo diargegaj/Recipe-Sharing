@@ -11,7 +11,9 @@ fun UserModel.mapToDto(): UserDto {
         name = this.name,
         lastName = this.lastName,
         email = this.email,
-        profilePhotoUrl = this.profilePhotoUrl
+        profilePhotoUrl = this.profilePhotoUrl,
+        followersCount = this.followersCount,
+        followingCount = this.followingCount
     )
 }
 
@@ -21,7 +23,9 @@ fun UserDto.mapToEntity(): UserEntity {
         name = this.name,
         lastName = this.lastName,
         email = this.email,
-        profilePhotoUrl = this.profilePhotoUrl
+        profilePhotoUrl = this.profilePhotoUrl,
+        followersCount = this.followersCount ?: 0,
+        followingCount = this.followingCount ?: 0
     )
 }
 
@@ -31,7 +35,9 @@ fun UserDto.mapToDomain(): UserModel {
         name = name,
         lastName = lastName,
         email = email,
-        profilePhotoUrl = profilePhotoUrl
+        profilePhotoUrl = profilePhotoUrl,
+        followersCount = this.followersCount ?: 0,
+        followingCount = this.followingCount ?: 0
     )
 }
 
@@ -52,6 +58,8 @@ fun UserWithRecipes.mapToUserModel(): UserModel {
         lastName = this.user.lastName,
         email = this.user.email,
         profilePhotoUrl = this.user.profilePhotoUrl,
-        userRecipes = this.recipes?.map { it.mapToRecipeModel() } ?: listOf()
+        userRecipes = this.recipes?.map { it.mapToRecipeModel() } ?: listOf(),
+        followersCount = this.user.followersCount,
+        followingCount = this.user.followingCount
     )
 }
