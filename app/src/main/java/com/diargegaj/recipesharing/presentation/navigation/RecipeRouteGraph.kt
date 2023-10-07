@@ -121,6 +121,7 @@ fun NavGraphBuilder.userRoute(recipeNavigationActions: RecipeNavigationActions) 
     ) { backStackEntry ->
         FollowingScreen(
             backStackEntry = backStackEntry,
+            recipeNavigationActions = recipeNavigationActions
         )
     }
 }

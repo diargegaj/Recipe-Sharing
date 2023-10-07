@@ -1,6 +1,5 @@
 package com.diargegaj.recipesharing.presentation.viewModel.followers
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -55,10 +54,6 @@ class FollowersViewModel @Inject constructor(
                     _followers.value = result.data
                 }
 
-                is Resource.Error -> {
-                    Log.d("diari1", "error ${result.exception}", result.exception)
-                }
-
                 else -> Unit
             }
 
@@ -70,10 +65,6 @@ class FollowersViewModel @Inject constructor(
             when (val result = userRepository.getFollowersForUser(otherUserId, loggedInUserId)) {
                 is Resource.Success -> {
                     _followers.value = result.data
-                }
-
-                is Resource.Error -> {
-                    Log.d("diari1", "error ${result.exception}", result.exception)
                 }
 
                 else -> Unit
