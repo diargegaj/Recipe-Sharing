@@ -16,11 +16,14 @@ import com.diargegaj.recipesharing.R
 import com.diargegaj.recipesharing.presentation.navigation.RecipeNavigationActions
 import com.diargegaj.recipesharing.presentation.screens.home.profile.ProfileScreen
 import com.diargegaj.recipesharing.presentation.utils.DefaultAppBar
+import com.diargegaj.recipesharing.presentation.utils.hiltViewModelFromEntry
+import com.diargegaj.recipesharing.presentation.viewModel.user.OtherUserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OtherUserProfile(
     backStackEntry: NavBackStackEntry,
+    viewModel: OtherUserViewModel = hiltViewModelFromEntry(backStackEntry),
     recipeNavigationActions: RecipeNavigationActions
 ) {
     Surface(

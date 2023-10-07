@@ -101,7 +101,7 @@ fun NavGraphBuilder.userRoute(recipeNavigationActions: RecipeNavigationActions) 
     ) { backStackEntry ->
         OtherUserProfile(
             backStackEntry = backStackEntry,
-            recipeNavigationActions
+            recipeNavigationActions = recipeNavigationActions
         )
     }
 }

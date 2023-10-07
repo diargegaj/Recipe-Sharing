@@ -1,6 +1,5 @@
 package com.diargegaj.recipesharing.presentation.viewModel.home.profile
 
-import android.util.Log
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -45,7 +44,6 @@ class UserProfileViewModel @Inject constructor(
         userId = savedStateHandle?.get<String>("userId")?.takeIf { it.isNotEmpty() }
             ?: when (val result = userRepository.getUserId()) {
                 is Resource.Success -> {
-                    Log.d("diari1", "On sukses")
                     result.data
                 }
 
@@ -72,8 +70,6 @@ class UserProfileViewModel @Inject constructor(
     }
 
     private fun loadUserDataFromCache() {
-        Log.d("diari1", "savedStateHandler = $savedStateHandle")
-        Log.d("diari1", "userId = $userId")
         viewModelScope.launch {
             userRepository.getUserInfoFromCache(userId).collect { result ->
                 when (result) {
