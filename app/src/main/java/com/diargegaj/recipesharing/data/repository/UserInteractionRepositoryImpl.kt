@@ -1,14 +1,13 @@
 package com.diargegaj.recipesharing.data.repository
 
 import DBCollection
+import com.diargegaj.recipesharing.data.datasource.firestore.FirestoreUserFollowDataSource
 import com.diargegaj.recipesharing.data.mappers.mapToDomain
 import com.diargegaj.recipesharing.data.models.UserDto
 import com.diargegaj.recipesharing.data.utils.safeCall
 import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.domain.repository.userInteraction.UserInteractionRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -16,7 +15,8 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class UserInteractionRepositoryImpl @Inject constructor(
-    private val fireStore: FirebaseFirestore
+    private val fireStore: FirebaseFirestore,
+    private val firestoreUserFollowDataSource: FirestoreUserFollowDataSource
 ) : UserInteractionRepository {
 
     override suspend fun getFollowersForUser(
@@ -43,16 +43,12 @@ class UserInteractionRepositoryImpl @Inject constructor(
                     userDto?.userUUID = followerId
                     userDto?.let {
                         val userModel = it.mapToDomain()
-//                        val isFollowing = when (
-//                            val result = isUserFollowing(
-//                                currentUserId,
-//                                followerId
-//                            ).first()
-//                        ) {
-//                            is Resource.Success -> result.data
-//                            else -> false
-//                        }
-//                        userModel.isFollowedByCurrentUser = isFollowing
+                        val documentSnapshot = firestoreUserFollowDataSource.isUserFollowing(
+                            currentUserId,
+                            followerId
+                        )
+                        val isFollowing = documentSnapshot?.exists() == true
+                        userModel.isFollowedByCurrentUser = isFollowing
                         followers.add(userModel)
                     }
                 }
@@ -85,40 +81,17 @@ class UserInteractionRepositoryImpl @Inject constructor(
                     userDto?.userUUID = followingId
                     userDto?.let {
                         val userModel = it.mapToDomain()
-//                        val isFollowing = when (
-//                            val result = isUserFollowing(
-//                                currentUserId,
-//                                followingId
-//                            ).first()
-//                        ) {
-//                            is Resource.Success -> result.data
-//                            else -> false
-//                        }
-//                        userModel.isFollowedByCurrentUser = isFollowing
-//                        followingUsers.add(userModel)
+                        val documentSnapshot = firestoreUserFollowDataSource.isUserFollowing(
+                            currentUserId,
+                            followingId
+                        )
+                        val isFollowing = documentSnapshot?.exists() == true
+                        userModel.isFollowedByCurrentUser = isFollowing
+                        followingUsers.add(userModel)
                     }
                 }
                 Resource.Success(followingUsers)
             }
         }
     }
-
-
-    private suspend fun updateDisplayName(user: FirebaseUser, name: String, lastName: String) =
-        withContext(Dispatchers.IO) {
-            val profileUpdates = UserProfileChangeRequest.Builder()
-                .setDisplayName("$name $lastName")
-                .build()
-
-            user.updateProfile(profileUpdates).await()
-        }
-
-    private suspend fun updateNameToFirestore(user: FirebaseUser, name: String, lastName: String) =
-        withContext(Dispatchers.IO) {
-            val userDocument =
-                fireStore.collection(DBCollection.User.collectionName).document(user.uid)
-
-            userDocument.update("name", name).await()
-            userDocument.update("lastName", lastName).await()
-        }
 }

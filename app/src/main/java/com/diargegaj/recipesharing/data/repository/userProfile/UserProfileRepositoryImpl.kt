@@ -13,6 +13,8 @@ import com.diargegaj.recipesharing.data.utils.safeCall
 import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.domain.repository.userProfile.UserProfileRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -101,16 +103,16 @@ class UserProfileRepositoryImpl @Inject constructor(
     override suspend fun updateUserName(name: String, lastName: String): Resource<Unit> =
         withContext(Dispatchers.IO) {
             safeCall {
-//                val user = getCurrentUser()
-//
-//                if (user != null) {
-//                    updateNameToFirestore(user, name, lastName)
-//                    updateDisplayName(user, name, lastName)
+                val user = getCurrentUser()
+
+                if (user != null) {
+                    updateNameToFirestore(user, name, lastName)
+                    updateDisplayName(user, name, lastName)
 
                 Resource.Success(Unit)
-//                } else {
-//                    Resource.Error(Exception("Can not find user."))
-//                }
+                } else {
+                    Resource.Error(Exception("Can not find user."))
+                }
             }
         }
 
@@ -131,5 +133,23 @@ class UserProfileRepositoryImpl @Inject constructor(
                     Resource.Error(Exception("No user found"))
                 }
             }
+        }
+
+    private suspend fun updateDisplayName(user: FirebaseUser, name: String, lastName: String) =
+        withContext(Dispatchers.IO) {
+            val profileUpdates = UserProfileChangeRequest.Builder()
+                .setDisplayName("$name $lastName")
+                .build()
+
+            user.updateProfile(profileUpdates).await()
+        }
+
+    private suspend fun updateNameToFirestore(user: FirebaseUser, name: String, lastName: String) =
+        withContext(Dispatchers.IO) {
+            val userDocument =
+                fireStore.collection(DBCollection.User.collectionName).document(user.uid)
+
+            userDocument.update("name", name).await()
+            userDocument.update("lastName", lastName).await()
         }
 }
