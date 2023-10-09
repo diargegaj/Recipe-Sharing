@@ -36,14 +36,6 @@ class UserRepositoryImpl @Inject constructor(
     private val userDao: UserDao
 ) : UserRepository {
 
-    override suspend fun registerUser(email: String, password: String): Resource<FirebaseUser> =
-        withContext(Dispatchers.IO) {
-            safeCall {
-                val result = auth.createUserWithEmailAndPassword(email, password).await()
-                Resource.Success(result.user!!)
-            }
-        }
-
     override suspend fun addUserAdditionalInformation(userModel: UserModel): Resource<Unit> =
         withContext(Dispatchers.IO) {
             safeCall {
@@ -59,23 +51,6 @@ class UserRepositoryImpl @Inject constructor(
                 Resource.Success(Unit)
             }
         }
-
-    override suspend fun logIn(email: String, password: String): Resource<FirebaseUser> =
-        withContext(Dispatchers.IO) {
-            safeCall {
-                val result = auth.signInWithEmailAndPassword(email, password).await()
-                Resource.Success(result.user!!)
-            }
-        }
-
-    override fun isUserLoggedIn(): Flow<Boolean> {
-        val currentUser = auth.currentUser
-        return if (currentUser != null) {
-            userDao.getUser(currentUser.uid).map { it != null }
-        } else {
-            flowOf(false)
-        }
-    }
 
     override suspend fun getUserInfoFromFirestore(userId: String): Resource<UserModel> =
         withContext(Dispatchers.IO) {
@@ -120,16 +95,6 @@ class UserRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun getUserId(): Resource<String> {
-        val userId = auth.currentUser?.uid
-
-        return if (userId != null) {
-            Resource.Success(userId)
-        } else {
-            Resource.Error(NotFoundException("User Not Found"))
-        }
-    }
-
     override suspend fun updateUserProfilePhotoUrl(
         userId: String,
         imageUrl: String
@@ -141,50 +106,6 @@ class UserRepositoryImpl @Inject constructor(
             Resource.Success(Unit)
         }
     }
-
-    override suspend fun reAuthenticateUser(email: String, password: String): Resource<Unit> =
-        withContext(Dispatchers.IO) {
-            safeCall {
-                val user = auth.currentUser
-                if (user != null) {
-                    val credential = EmailAuthProvider.getCredential(email, password)
-                    user.reauthenticate(credential).await()
-                    Resource.Success(Unit)
-                } else {
-                    Resource.Error(NotFoundException("No current user to re-authenticate"))
-                }
-            }
-        }
-
-    override suspend fun changeUserEmail(email: String): Resource<Unit> =
-        withContext(Dispatchers.IO) {
-            safeCall {
-                val user = auth.currentUser
-
-                if (user != null) {
-                    user.updateEmail(email).await()
-                    Resource.Success(Unit)
-                } else {
-                    Resource.Error(NotFoundException("Can not find user."))
-                }
-            }
-        }
-
-    override fun getCurrentUser() = auth.currentUser
-
-    override suspend fun changeUserPassword(newPassword: String): Resource<Unit> =
-        withContext(Dispatchers.IO) {
-            safeCall {
-                val user = getCurrentUser()
-
-                if (user != null) {
-                    user.updatePassword(newPassword).await()
-                    Resource.Success(Unit)
-                } else {
-                    Resource.Error(Exception("Can not find user."))
-                }
-            }
-        }
 
     override suspend fun updateUserName(name: String, lastName: String): Resource<Unit> =
         withContext(Dispatchers.IO) {
