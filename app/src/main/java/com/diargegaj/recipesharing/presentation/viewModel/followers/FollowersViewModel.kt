@@ -57,7 +57,7 @@ class FollowersViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = userInteractionRepository.getFollowingForUser(otherUserId, loggedInUserId)) {
                 is Resource.Success -> {
-                    _followers.value = result.data
+                    _following.value = result.data
                 }
 
                 else -> Unit
