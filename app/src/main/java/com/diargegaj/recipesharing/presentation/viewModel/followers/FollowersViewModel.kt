@@ -22,7 +22,8 @@ class FollowersViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle? = null,
     private val userRepository: UserRepository,
     userAuthRepository: UserAuthRepository,
-    private val userProfileRepository: UserProfileRepository
+    private val userProfileRepository: UserProfileRepository,
+    private val userFollowRepository: UserFollowRepository
 ) : ViewModel() {
 
     private var loggedInUserId = ""
@@ -80,7 +81,7 @@ class FollowersViewModel @Inject constructor(
 
     private fun checkIsUserFollowing() {
         viewModelScope.launch {
-            userRepository.isUserFollowing(loggedInUserId, otherUserId).collectLatest { result ->
+            userFollowRepository.isUserFollowing(loggedInUserId, otherUserId).collectLatest { result ->
                 when (result) {
                     is Resource.Success -> {
                         _isFollowing.emit(
@@ -100,7 +101,7 @@ class FollowersViewModel @Inject constructor(
 
     fun onUnfollowUser(targetUserId: String) {
         viewModelScope.launch {
-            when (userRepository.unfollowUser(loggedInUserId, targetUserId)) {
+            when (userFollowRepository.unfollowUser(loggedInUserId, targetUserId)) {
                 is Resource.Success -> {
                     handleUnfollowSuccess(targetUserId)
                 }
@@ -120,7 +121,7 @@ class FollowersViewModel @Inject constructor(
 
     fun onFollowUser(targetUserId: String) {
         viewModelScope.launch {
-            when (userRepository.followUser(loggedInUserId, targetUserId)) {
+            when (userFollowRepository.followUser(loggedInUserId, targetUserId)) {
                 is Resource.Success -> {
                     handleFollowSuccess(targetUserId)
                 }
