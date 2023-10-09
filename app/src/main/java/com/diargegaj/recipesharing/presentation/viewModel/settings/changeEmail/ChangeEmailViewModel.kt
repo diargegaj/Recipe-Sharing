@@ -4,7 +4,7 @@ import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.diargegaj.recipesharing.domain.models.settings.changeEmail.ChangeEmailState
-import com.diargegaj.recipesharing.domain.repository.UserRepository
+import com.diargegaj.recipesharing.domain.repository.userInteraction.UserInteractionRepository
 import com.diargegaj.recipesharing.domain.repository.userAuth.UserAuthRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChangeEmailViewModel @Inject constructor(
-    private val userRepository: UserRepository,
+    private val userInteractionRepository: UserInteractionRepository,
     private val userAuthRepository: UserAuthRepository
 ) : ViewModel() {
 

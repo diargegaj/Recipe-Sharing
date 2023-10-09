@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.diargegaj.recipesharing.domain.models.UserModel
-import com.diargegaj.recipesharing.domain.repository.UserRepository
+import com.diargegaj.recipesharing.domain.repository.userInteraction.UserInteractionRepository
 import com.diargegaj.recipesharing.domain.repository.userAuth.UserAuthRepository
 import com.diargegaj.recipesharing.domain.repository.userFollow.UserFollowRepository
 import com.diargegaj.recipesharing.domain.repository.userProfile.UserProfileRepository
@@ -20,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FollowersViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle? = null,
-    private val userRepository: UserRepository,
+    private val userInteractionRepository: UserInteractionRepository,
     userAuthRepository: UserAuthRepository,
     private val userProfileRepository: UserProfileRepository,
     private val userFollowRepository: UserFollowRepository
@@ -55,7 +55,7 @@ class FollowersViewModel @Inject constructor(
 
     private fun getFollowing() {
         viewModelScope.launch {
-            when (val result = userRepository.getFollowingForUser(otherUserId, loggedInUserId)) {
+            when (val result = userInteractionRepository.getFollowingForUser(otherUserId, loggedInUserId)) {
                 is Resource.Success -> {
                     _followers.value = result.data
                 }
@@ -68,7 +68,7 @@ class FollowersViewModel @Inject constructor(
 
     private fun getFollowers() {
         viewModelScope.launch {
-            when (val result = userRepository.getFollowersForUser(otherUserId, loggedInUserId)) {
+            when (val result = userInteractionRepository.getFollowersForUser(otherUserId, loggedInUserId)) {
                 is Resource.Success -> {
                     _followers.value = result.data
                 }

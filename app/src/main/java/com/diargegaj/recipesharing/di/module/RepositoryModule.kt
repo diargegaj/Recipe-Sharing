@@ -1,14 +1,14 @@
 package com.diargegaj.recipesharing.di.module
 
 import com.diargegaj.recipesharing.data.repository.FirebaseImageUploadRepositoryImpl
-import com.diargegaj.recipesharing.data.repository.UserRepositoryImpl
+import com.diargegaj.recipesharing.data.repository.UserInteractionRepositoryImpl
 import com.diargegaj.recipesharing.data.repository.recipe.RecipeRepositoryImpl
 import com.diargegaj.recipesharing.data.repository.userAuth.UserAuthRepositoryImpl
 import com.diargegaj.recipesharing.data.repository.userFollow.UserFollowRepositoryImpl
 import com.diargegaj.recipesharing.data.repository.userProfile.UserProfileRepositoryImpl
 import com.diargegaj.recipesharing.domain.repository.ImageUploadRepository
 import com.diargegaj.recipesharing.domain.repository.RecipeRepository
-import com.diargegaj.recipesharing.domain.repository.UserRepository
+import com.diargegaj.recipesharing.domain.repository.userInteraction.UserInteractionRepository
 import com.diargegaj.recipesharing.domain.repository.userAuth.UserAuthRepository
 import com.diargegaj.recipesharing.domain.repository.userFollow.UserFollowRepository
 import com.diargegaj.recipesharing.domain.repository.userProfile.UserProfileRepository
@@ -23,8 +23,8 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun provideUserRepository(
-        userRepositoryImpl: UserRepositoryImpl
-    ): UserRepository
+        userInteractionRepositoryImpl: UserInteractionRepositoryImpl
+    ): UserInteractionRepository
 
     @Binds
     abstract fun provideImageUploadRepository(

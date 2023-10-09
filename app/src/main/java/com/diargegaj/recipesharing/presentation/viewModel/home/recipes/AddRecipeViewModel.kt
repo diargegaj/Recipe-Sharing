@@ -8,7 +8,6 @@ import com.diargegaj.recipesharing.domain.models.recipe.RecipeModel
 import com.diargegaj.recipesharing.domain.models.recipe.emptyRecipeModel
 import com.diargegaj.recipesharing.domain.repository.ImageUploadRepository
 import com.diargegaj.recipesharing.domain.repository.RecipeRepository
-import com.diargegaj.recipesharing.domain.repository.UserRepository
 import com.diargegaj.recipesharing.domain.repository.userAuth.UserAuthRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel

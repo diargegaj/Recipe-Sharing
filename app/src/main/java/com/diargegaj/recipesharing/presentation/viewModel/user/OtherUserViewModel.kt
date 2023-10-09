@@ -3,7 +3,6 @@ package com.diargegaj.recipesharing.presentation.viewModel.user
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.diargegaj.recipesharing.domain.repository.UserRepository
 import com.diargegaj.recipesharing.domain.repository.userProfile.UserProfileRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel

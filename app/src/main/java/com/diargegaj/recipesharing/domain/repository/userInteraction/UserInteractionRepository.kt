@@ -1,9 +1,9 @@
-package com.diargegaj.recipesharing.domain.repository
+package com.diargegaj.recipesharing.domain.repository.userInteraction
 
 import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.domain.utils.Resource
 
-interface UserRepository {
+interface UserInteractionRepository {
 
     suspend fun getFollowersForUser(
         userId: String,

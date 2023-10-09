@@ -5,24 +5,19 @@ import com.diargegaj.recipesharing.data.mappers.mapToDomain
 import com.diargegaj.recipesharing.data.models.UserDto
 import com.diargegaj.recipesharing.data.utils.safeCall
 import com.diargegaj.recipesharing.domain.models.UserModel
-import com.diargegaj.recipesharing.domain.repository.UserRepository
+import com.diargegaj.recipesharing.domain.repository.userInteraction.UserInteractionRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class UserRepositoryImpl @Inject constructor(
+class UserInteractionRepositoryImpl @Inject constructor(
     private val fireStore: FirebaseFirestore
-) : UserRepository {
+) : UserInteractionRepository {
 
     override suspend fun getFollowersForUser(
         userId: String,
