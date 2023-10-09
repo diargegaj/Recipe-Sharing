@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.diargegaj.recipesharing.domain.models.recipe.RecipeModel
 import com.diargegaj.recipesharing.domain.repository.RecipeRepository
-import com.diargegaj.recipesharing.domain.repository.UserRepository
+import com.diargegaj.recipesharing.domain.repository.userProfile.UserProfileRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -20,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RecipeViewModel @Inject constructor(
     private val recipeRepository: RecipeRepository,
-    private val userRepository: UserRepository
+    private val userProfileRepository: UserProfileRepository
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<List<RecipeModel>> = MutableStateFlow(listOf())
@@ -77,9 +77,9 @@ class RecipeViewModel @Inject constructor(
     }
 
     private suspend fun fetchUserInfo(recipeModel: RecipeModel) {
-        when (val result = userRepository.getUserInfoFromFirestore(recipeModel.userId)) {
+        when (val result = userProfileRepository.getUserInfoFromFirestore(recipeModel.userId)) {
             is Resource.Success -> {
-                userRepository.saveUserInfoOnCache(result.data)
+                userProfileRepository.saveUserInfoOnCache(result.data)
             }
 
             else -> Unit

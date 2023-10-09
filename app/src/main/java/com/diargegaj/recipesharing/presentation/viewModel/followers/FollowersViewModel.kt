@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.domain.repository.UserRepository
 import com.diargegaj.recipesharing.domain.repository.userAuth.UserAuthRepository
+import com.diargegaj.recipesharing.domain.repository.userProfile.UserProfileRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +20,8 @@ import javax.inject.Inject
 class FollowersViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle? = null,
     private val userRepository: UserRepository,
-    private val userAuthRepository: UserAuthRepository
+    userAuthRepository: UserAuthRepository,
+    private val userProfileRepository: UserProfileRepository
 ) : ViewModel() {
 
     private var loggedInUserId = ""
@@ -134,14 +136,14 @@ class FollowersViewModel @Inject constructor(
         val updatedFollowers = updateFollowStateInList(_followers.value, targetUserId, true)
         _followers.value = updatedFollowers
         _isFollowing.value = true
-        userRepository.updateUserInfoFromFirestore(targetUserId)
+        userProfileRepository.updateUserInfoFromFirestore(targetUserId)
     }
 
     private suspend fun handleUnfollowSuccess(targetUserId: String) {
         val updatedFollowers = updateFollowStateInList(_followers.value, targetUserId, false)
         _followers.value = updatedFollowers
         _isFollowing.value = false
-        userRepository.updateUserInfoFromFirestore(targetUserId)
+        userProfileRepository.updateUserInfoFromFirestore(targetUserId)
     }
 
     private fun updateFollowStateInList(

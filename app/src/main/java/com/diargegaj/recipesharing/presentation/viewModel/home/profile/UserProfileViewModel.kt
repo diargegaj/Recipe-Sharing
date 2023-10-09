@@ -8,8 +8,8 @@ import com.diargegaj.recipesharing.domain.enums.ImagePath
 import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.domain.models.emptyUserModel
 import com.diargegaj.recipesharing.domain.repository.ImageUploadRepository
-import com.diargegaj.recipesharing.domain.repository.UserRepository
 import com.diargegaj.recipesharing.domain.repository.userAuth.UserAuthRepository
+import com.diargegaj.recipesharing.domain.repository.userProfile.UserProfileRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,9 +23,9 @@ import javax.inject.Inject
 @HiltViewModel
 class UserProfileViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle? = null,
-    private val userRepository: UserRepository,
     private val imageUploadRepository: ImageUploadRepository,
-    private val userAuthRepository: UserAuthRepository
+    private val userAuthRepository: UserAuthRepository,
+    private val userProfileRepository: UserProfileRepository
 ) : ViewModel() {
 
     private var userId: String = ""
@@ -64,9 +64,9 @@ class UserProfileViewModel @Inject constructor(
 
     private fun updateUserDataFromFirestore() {
         viewModelScope.launch {
-            when (val result = userRepository.getUserInfoFromFirestore(userId)) {
+            when (val result = userProfileRepository.getUserInfoFromFirestore(userId)) {
                 is Resource.Success -> {
-                    userRepository.saveUserInfoOnCache(result.data)
+                    userProfileRepository.saveUserInfoOnCache(result.data)
                     updateLoggedInUserState()
                 }
 
@@ -83,7 +83,7 @@ class UserProfileViewModel @Inject constructor(
 
     private fun loadUserDataFromCache() {
         viewModelScope.launch {
-            userRepository.getUserInfoFromCache(userId).collect { result ->
+            userProfileRepository.getUserInfoFromCache(userId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         _userState.value = result.data
@@ -120,7 +120,7 @@ class UserProfileViewModel @Inject constructor(
     }
 
     private suspend fun updateProfilePhotoUrlOnFirestore(imageUrl: String) {
-        val result = userRepository.updateUserProfilePhotoUrl(
+        val result = userProfileRepository.updateUserProfilePhotoUrl(
             userId = userId,
             imageUrl = imageUrl
         )
