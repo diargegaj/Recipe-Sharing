@@ -1,8 +1,8 @@
 package com.diargegaj.recipesharing.di.module
 
 import com.diargegaj.recipesharing.data.repository.FirebaseImageUploadRepositoryImpl
-import com.diargegaj.recipesharing.data.repository.recipe.RecipeRepositoryImpl
 import com.diargegaj.recipesharing.data.repository.UserRepositoryImpl
+import com.diargegaj.recipesharing.data.repository.recipe.RecipeRepositoryImpl
 import com.diargegaj.recipesharing.domain.repository.ImageUploadRepository
 import com.diargegaj.recipesharing.domain.repository.RecipeRepository
 import com.diargegaj.recipesharing.domain.repository.UserRepository
