@@ -21,10 +21,6 @@ interface UserRepository {
 
     suspend fun updateUserProfilePhotoUrl(userId: String, imageUrl: String): Resource<Unit>
 
-
-
-
-
     suspend fun updateUserName(name: String, lastName: String): Resource<Unit>
 
     fun isUserFollowing(loggedInUserId: String, otherUserId: String): Flow<Resource<Boolean>>

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.domain.repository.UserRepository
+import com.diargegaj.recipesharing.domain.repository.userAuth.UserAuthRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class FollowersViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle? = null,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val userAuthRepository: UserAuthRepository
 ) : ViewModel() {
 
     private var loggedInUserId = ""
@@ -33,7 +35,7 @@ class FollowersViewModel @Inject constructor(
     val following: StateFlow<List<UserModel>> = _following.asStateFlow()
 
     init {
-        loggedInUserId = when (val result = userRepository.getUserId()) {
+        loggedInUserId = when (val result = userAuthRepository.getUserId()) {
             is Resource.Success -> {
                 result.data
             }

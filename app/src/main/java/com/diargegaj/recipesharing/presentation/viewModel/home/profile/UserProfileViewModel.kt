@@ -9,6 +9,7 @@ import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.domain.models.emptyUserModel
 import com.diargegaj.recipesharing.domain.repository.ImageUploadRepository
 import com.diargegaj.recipesharing.domain.repository.UserRepository
+import com.diargegaj.recipesharing.domain.repository.userAuth.UserAuthRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,7 +24,8 @@ import javax.inject.Inject
 class UserProfileViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle? = null,
     private val userRepository: UserRepository,
-    private val imageUploadRepository: ImageUploadRepository
+    private val imageUploadRepository: ImageUploadRepository,
+    private val userAuthRepository: UserAuthRepository
 ) : ViewModel() {
 
     private var userId: String = ""
@@ -43,7 +45,7 @@ class UserProfileViewModel @Inject constructor(
 
     private fun updateLocalUserID() {
         userId = savedStateHandle?.get<String>("userId")?.takeIf { it.isNotEmpty() }
-            ?: when (val result = userRepository.getUserId()) {
+            ?: when (val result = userAuthRepository.getUserId()) {
                 is Resource.Success -> {
                     isLoggedInUser = true
                     updateLoggedInUserState()

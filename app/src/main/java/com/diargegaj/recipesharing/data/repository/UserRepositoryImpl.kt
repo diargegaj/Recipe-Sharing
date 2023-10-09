@@ -31,7 +31,6 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
-    private val auth: FirebaseAuth,
     private val fireStore: FirebaseFirestore,
     private val userDao: UserDao
 ) : UserRepository {
@@ -110,15 +109,16 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun updateUserName(name: String, lastName: String): Resource<Unit> =
         withContext(Dispatchers.IO) {
             safeCall {
-                val user = getCurrentUser()
+//                val user = getCurrentUser()
+//
+//                if (user != null) {
+//                    updateNameToFirestore(user, name, lastName)
+//                    updateDisplayName(user, name, lastName)
 
-                if (user != null) {
-                    updateNameToFirestore(user, name, lastName)
-                    updateDisplayName(user, name, lastName)
                     Resource.Success(Unit)
-                } else {
-                    Resource.Error(Exception("Can not find user."))
-                }
+//                } else {
+//                    Resource.Error(Exception("Can not find user."))
+//                }
             }
         }
 

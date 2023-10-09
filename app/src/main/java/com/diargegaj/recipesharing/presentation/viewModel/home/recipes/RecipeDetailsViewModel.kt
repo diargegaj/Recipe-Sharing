@@ -8,6 +8,7 @@ import com.diargegaj.recipesharing.domain.models.recipe.recipeDetails.FeedbackMo
 import com.diargegaj.recipesharing.domain.models.recipe.recipeDetails.RecipeDetailsModel
 import com.diargegaj.recipesharing.domain.repository.RecipeRepository
 import com.diargegaj.recipesharing.domain.repository.UserRepository
+import com.diargegaj.recipesharing.domain.repository.userAuth.UserAuthRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,7 +22,8 @@ import javax.inject.Inject
 class RecipeDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val recipeRepository: RecipeRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val userAuthRepository: UserAuthRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(RecipeDetailsModel())
@@ -36,7 +38,7 @@ class RecipeDetailsViewModel @Inject constructor(
     init {
         recipeId =
             savedStateHandle["recipeId"] ?: throw IllegalArgumentException("RecipeId is required.")
-        userId = (userRepository.getUserId() as Resource.Success).data
+        userId = (userAuthRepository.getUserId() as Resource.Success).data
 
         getRecipeFromCache()
         loadFeedbacksFromCache()
@@ -114,7 +116,7 @@ class RecipeDetailsViewModel @Inject constructor(
 
     private fun getRecipeFromCache() {
         viewModelScope.launch {
-            val loggedInUserId = when (val result = userRepository.getUserId()) {
+            val loggedInUserId = when (val result = userAuthRepository.getUserId()) {
                 is Resource.Success -> result.data
                 else -> ""
             }

@@ -3,7 +3,7 @@ package com.diargegaj.recipesharing.presentation.viewModel.settings.changePasswo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.diargegaj.recipesharing.domain.models.settings.changePassword.ChangePasswordState
-import com.diargegaj.recipesharing.domain.repository.UserRepository
+import com.diargegaj.recipesharing.domain.repository.userAuth.UserAuthRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChangePasswordViewModel @Inject constructor(
-    val userRepository: UserRepository
+    private val userAuthRepository: UserAuthRepository
 ) : ViewModel() {
 
     private val _changePasswordState = MutableStateFlow(ChangePasswordState())
@@ -25,12 +25,12 @@ class ChangePasswordViewModel @Inject constructor(
     val userMessageEvent = _userMessageEvent.asSharedFlow()
 
     fun changePassword() {
-        val currentUser = userRepository.getCurrentUser()
+        val currentUser = userAuthRepository.getCurrentUser()
         val email = currentUser?.email ?: ""
         val password = _changePasswordState.value.oldPassword
 
         viewModelScope.launch {
-            when (userRepository.reAuthenticateUser(email, password)) {
+            when (userAuthRepository.reAuthenticateUser(email, password)) {
                 is Resource.Success -> {
                     changeUserPassword()
                 }
@@ -55,7 +55,7 @@ class ChangePasswordViewModel @Inject constructor(
         }
 
         val newPassword = _changePasswordState.value.newPassword
-        when (userRepository.changeUserPassword(newPassword)) {
+        when (userAuthRepository.changeUserPassword(newPassword)) {
             is Resource.Success -> {
                 _userMessageEvent.emit(
                     "Password changed successfully"
