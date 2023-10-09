@@ -2,6 +2,7 @@ package com.diargegaj.recipesharing.data.repository.userProfile
 
 import DBCollection
 import android.content.res.Resources
+import com.diargegaj.recipesharing.data.datasource.firestore.UserAuthDataSource
 import com.diargegaj.recipesharing.data.db.dao.UserDao
 import com.diargegaj.recipesharing.data.mappers.mapToDomain
 import com.diargegaj.recipesharing.data.mappers.mapToDto
@@ -26,6 +27,7 @@ import javax.inject.Inject
 
 class UserProfileRepositoryImpl @Inject constructor(
     private val fireStore: FirebaseFirestore,
+    private val userAuthDataSource: UserAuthDataSource,
     private val userDao: UserDao
 ) : UserProfileRepository {
 
@@ -103,13 +105,13 @@ class UserProfileRepositoryImpl @Inject constructor(
     override suspend fun updateUserName(name: String, lastName: String): Resource<Unit> =
         withContext(Dispatchers.IO) {
             safeCall {
-                val user = getCurrentUser()
+                val user = userAuthDataSource.getCurrentUser()
 
                 if (user != null) {
                     updateNameToFirestore(user, name, lastName)
                     updateDisplayName(user, name, lastName)
 
-                Resource.Success(Unit)
+                    Resource.Success(Unit)
                 } else {
                     Resource.Error(Exception("Can not find user."))
                 }
