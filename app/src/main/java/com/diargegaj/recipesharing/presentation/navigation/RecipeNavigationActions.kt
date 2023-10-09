@@ -3,7 +3,7 @@ package com.diargegaj.recipesharing.presentation.navigation
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 
-class RecipeNavigationActions private constructor(val navController: NavHostController) {
+class RecipeNavigationActions constructor(val navController: NavHostController) {
 
     fun navigateToLogin() {
         navController.navigate(Screen.LoginScreen.route) {
@@ -49,18 +49,20 @@ class RecipeNavigationActions private constructor(val navController: NavHostCont
         navController.navigate(Screen.OtherUserProfile.route + "/$userId")
     }
 
+    fun navigateToUserFollowers(userId: String) {
+        navController.navigate(Screen.UserFollowers.route + "/$userId")
+    }
+
+    fun navigateToUserFollowing(userId: String) {
+        navController.navigate(Screen.UserFollowing.route + "/$userId")
+    }
+
     fun navigateTo(route: String) {
         navController.navigate(route)
     }
 
     fun goBack() {
         navController.popBackStack()
-    }
-
-    companion object {
-        fun create(navController: NavHostController): RecipeNavigationActions {
-            return RecipeNavigationActions(navController)
-        }
     }
 
 }

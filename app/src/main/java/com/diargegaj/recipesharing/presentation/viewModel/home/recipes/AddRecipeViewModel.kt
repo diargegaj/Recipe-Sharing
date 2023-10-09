@@ -8,7 +8,7 @@ import com.diargegaj.recipesharing.domain.models.recipe.RecipeModel
 import com.diargegaj.recipesharing.domain.models.recipe.emptyRecipeModel
 import com.diargegaj.recipesharing.domain.repository.ImageUploadRepository
 import com.diargegaj.recipesharing.domain.repository.RecipeRepository
-import com.diargegaj.recipesharing.domain.repository.UserRepository
+import com.diargegaj.recipesharing.domain.repository.userAuth.UserAuthRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -24,7 +24,7 @@ import javax.inject.Inject
 class AddRecipeViewModel @Inject constructor(
     private val imageUploadRepository: ImageUploadRepository,
     private val recipeRepository: RecipeRepository,
-    userRepository: UserRepository
+    private val userAuthRepository: UserAuthRepository
 ) : ViewModel() {
 
     private val _recipeState = MutableStateFlow(emptyRecipeModel())
@@ -37,7 +37,7 @@ class AddRecipeViewModel @Inject constructor(
     val errorMessages: SharedFlow<String> get() = _errorMessages
 
     init {
-        when (val result = userRepository.getUserId()) {
+        when (val result = userAuthRepository.getUserId()) {
             is Resource.Success -> {
                 _recipeState.value = _recipeState.value.copy(
                     userId = result.data

@@ -3,7 +3,8 @@ package com.diargegaj.recipesharing.presentation.viewModel.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.diargegaj.recipesharing.domain.models.UserModel
-import com.diargegaj.recipesharing.domain.repository.UserRepository
+import com.diargegaj.recipesharing.domain.repository.userAuth.UserAuthRepository
+import com.diargegaj.recipesharing.domain.repository.userProfile.UserProfileRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val authRepository: UserAuthRepository,
+    private val userProfileRepository: UserProfileRepository
 ) : ViewModel() {
 
     private val _navigationEvent = MutableSharedFlow<NavigationTarget>()
@@ -25,7 +27,7 @@ class AuthViewModel @Inject constructor(
 
     fun checkUserLoggedIn() {
         viewModelScope.launch {
-            val isLoggedIn = userRepository.isUserLoggedIn().first()
+            val isLoggedIn = authRepository.isUserLoggedIn().first()
             _navigationEvent.emit(
                 if (isLoggedIn) {
                     NavigationTarget.Home
@@ -39,7 +41,7 @@ class AuthViewModel @Inject constructor(
     fun onRegister(userInfo: UserModel, password: String) {
         viewModelScope.launch {
             when (val registrationResult =
-                userRepository.registerUser(email = userInfo.email, password = password)) {
+                authRepository.registerUser(email = userInfo.email, password = password)) {
                 is Resource.Success -> {
                     userInfo.userUUID = registrationResult.data.uid
                     addUserInformationToServer(userInfo)
@@ -60,7 +62,7 @@ class AuthViewModel @Inject constructor(
 
     private fun addUserInformationToServer(userInfo: UserModel) {
         viewModelScope.launch {
-            when (val result = userRepository.addUserAdditionalInformation(userInfo)) {
+            when (val result = userProfileRepository.addUserAdditionalInformation(userInfo)) {
                 is Resource.Success -> {
                     redirectToHomePage()
                 }
@@ -80,7 +82,7 @@ class AuthViewModel @Inject constructor(
 
     fun onLogin(email: String, password: String) {
         viewModelScope.launch {
-            when (val result = userRepository.logIn(email, password)) {
+            when (val result = authRepository.logIn(email, password)) {
                 is Resource.Success -> {
                     updateUserInfo(result.data.uid)
                 }
@@ -97,7 +99,7 @@ class AuthViewModel @Inject constructor(
     }
 
     private suspend fun updateUserInfo(userId: String) {
-        when (val result = userRepository.getUserInfoFromFirestore(userId)) {
+        when (val result = userProfileRepository.getUserInfoFromFirestore(userId)) {
             is Resource.Success -> {
                 saveUserDataOnCache(result.data)
             }
@@ -115,7 +117,7 @@ class AuthViewModel @Inject constructor(
     }
 
     private suspend fun saveUserDataOnCache(userModel: UserModel) {
-        when (val result = userRepository.saveUserInfoOnCache(userModel)) {
+        when (val result = userProfileRepository.saveUserInfoOnCache(userModel)) {
             is Resource.Success -> {
                 redirectToHomePage()
             }

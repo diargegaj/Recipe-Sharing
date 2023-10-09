@@ -17,6 +17,8 @@ import com.diargegaj.recipesharing.presentation.screens.settings.editAccount.Edi
 import com.diargegaj.recipesharing.presentation.screens.settings.editProfile.ChangeNameScreen
 import com.diargegaj.recipesharing.presentation.screens.settings.editProfile.ChangeProfilePictureScreen
 import com.diargegaj.recipesharing.presentation.screens.settings.editProfile.EditProfileScreen
+import com.diargegaj.recipesharing.presentation.screens.user.FollowersScreen
+import com.diargegaj.recipesharing.presentation.screens.user.FollowingScreen
 import com.diargegaj.recipesharing.presentation.screens.user.OtherUserProfile
 
 fun NavGraphBuilder.authRoute(recipeNavigationActions: RecipeNavigationActions) {
@@ -100,6 +102,24 @@ fun NavGraphBuilder.userRoute(recipeNavigationActions: RecipeNavigationActions) 
         arguments = listOf(navArgument("userId") { type = NavType.StringType })
     ) { backStackEntry ->
         OtherUserProfile(
+            backStackEntry = backStackEntry,
+            recipeNavigationActions = recipeNavigationActions
+        )
+    }
+    composable(
+        Screen.UserFollowers.route + "/{userId}",
+        arguments = listOf(navArgument("userId") { type = NavType.StringType })
+    ) { backStackEntry ->
+        FollowersScreen(
+            backStackEntry = backStackEntry,
+            recipeNavigationActions = recipeNavigationActions
+        )
+    }
+    composable(
+        Screen.UserFollowing.route + "/{userId}",
+        arguments = listOf(navArgument("userId") { type = NavType.StringType })
+    ) { backStackEntry ->
+        FollowingScreen(
             backStackEntry = backStackEntry,
             recipeNavigationActions = recipeNavigationActions
         )

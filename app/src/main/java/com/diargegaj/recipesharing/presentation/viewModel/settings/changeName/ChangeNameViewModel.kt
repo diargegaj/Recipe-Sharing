@@ -3,7 +3,7 @@ package com.diargegaj.recipesharing.presentation.viewModel.settings.changeName
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.diargegaj.recipesharing.domain.models.settings.changeName.ChangeNameState
-import com.diargegaj.recipesharing.domain.repository.UserRepository
+import com.diargegaj.recipesharing.domain.repository.userProfile.UserProfileRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChangeNameViewModel @Inject constructor(
-    val userRepository: UserRepository
+    private val userProfileRepository: UserProfileRepository
 ) : ViewModel() {
     private val _changeNameState = MutableStateFlow(ChangeNameState())
     val changeNameState = _changeNameState.asStateFlow()
@@ -28,7 +28,7 @@ class ChangeNameViewModel @Inject constructor(
         val lastName = _changeNameState.value.lastName
 
         viewModelScope.launch {
-            when (userRepository.updateUserName(name, lastName)) {
+            when (userProfileRepository.updateUserName(name, lastName)) {
                 is Resource.Success -> {
                     _userMessageEvent.emit(
                         "Name updated successfully"

@@ -5,17 +5,19 @@ Recipe Sharing is an Android app that allows users to post and share their favor
 ## 📸 Screenshot of the App
 
 <div align="center">
-  <img src="./app_screnshoots/Screenshot_21.png" alt="Screenshot 1" width="200"/>
-  <img src="./app_screnshoots/Screenshot_22.png" alt="Screenshot 2" width="200"/>
-  <img src="./app_screnshoots/Screenshot_3.png" alt="Screenshot 3" width="200"/>
-  <img src="./app_screnshoots/Screenshot_24.png" alt="Screenshot 18" width="200"/>
-  <img src="./app_screnshoots/Screenshot_23.png" alt="Screenshot 19" width="200"/>
-  <img src="./app_screnshoots/Screenshot_20.png" alt="Screenshot 20" width="200"/>
-  <img src="./app_screnshoots/Screenshot_25.png" alt="Screenshot 20" width="200"/>
-  <img src="./app_screnshoots/Screenshot_26.png" alt="Screenshot 20" width="200"/>
-  <img src="./app_screnshoots/Screenshot_27.png" alt="Screenshot 20" width="200"/>
-  <img src="./app_screnshoots/Screenshot_28.png" alt="Screenshot 20" width="200"/>
-  <img src="./app_screnshoots/Screenshot_29.png" alt="Screenshot 20" width="200"/>
+  <img src="./app_screenshots/Screenshot_21.png" alt="Screenshot 1" width="200"/>
+  <img src="./app_screenshots/Screenshot_22.png" alt="Screenshot 2" width="200"/>
+  <img src="./app_screenshots/Screenshot_3.png" alt="Screenshot 3" width="200"/>
+  <img src="./app_screenshots/Screenshot_24.png" alt="Screenshot 18" width="200"/>
+  <img src="./app_screenshots/Screenshot_23.png" alt="Screenshot 19" width="200"/>
+  <img src="./app_screenshots/Screenshot_20.png" alt="Screenshot 20" width="200"/>
+  <img src="./app_screenshots/Screenshot_25.png" alt="Screenshot 20" width="200"/>
+  <img src="./app_screenshots/Screenshot_26.png" alt="Screenshot 20" width="200"/>
+  <img src="./app_screenshots/Screenshot_27.png" alt="Screenshot 20" width="200"/>
+  <img src="./app_screenshots/Screenshot_28.png" alt="Screenshot 20" width="200"/>
+  <img src="./app_screenshots/Screenshot_29.png" alt="Screenshot 20" width="200"/>
+  <img src="./app_screenshots/Screenshot_31.png" alt="Screenshot 20" width="200"/>
+  <img src="./app_screenshots/Screenshot_32.png" alt="Screenshot 20" width="200"/>
 </div>
 
 ## 🚀 Features
@@ -23,10 +25,11 @@ Recipe Sharing is an Android app that allows users to post and share their favor
 - **User Authentication**: Sign in, register and manage your account.
 - **Social Interactions**:
     - **Follow & Unfollow Users**: Engage with other users by following them and manage your own followers.
+    - **Followers & Following List**: Easily view a list of users who you are following and who are following you.
 - **Post and Edit Recipes**: Share your culinary wisdom.
 - **Search and View**: Discover recipes posted by other users.
 - **Detailed Recipe Information**: Includes ingredients, steps, and author info.
-- **Profile Management**: Update your user information and profile picture.
+- **Profile Management**: Update your user information, profile picture, and view your followers and following lists.
 
 ## 🛠 Architecture & Libraries
 

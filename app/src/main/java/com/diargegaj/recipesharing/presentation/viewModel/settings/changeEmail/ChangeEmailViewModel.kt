@@ -4,7 +4,8 @@ import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.diargegaj.recipesharing.domain.models.settings.changeEmail.ChangeEmailState
-import com.diargegaj.recipesharing.domain.repository.UserRepository
+import com.diargegaj.recipesharing.domain.repository.userInteraction.UserInteractionRepository
+import com.diargegaj.recipesharing.domain.repository.userAuth.UserAuthRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChangeEmailViewModel @Inject constructor(
-    val userRepository: UserRepository
+    private val userInteractionRepository: UserInteractionRepository,
+    private val userAuthRepository: UserAuthRepository
 ) : ViewModel() {
 
     private val _changeEmailState = MutableStateFlow(ChangeEmailState())
@@ -30,7 +32,7 @@ class ChangeEmailViewModel @Inject constructor(
         val password = _changeEmailState.value.password
 
         viewModelScope.launch {
-            when (userRepository.reAuthenticateUser(email = email, password = password)) {
+            when (userAuthRepository.reAuthenticateUser(email = email, password = password)) {
                 is Resource.Success -> {
                     val newEmail = _changeEmailState.value.newEmail
                     changeUserEmail(newEmail)
@@ -48,7 +50,7 @@ class ChangeEmailViewModel @Inject constructor(
     }
 
     private suspend fun changeUserEmail(email: String) {
-        when (userRepository.changeUserEmail(email)) {
+        when (userAuthRepository.changeUserEmail(email)) {
             is Resource.Success -> {
                 _userMessageEvent.emit(
                     "Email successfully updated"

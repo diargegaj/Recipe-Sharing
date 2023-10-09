@@ -24,4 +24,6 @@ sealed class Screen(val route: String) {
     object ChangeName : Screen("change_name")
 
     object OtherUserProfile : Screen("user_profile")
+    object UserFollowers : Screen("followers")
+    object UserFollowing : Screen("following")
 }
