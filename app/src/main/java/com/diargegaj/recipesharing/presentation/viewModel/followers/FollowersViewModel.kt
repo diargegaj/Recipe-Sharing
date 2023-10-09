@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.diargegaj.recipesharing.domain.models.UserModel
 import com.diargegaj.recipesharing.domain.repository.UserRepository
 import com.diargegaj.recipesharing.domain.repository.userAuth.UserAuthRepository
+import com.diargegaj.recipesharing.domain.repository.userFollow.UserFollowRepository
 import com.diargegaj.recipesharing.domain.repository.userProfile.UserProfileRepository
 import com.diargegaj.recipesharing.domain.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
