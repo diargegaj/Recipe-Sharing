@@ -1,6 +1,3 @@
-import java.util.Properties
-
-
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -9,20 +6,16 @@ plugins {
     id("com.google.gms.google-services")
 }
 
-val keystoreProperties = Properties().apply {
-    load(File(rootDir, "keystore.properties").inputStream())
-}
-
 android {
     namespace = "com.diargegaj.recipesharing"
     compileSdk = 34
 
     signingConfigs {
         create("release") {
-            storeFile = file("C:\\Users\\dell\\Documents\\app_signing\\recipe_sharing_release_key.jks")
-            storePassword = keystoreProperties["storePassword"] as String
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
+            storeFile = file(System.getenv("KEYSTORE_PATH") ?: "")
+            storePassword = System.getenv("STORE_PASSWORD")
+            keyAlias = System.getenv("KEY_ALIAS")
+            keyPassword = System.getenv("KEY_PASSWORD")
         }
     }
 
