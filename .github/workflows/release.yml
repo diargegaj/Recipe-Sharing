@@ -31,6 +31,9 @@ jobs:
       - name: Check Keystore Existence
         run: ls -al ${{ github.workspace }}/app/
 
+      - name: Get the version (commit SHA)
+        id: get_version
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
 
       - name: Build and release APK
         run: ./gradlew assembleRelease
@@ -40,11 +43,29 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
+      - name: Rename APK
+        run: mv ${{ github.workspace }}/app/build/outputs/apk/release/app-release.apk ${{ github.workspace }}/app/build/outputs/apk/release/app-release-${{ steps.get_version.outputs.sha_short }}.apk
+
       - name: List directory contents
         run: ls -al ${{ github.workspace }}/app/build/outputs/apk/release/
 
-      - name: Upload release APK
-        uses: actions/upload-artifact@v2
+      - name: Create Release
+        id: create_release
+        uses: ghaction-create-release@v1
         with:
-          name: release
-          path: app/build/outputs/apk/release/*.apk
+          draft: false
+          prerelease: false
+          title: Release ${{ github.ref }}
+          body: Description of the release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Release Asset
+        id: upload_release_asset
+        uses: ghaction-upload-release-asset@v1
+        with:
+          asset_path: ${{ github.workspace }}/app/build/outputs/apk/release/app-release-${{ steps.get_version.outputs.sha_short }}.apk
+          asset_name: app-release-${{ steps.get_version.outputs.sha_short }}.apk
+          asset_content_type: application/vnd.android.package-archive
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
