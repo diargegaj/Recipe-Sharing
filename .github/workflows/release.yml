@@ -28,6 +28,10 @@ jobs:
       - name: Decode Keystore
         run: echo "${{ secrets.KEYSTORE_PATH }}" | base64 -d > app/keystore.jks
 
+      - name: Check Keystore Existence
+        run: ls -al ${{ github.workspace }}/app/
+
+
       - name: Build and release APK
         run: ./gradlew assembleRelease
         env:
