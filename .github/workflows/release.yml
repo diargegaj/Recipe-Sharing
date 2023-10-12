@@ -57,9 +57,14 @@ jobs:
           NEW_TAG="release-${{ steps.get_version.outputs.sha_short }}"
           LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "initial")
           git tag $NEW_TAG
-          git remote set-url origin https://${{ secrets.PERSONAL_GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
           git push https://${{ secrets.PERSONAL_GITHUB_TOKEN }}@github.com/${{ github.repository }}.git $NEW_TAG
-          RELEASE_NOTES=$(git log ${LATEST_TAG}..HEAD --oneline)
+
+          # Check if it's the initial release
+          if [ "$LATEST_TAG" = "initial" ]; then
+            RELEASE_NOTES=$(git log --oneline)
+          else
+            RELEASE_NOTES=$(git log ${LATEST_TAG}..HEAD --oneline)
+          fi
 
           gh release create $NEW_TAG \
             --title "Release for commit $NEW_TAG" \
@@ -70,6 +75,7 @@ jobs:
           echo "::set-output name=upload_url::$UPLOAD_URL"
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+
 
       - name: Upload APK asset to GitHub release
         run: |
