@@ -55,14 +55,19 @@ jobs:
       - name: Create GitHub release
         id: create_release
         run: |
+          LATEST_TAG=$(git describe --tags --abbrev=0)
+          RELEASE_NOTES=$(git log ${LATEST_TAG}..HEAD --oneline)
+
           gh release create release-${{ steps.get_version.outputs.sha_short }} \
             --title "Release for commit ${{ steps.get_version.outputs.sha_short }}" \
-            --notes "New release" \
+            --notes "$RELEASE_NOTES" \
             --repo ${{ github.repository }}
+
           UPLOAD_URL=$(gh api repos/${{ github.repository }}/releases/latest --jq '.upload_url')
           echo "::set-output name=upload_url::$UPLOAD_URL"
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+
 
       - name: Upload APK asset to GitHub release
         run: |
