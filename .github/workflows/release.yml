@@ -49,14 +49,12 @@ jobs:
       - name: List directory contents
         run: ls -al ${{ github.workspace }}/app/build/outputs/apk/release/
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        with:
-          tag_name: ${{ github.sha }}
-          release_name: Release ${{ github.sha }}
-          draft: false
-          prerelease: false
+      - name: Create Release using GitHub CLI
+        run: |
+          gh release create ${{ github.ref }} \
+          ./app/build/outputs/apk/release/app-release-${{ steps.get_version.outputs.sha_short }}.apk \
+          --title "Release ${{ github.ref }}" \
+          --notes "New release."
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -70,4 +68,3 @@ jobs:
           asset_content_type: application/vnd.android.package-archive
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
