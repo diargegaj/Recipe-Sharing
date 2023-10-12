@@ -63,13 +63,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
 
-      - name: Upload Release Asset
-        id: upload_release_asset
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ github.workspace }}/app/build/outputs/apk/release/app-release-${{ steps.get_version.outputs.sha_short }}.apk
-          asset_name: app-release-${{ steps.get_version.outputs.sha_short }}.apk
-          asset_content_type: application/vnd.android.package-archive
+
+      - name: Print Upload URL
+        run:
+          echo "Upload URL: ${{ steps.create_release.outputs.upload_url }}"
+
+      - name: Upload Release Asset using GitHub CLI
+        run: |
+          gh release upload release-${{ steps.get_version.outputs.sha_short }} \
+            ./app/build/outputs/apk/release/app-release-${{ steps.get_version.outputs.sha_short }}.apk
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+
