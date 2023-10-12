@@ -61,7 +61,7 @@ jobs:
           UPLOAD_URL=$(gh api repos/${{ github.repository }}/releases/latest --jq '.upload_url')
           echo "::set-output name=upload_url::$UPLOAD_URL"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
 
       - name: Upload Release Asset
         id: upload_release_asset
@@ -72,4 +72,4 @@ jobs:
           asset_name: app-release-${{ steps.get_version.outputs.sha_short }}.apk
           asset_content_type: application/vnd.android.package-archive
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
