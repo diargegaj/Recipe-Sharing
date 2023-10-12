@@ -44,23 +44,26 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
       - name: Copy and rename APK for release
-        run: cp ${{ github.workspace }}/app/build/outputs/apk/release/app-release.apk ${{ github.workspace }}/app/build/outputs/apk/release/app-release-${{ steps.get_version.outputs.sha_short }}.apk
+        run: cp ./app/build/outputs/apk/release/app-release.apk ./app/build/outputs/apk/release/app-release-${{ steps.get_version.outputs.sha_short }}.apk
 
       - name: Display directory contents
-        run: ls -al ${{ github.workspace }}/app/build/outputs/apk/release/
+        run: ls -al ./app/build/outputs/apk/release/
 
       - name: Create GitHub release
         id: create_release
         run: |
-          LATEST_TAG=$(git describe --tags --abbrev=0)
+          NEW_TAG="release-${{ steps.get_version.outputs.sha_short }}"
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "initial")
+          git tag $NEW_TAG
+          git push origin $NEW_TAG
           RELEASE_NOTES=$(git log ${LATEST_TAG}..HEAD --oneline)
 
-          gh release create release-${{ steps.get_version.outputs.sha_short }} \
-            --title "Release for commit ${{ steps.get_version.outputs.sha_short }}" \
+          gh release create $NEW_TAG \
+            --title "Release for commit $NEW_TAG" \
             --notes "$RELEASE_NOTES" \
             --repo ${{ github.repository }}
 
-          UPLOAD_URL=$(gh api repos/${{ github.repository }}/releases/latest --jq '.upload_url')
+          UPLOAD_URL=$(gh api repos/${{ github.repository }}/releases/tags/$NEW_TAG --jq '.upload_url')
           echo "::set-output name=upload_url::$UPLOAD_URL"
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
@@ -68,6 +71,6 @@ jobs:
       - name: Upload APK asset to GitHub release
         run: |
           gh release upload release-${{ steps.get_version.outputs.sha_short }} \
-            ${{ github.workspace }}/app/build/outputs/apk/release/app-release-${{ steps.get_version.outputs.sha_short }}.apk
+            ./app/build/outputs/apk/release/app-release-${{ steps.get_version.outputs.sha_short }}.apk
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
