@@ -55,6 +55,7 @@ jobs:
           NEW_TAG="release-${{ steps.get_version.outputs.sha_short }}"
           LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "initial")
           git tag $NEW_TAG
+          git remote set-url origin https://${{ secrets.PERSONAL_GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
           git push origin $NEW_TAG
           RELEASE_NOTES=$(git log ${LATEST_TAG}..HEAD --oneline)
 
