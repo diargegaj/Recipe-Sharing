@@ -50,11 +50,17 @@ jobs:
         run: ls -al ${{ github.workspace }}/app/build/outputs/apk/release/
 
       - name: Create Release using GitHub CLI
+        id: create_release
         run: |
-          gh release create ${{ github.ref }} \
-          ./app/build/outputs/apk/release/app-release-${{ steps.get_version.outputs.sha_short }}.apk \
-          --title "Release ${{ github.ref }}" \
-          --notes "New release."
+          OUTPUT=$(gh release create ${{ github.ref }} \
+            ./app/build/outputs/apk/release/app-release-${{ steps.get_version.outputs.sha_short }}.apk \
+            --title "Release ${{ github.ref }}" \
+            --notes "Description of the release" \
+            --repo ${{ github.repository }} \
+            --json)
+
+          UPLOAD_URL=$(echo "$OUTPUT" | jq -r '.upload_url')
+          echo "::set-output name=upload_url::$UPLOAD_URL"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
