@@ -63,11 +63,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
 
-
-      - name: Print Upload URL
-        run:
-          echo "Upload URL: ${{ steps.create_release.outputs.upload_url }}"
-
       - name: Upload Release Asset using GitHub CLI
         run: |
           gh release upload release-${{ steps.get_version.outputs.sha_short }} \
