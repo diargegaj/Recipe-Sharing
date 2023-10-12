@@ -52,9 +52,9 @@ jobs:
       - name: Create Release using GitHub CLI
         id: create_release
         run: |
-          gh release create ${{ github.ref }} \
+          gh release create release-${{ steps.get_version.outputs.sha_short }} \
             ./app/build/outputs/apk/release/app-release-${{ steps.get_version.outputs.sha_short }}.apk \
-            --title "Release ${{ github.ref }}" \
+            --title "Release for commit ${{ steps.get_version.outputs.sha_short }}" \
             --notes "New release" \
             --repo ${{ github.repository }}
 
