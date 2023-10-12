@@ -3,7 +3,7 @@ name: Android Release
 on:
   push:
     branches:
-      - appRelease
+      - main
 
 jobs:
   build:
