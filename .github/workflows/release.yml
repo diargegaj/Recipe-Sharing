@@ -8,6 +8,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      APK_PATH: ${{ github.workspace }}/app/build/outputs/apk/release
+      APK_NAME_BASE: app-release-${{ steps.get_version.outputs.sha_short }}
 
     steps:
       - name: Checkout code
@@ -19,23 +22,23 @@ jobs:
           distribution: 'adopt'
           java-version: '17'
 
-      - name: Grant execute permission for gradlew
+      - name: Grant execute permission for Gradle Wrapper
         run: chmod +x gradlew
 
-      - name: Decode google-services.json
+      - name: Decode and store Google services configuration
         run: echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 -d > app/google-services.json
 
-      - name: Decode Keystore
+      - name: Decode and store keystore
         run: echo "${{ secrets.KEYSTORE_PATH }}" | base64 -d > app/keystore.jks
 
-      - name: Check Keystore Existence
+      - name: Verify keystore existence
         run: ls -al ${{ github.workspace }}/app/
 
       - name: Get the version (commit SHA)
         id: get_version
         run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
 
-      - name: Build and release APK
+      - name: Build the release APK
         run: ./gradlew assembleRelease
         env:
           KEYSTORE_PATH: ${{ github.workspace }}/app/keystore.jks
@@ -43,29 +46,27 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-      - name: Rename APK
-        run: mv ${{ github.workspace }}/app/build/outputs/apk/release/app-release.apk ${{ github.workspace }}/app/build/outputs/apk/release/app-release-${{ steps.get_version.outputs.sha_short }}.apk
+      - name: Copy and rename APK for release
+        run: cp ${APK_PATH}/app-release.apk ${APK_PATH}/${APK_NAME_BASE}.apk
 
-      - name: List directory contents
-        run: ls -al ${{ github.workspace }}/app/build/outputs/apk/release/
+      - name: Display directory contents
+        run: ls -al ${APK_PATH}
 
-      - name: Create Release using GitHub CLI
+      - name: Create GitHub release
         id: create_release
         run: |
           gh release create release-${{ steps.get_version.outputs.sha_short }} \
             --title "Release for commit ${{ steps.get_version.outputs.sha_short }}" \
             --notes "New release" \
             --repo ${{ github.repository }}
-
           UPLOAD_URL=$(gh api repos/${{ github.repository }}/releases/latest --jq '.upload_url')
           echo "::set-output name=upload_url::$UPLOAD_URL"
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
 
-      - name: Upload Release Asset using GitHub CLI
+      - name: Upload APK asset to GitHub release
         run: |
           gh release upload release-${{ steps.get_version.outputs.sha_short }} \
-            ./app/build/outputs/apk/release/app-release-${{ steps.get_version.outputs.sha_short }}.apk
+            ${APK_PATH}/${APK_NAME_BASE}.apk
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
-
