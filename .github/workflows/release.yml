@@ -8,9 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      APK_PATH: ${{ github.workspace }}/app/build/outputs/apk/release
-      APK_NAME_BASE: app-release-${{ steps.get_version.outputs.sha_short }}
 
     steps:
       - name: Checkout code
@@ -47,10 +44,10 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
       - name: Copy and rename APK for release
-        run: cp ${APK_PATH}/app-release.apk ${APK_PATH}/${APK_NAME_BASE}.apk
+        run: cp ${{ github.workspace }}/app/build/outputs/apk/release/app-release.apk ${{ github.workspace }}/app/build/outputs/apk/release/app-release-${{ steps.get_version.outputs.sha_short }}.apk
 
       - name: Display directory contents
-        run: ls -al ${APK_PATH}
+        run: ls -al ${{ github.workspace }}/app/build/outputs/apk/release/
 
       - name: Create GitHub release
         id: create_release
@@ -68,10 +65,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
 
-
       - name: Upload APK asset to GitHub release
         run: |
           gh release upload release-${{ steps.get_version.outputs.sha_short }} \
-            ${APK_PATH}/${APK_NAME_BASE}.apk
+            ${{ github.workspace }}/app/build/outputs/apk/release/app-release-${{ steps.get_version.outputs.sha_short }}.apk
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
