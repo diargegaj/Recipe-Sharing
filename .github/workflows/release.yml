@@ -53,7 +53,6 @@ jobs:
         id: create_release
         run: |
           gh release create release-${{ steps.get_version.outputs.sha_short }} \
-            ./app/build/outputs/apk/release/app-release-${{ steps.get_version.outputs.sha_short }}.apk \
             --title "Release for commit ${{ steps.get_version.outputs.sha_short }}" \
             --notes "New release" \
             --repo ${{ github.repository }}
