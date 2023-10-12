@@ -1,4 +1,5 @@
 import java.io.FileInputStream
+import java.time.LocalDate
 import java.util.Properties
 
 plugins {
@@ -37,11 +38,16 @@ android {
     }
 
     defaultConfig {
+        val currentDate = LocalDate.now()
+        val year = currentDate.year
+        val month = currentDate.monthValue
+        val day = currentDate.dayOfMonth
+
         applicationId = "com.diargegaj.recipesharing"
         minSdk = 24
         targetSdk = 33
-        versionCode = 1
-        versionName = "1.0-alpha"
+        versionCode = year * 10000 + month * 100 + day
+        versionName = "$year.$month.$day"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
